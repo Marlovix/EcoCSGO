@@ -1,19 +1,24 @@
 package es.ulpgc.tfm.ecocsgo
 
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import es.ulpgc.tfm.ecocsgo.dummy.DummyContent
 import kotlinx.android.synthetic.main.activity_item_list.*
-import kotlinx.android.synthetic.main.item_list_content.view.*
 import kotlinx.android.synthetic.main.item_list.*
+import kotlinx.android.synthetic.main.item_list_content.view.*
+import java.util.*
 
 /**
  * An activity representing a list of Pings. This activity
@@ -55,7 +60,78 @@ class ItemListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, twoPane)
+        val mAdapter = SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, twoPane)
+        val callback = ItemMoveCallback(mAdapter, this)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(recyclerView)
+        recyclerView.adapter = mAdapter
+    }
+
+    class ItemMoveCallback(private val mAdapter: ItemTouchHelperContract, val activity: Activity) : ItemTouchHelper.Callback() {
+
+        override fun isLongPressDragEnabled(): Boolean {
+            return true
+        }
+
+        override fun isItemViewSwipeEnabled(): Boolean {
+            return true
+        }
+
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
+
+        }
+
+        override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+            val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+            return ItemTouchHelper.Callback.makeMovementFlags(dragFlags, 0)
+        }
+
+        override fun onMove(
+            recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            mAdapter.onRowMoved(viewHolder.adapterPosition, target.adapterPosition)
+            return true
+        }
+
+        override fun onSelectedChanged(
+            viewHolder: RecyclerView.ViewHolder?,
+            actionState: Int
+        ) {
+            if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+                if (viewHolder is SimpleItemRecyclerViewAdapter.ViewHolder) {
+                    val myViewHolder = viewHolder as SimpleItemRecyclerViewAdapter.ViewHolder?
+                    if (myViewHolder != null) {
+                        mAdapter.onRowSelected(myViewHolder)
+                    }
+                }
+            }else if(actionState == ItemTouchHelper.ACTION_STATE_IDLE){
+                Toast.makeText(activity, "Androidly Short Toasts", Toast.LENGTH_SHORT).show()
+            }
+
+            super.onSelectedChanged(viewHolder, actionState)
+        }
+
+        override fun clearView(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder
+        ) {
+            super.clearView(recyclerView, viewHolder)
+
+            if (viewHolder is SimpleItemRecyclerViewAdapter.ViewHolder) {
+                mAdapter.onRowClear(viewHolder)
+            }
+        }
+
+        interface ItemTouchHelperContract {
+
+            fun onRowMoved(fromPosition: Int, toPosition: Int)
+            fun onRowSelected(myViewHolder: SimpleItemRecyclerViewAdapter.ViewHolder)
+            fun onRowClear(myViewHolder: SimpleItemRecyclerViewAdapter.ViewHolder)
+
+        }
+
     }
 
     class SimpleItemRecyclerViewAdapter(
@@ -63,7 +139,8 @@ class ItemListActivity : AppCompatActivity() {
         private val values: List<DummyContent.DummyItem>,
         private val twoPane: Boolean
     ) :
-        RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
+        RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>(),
+        ItemMoveCallback.ItemTouchHelperContract{
 
         private val onClickListener: View.OnClickListener
 
@@ -89,6 +166,10 @@ class ItemListActivity : AppCompatActivity() {
             }
         }
 
+        fun getParentActivity(): Activity{
+            return parentActivity;
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_list_content, parent, false)
@@ -111,10 +192,34 @@ class ItemListActivity : AppCompatActivity() {
         override fun getItemCount() = values.size
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val cardView : CardView = view.cardView
             val idView: TextView = view.sub_text2
             val contentView: TextView = view.sub_text
             val death: TextView = view.textView2
             val death2: TextView = view.textView3
         }
+
+        override fun onRowMoved(fromPosition: Int, toPosition: Int) {
+            if (fromPosition < toPosition) {
+                for (i in fromPosition until toPosition) {
+                    Collections.swap(values, i, i + 1)
+                }
+            } else {
+                for (i in fromPosition downTo toPosition + 1) {
+                    Collections.swap(values, i, i - 1)
+                }
+            }
+            notifyItemMoved(fromPosition, toPosition)
+        }
+
+        override fun onRowSelected(myViewHolder: ViewHolder) {
+            myViewHolder.cardView.setBackgroundColor(Color.GRAY)
+        }
+
+        override fun onRowClear(myViewHolder: ViewHolder) {
+            myViewHolder.cardView.setBackgroundColor(Color.WHITE)
+        }
+
+
     }
 }
