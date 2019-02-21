@@ -69,6 +69,9 @@ class ItemListActivity : AppCompatActivity() {
 
     class ItemMoveCallback(private val mAdapter: ItemTouchHelperContract, val activity: Activity) : ItemTouchHelper.Callback() {
 
+        private var from : String = ""
+        private var to: String = ""
+
         override fun isLongPressDragEnabled(): Boolean {
             return true
         }
@@ -91,7 +94,9 @@ class ItemListActivity : AppCompatActivity() {
             recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
         ): Boolean {
-            mAdapter.onRowMoved(viewHolder.adapterPosition, target.adapterPosition)
+            from = viewHolder.adapterPosition.toString()
+            to = target.adapterPosition.toString()
+            //mAdapter.onRowMoved(viewHolder.adapterPosition, target.adapterPosition)
             return true
         }
 
@@ -100,17 +105,17 @@ class ItemListActivity : AppCompatActivity() {
             actionState: Int
         ) {
             if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-                if (viewHolder is SimpleItemRecyclerViewAdapter.ViewHolder) {
+                /*if (viewHolder is SimpleItemRecyclerViewAdapter.ViewHolder) {
                     val myViewHolder = viewHolder as SimpleItemRecyclerViewAdapter.ViewHolder?
                     if (myViewHolder != null) {
                         mAdapter.onRowSelected(myViewHolder)
                     }
-                }
+                }*/
             }else if(actionState == ItemTouchHelper.ACTION_STATE_IDLE){
-                Toast.makeText(activity, "Androidly Short Toasts", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "From: $from - To: $to", Toast.LENGTH_SHORT).show()
             }
 
-            super.onSelectedChanged(viewHolder, actionState)
+            //super.onSelectedChanged(viewHolder, actionState)
         }
 
         override fun clearView(
@@ -167,7 +172,7 @@ class ItemListActivity : AppCompatActivity() {
         }
 
         fun getParentActivity(): Activity{
-            return parentActivity;
+            return parentActivity
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
