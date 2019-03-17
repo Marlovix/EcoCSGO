@@ -171,10 +171,6 @@ class ItemListActivity : AppCompatActivity() {
             }
         }
 
-        fun getParentActivity(): Activity{
-            return parentActivity
-        }
-
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_list_content, parent, false)
