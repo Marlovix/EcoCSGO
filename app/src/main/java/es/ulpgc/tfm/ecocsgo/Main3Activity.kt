@@ -1,6 +1,7 @@
 package es.ulpgc.tfm.ecocsgo
 
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
@@ -8,6 +9,10 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main3.*
 import kotlinx.android.synthetic.main.app_bar_main3.*
 
@@ -28,6 +33,25 @@ class Main3Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
+
+        // Write a message to the database
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.getReference("prueba")
+
+        // Read from the database
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                val value = dataSnapshot.getValue(String::class.java)
+                Log.d("", "Value is: " + value!!)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.w("", "Failed to read value.", error.toException())
+            }
+        })
 
         nav_view.setNavigationItemSelectedListener(this)
     }

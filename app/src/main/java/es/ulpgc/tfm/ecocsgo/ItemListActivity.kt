@@ -163,8 +163,8 @@ class ItemListActivity : AppCompatActivity() {
                         .replace(R.id.item_detail_container, fragment)
                         .commit()
                 } else {
-                    val intent = Intent(v.context, ItemDetailActivity::class.java).apply {
-                        putExtra(ItemDetailFragment.ARG_ITEM_ID, item.id)
+                    val intent = Intent(v.context, Main2Activity::class.java).apply {
+                        //putExtra(ItemDetailFragment.ARG_ITEM_ID, item.id)
                     }
                     v.context.startActivity(intent)
                 }

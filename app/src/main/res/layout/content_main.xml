@@ -9,28 +9,6 @@
         tools:showIn="@layout/activity_main"
         tools:context=".MainActivity">
 
-    <TextView
-            android:text="Arma primaria"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView4"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="@+id/spinner3"
-            android:layout_marginTop="16dp" app:layout_constraintBottom_toTopOf="@+id/spinner3"/>
-    <Spinner
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:id="@+id/spinner3"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/seekBar2" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="14dp" android:layout_marginStart="14dp" android:layout_marginEnd="14dp"
-            android:layout_marginRight="14dp"/>
-    <SeekBar
-            android:layout_width="381dp"
-            android:layout_height="0dp"
-            android:id="@+id/seekBar2" app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinner3" android:layout_marginBottom="594dp"/>
-
     <Button
             android:text="@string/label_start_game"
             android:layout_width="wrap_content"
