@@ -16,8 +16,14 @@
 	<string name="nav_header_subtitle">android.studio@android.com</string>
 	<string name="nav_header_desc">Navigation header</string>
 
+	<string name="label_casualties">Bajas</string>
 	<string name="label_main_weapon">Arma principal</string>
 	<string name="label_secondary_weapon">Arma secundaria</string>
+
+	<string name="content_description_add_casualty">Añadir baja</string>
+	<string name="content_description_add_weapon">Añadir arma</string>
+	<string name="content_description_remove_casualty">Eliminar baja</string>
+	<string name="content_description_remove_weapon">Eliminar arma</string>
 
 	<string-array name="pistol_data">
 		<item>-LehCqmLwv0pAhdtG01G</item>

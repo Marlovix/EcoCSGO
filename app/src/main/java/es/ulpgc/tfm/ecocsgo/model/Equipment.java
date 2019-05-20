@@ -22,8 +22,8 @@ public abstract class Equipment {
         getData(FirebaseDatabase.getInstance().getReference(reference).child(key));
     }
 
-    public Equipment(EquipmentNumeration numeration){
-        this.numeration = numeration;
+    public String getName(){
+        return name;
     }
 
     private void getData(DatabaseReference reference){
