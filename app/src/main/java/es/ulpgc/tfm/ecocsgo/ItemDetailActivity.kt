@@ -2,7 +2,6 @@ package es.ulpgc.tfm.ecocsgo
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NavUtils
 import android.view.MenuItem
@@ -12,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_item_detail.*
  * An activity representing a single Item detail screen. This
  * activity is only used on narrow width devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a [ItemListActivity].
+ * in a [GameActivity].
  */
 class ItemDetailActivity : AppCompatActivity() {
 
@@ -39,8 +38,8 @@ class ItemDetailActivity : AppCompatActivity() {
             val fragment = ItemDetailFragment().apply {
                 arguments = Bundle().apply {
                     putString(
-                        ItemDetailFragment.ARG_ITEM_ID,
-                        intent.getStringExtra(ItemDetailFragment.ARG_ITEM_ID)
+                        ItemDetailFragment.ARG_ITEM_KIT,
+                        intent.getStringExtra(ItemDetailFragment.ARG_ITEM_KIT)
                     )
                 }
             }
@@ -61,7 +60,7 @@ class ItemDetailActivity : AppCompatActivity() {
                 //
                 // http://developer.android.com/design/patterns/navigation.html#up-vs-back
 
-                NavUtils.navigateUpTo(this, Intent(this, ItemListActivity::class.java))
+                NavUtils.navigateUpTo(this, Intent(this, GameActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)

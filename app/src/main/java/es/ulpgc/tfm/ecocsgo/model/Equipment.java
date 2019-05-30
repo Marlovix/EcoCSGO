@@ -1,32 +1,70 @@
 package es.ulpgc.tfm.ecocsgo.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.firebase.database.*;
 
-public abstract class Equipment {
-    protected String reference;
+public abstract class Equipment implements Parcelable {
+    private DatabaseReference reference;
+    protected String referenceKey;
     protected String name;
     protected EquipmentNumeration numeration;
     protected Integer cost;
     protected EquipmentTeam team;
     protected EquipmentCategory[] acceptedCategories;
 
-    public Equipment(){
+    Equipment(){ }
 
+    Equipment(String referenceKey, String key){
+        this.referenceKey = referenceKey;
+        this.reference = FirebaseDatabase.getInstance().getReference(referenceKey).child(key);
     }
 
-    Equipment(String reference, String key){
-        this.reference = reference;
-        //this.key = key;
-        getData(FirebaseDatabase.getInstance().getReference(reference).child(key));
+    Equipment(Parcel in) {
+        referenceKey = in.readString();
+        name = in.readString();
+        numeration = in.readParcelable(EquipmentNumeration.class.getClassLoader());
+        if (in.readByte() == 0) {
+            cost = null;
+        } else {
+            cost = in.readInt();
+        }
+        Object[] list = in.readArray(EquipmentCategory[].class.getClassLoader());
+        if (list != null) {
+            EquipmentCategory[] acceptedCategories = new EquipmentCategory[list.length];
+            for(int i=0; i<list.length; i++){
+                acceptedCategories[i] = (EquipmentCategory)list[i];
+            }
+            this.acceptedCategories = acceptedCategories;
+        }
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(referenceKey);
+        dest.writeString(name);
+        dest.writeParcelable(numeration, flags);
+        if (cost == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(cost);
+        }
+        dest.writeArray(acceptedCategories);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public String getName(){
         return name;
     }
 
-    private void getData(DatabaseReference reference){
+    void getData(){
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -59,7 +97,7 @@ public abstract class Equipment {
                 }
 
                 name = dataSnapshot.child("name").getValue(String.class);
-                numeration = new EquipmentNumeration(category, item);
+                numeration = new EquipmentNumeration(item, category);
                 cost = dataSnapshot.child("cost").getValue(Integer.class);
             }
 

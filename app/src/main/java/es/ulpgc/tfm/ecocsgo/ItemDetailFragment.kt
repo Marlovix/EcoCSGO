@@ -6,13 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import es.ulpgc.tfm.ecocsgo.dummy.DummyContent
-import kotlinx.android.synthetic.main.activity_item_detail.*
 import kotlinx.android.synthetic.main.item_detail.view.*
 
 /**
  * A fragment representing a single Item detail screen.
- * This fragment is either contained in a [ItemListActivity]
+ * This fragment is either contained in a [Game3Activity]
  * in two-pane mode (on tablets) or a [ItemDetailActivity]
  * on handsets.
  */
@@ -21,17 +19,17 @@ class ItemDetailFragment : Fragment() {
     /**
      * The dummy content this fragment is presenting.
      */
-    private var item: DummyContent.DummyItem? = null
+    private var item: GameActivityContent.PlayerContent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val s: LinearLayoutManager
         arguments?.let {
-            if (it.containsKey(ARG_ITEM_ID)) {
+            if (it.containsKey(ARG_ITEM_KIT)) {
                 // Load the dummy content specified by the fragment
                 // arguments. In a real-world scenario, use a Loader
                 // to load content from a content provider.
-                item = DummyContent.ITEM_MAP[it.getString(ARG_ITEM_ID)]
+                item = GameActivityContent.ITEM_MAP[it.getString(ARG_ITEM_KIT)]
                 //activity?.toolbar_layout?.title = item?.content
             }
         }
@@ -56,6 +54,13 @@ class ItemDetailFragment : Fragment() {
          * The fragment argument representing the item ID that this fragment
          * represents.
          */
-        const val ARG_ITEM_ID = "item_id"
+        const val ARG_ITEM_KIT = "kit"
+        const val ARG_HELMET = "helmet"
+        const val ARG_VEST = "vest"
+
+        const val ARG_MAIN_GUNS = "mainGuns"
+        const val ARG_SECONDARY_GUNS = "secondaryGuns"
+
+        const val ARG_GAME = "game"
     }
 }
