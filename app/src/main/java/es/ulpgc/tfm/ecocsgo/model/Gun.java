@@ -20,6 +20,18 @@ abstract class Gun extends Equipment implements Parcelable {
 
     }
 
+    public Integer getReward() {
+        return reward;
+    }
+
+    public Integer getCasualty() {
+        return casualty;
+    }
+
+    public OriginEquipment getOrigin() {
+        return origin;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);

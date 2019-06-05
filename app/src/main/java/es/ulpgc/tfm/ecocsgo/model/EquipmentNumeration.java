@@ -16,6 +16,14 @@ public class EquipmentNumeration implements Parcelable {
         this.category = category;
     }
 
+    public int getItem() {
+        return item;
+    }
+
+    public EquipmentCategory getCategory() {
+        return category;
+    }
+
     protected EquipmentNumeration(Parcel in) {
         item = in.readInt();
     }

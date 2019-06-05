@@ -182,8 +182,8 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             actionState: Int
         ) {
             if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-                /*if (viewHolder is WeaponRecyclerViewAdapter.ViewHolder) {
-                    val myViewHolder = viewHolder as WeaponRecyclerViewAdapter.ViewHolder?
+                /*if (viewHolder is EquipmentCategoryRecyclerViewAdapter.ViewHolder) {
+                    val myViewHolder = viewHolder as EquipmentCategoryRecyclerViewAdapter.ViewHolder?
                     if (myViewHolder != null) {
                         mAdapter.onRowSelected(myViewHolder)
                     }

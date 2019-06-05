@@ -64,6 +64,18 @@ public abstract class Equipment implements Parcelable {
         return name;
     }
 
+    public EquipmentNumeration getNumeration() {
+        return numeration;
+    }
+
+    public Integer getCost() {
+        return cost;
+    }
+
+    public EquipmentTeam getTeam() {
+        return team;
+    }
+
     void getData(){
 
         reference.addValueEventListener(new ValueEventListener() {

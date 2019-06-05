@@ -50,15 +50,15 @@ class GunListDialog : DialogFragment() {
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        val mAdapter = WeaponRecyclerViewAdapter(this, this.mainGuns)
+        val mAdapter = EquipmentCategoryRecyclerViewAdapter(this, mainGuns)
         recyclerView.adapter = mAdapter
     }
 
-    class WeaponRecyclerViewAdapter(
+    class EquipmentCategoryRecyclerViewAdapter(
         private val parentActivity: DialogFragment,
         private val values: Map<EquipmentCategory, List<MainGun>>
     ) :
-        RecyclerView.Adapter<WeaponRecyclerViewAdapter.ViewHolder>(){
+        RecyclerView.Adapter<EquipmentCategoryRecyclerViewAdapter.ViewHolder>(){
 
         private val onClickListener: View.OnClickListener
 
@@ -87,11 +87,11 @@ class GunListDialog : DialogFragment() {
             holder.nameWeaponTextView.text = values.keys.elementAt(position).toString()
             when (position) {
                 0 -> holder.gunsRecyclerView.adapter =
-                    values[EquipmentCategory.RIFLE]?.let { MainGunRecyclerViewAdapter(parentActivity, it) }
+                    values[EquipmentCategory.SMG]?.let { MainGunRecyclerViewAdapter(parentActivity, it) }
                 1 -> holder.gunsRecyclerView.adapter =
                     values[EquipmentCategory.HEAVY]?.let { MainGunRecyclerViewAdapter(parentActivity, it) }
                 2 -> holder.gunsRecyclerView.adapter =
-                    values[EquipmentCategory.SMG]?.let { MainGunRecyclerViewAdapter(parentActivity, it) }
+                    values[EquipmentCategory.RIFLE]?.let { MainGunRecyclerViewAdapter(parentActivity, it) }
                 else -> { // Note the block
                     print("x no es 1 o 2")
                 }
