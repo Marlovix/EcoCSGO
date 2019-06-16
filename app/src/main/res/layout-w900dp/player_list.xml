@@ -10,7 +10,7 @@
               android:divider="?android:attr/dividerHorizontal"
               android:orientation="horizontal"
               android:showDividers="middle"
-              tools:context=".Game3Activity">
+              tools:context=".GameActivity">
 
 	<!--
     This layout is a two-pane layout for the Items
@@ -26,7 +26,7 @@
 			android:layout_marginRight="16dp"
 			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 			tools:context="es.ulpgc.tfm.ecocsgo.Game3Activity"
-			tools:listitem="@layout/item_player_list_content"/>
+			tools:listitem="@layout/item_player_list"/>
 
 	<FrameLayout
 			android:id="@+id/item_detail_container"

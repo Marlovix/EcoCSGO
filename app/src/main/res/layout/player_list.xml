@@ -10,4 +10,4 @@
                                            android:layout_marginRight="16dp"
                                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                            tools:context=".GameActivity"
-                                           tools:listitem="@layout/item_player_list_content"/>
+                                           tools:listitem="@layout/item_player_list"/>

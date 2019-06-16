@@ -12,7 +12,6 @@ import es.ulpgc.tfm.ecocsgo.model.*
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.activity_detail_player.toolbar
 
-
 @Suppress("UNCHECKED_CAST")
 class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -20,10 +19,12 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     private var textViewHelmet : TextView? = null
     private var textViewDefuseKit : TextView? = null
 
-    private var button : ImageButton? = null
+    private var buttonMainGuns : ImageButton? = null
+    private var buttonSecondaryGuns : ImageButton? = null
 
     private var mainGuns : Map<EquipmentCategory, List<MainGun>> = HashMap()
-    private var secondaryGuns : List<SecondaryGun> = ArrayList()
+    private var secondaryGuns : MutableMap<EquipmentCategory, List<SecondaryGun>> = HashMap()
+    private var secondaryList : List<SecondaryGun> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +47,10 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         //nav_view.setNavigationItemSelectedListener(this)
 
         val game = intent.getParcelableExtra<Game>(ItemDetailFragment.ARG_GAME)
-        mainGuns =
-            (intent.getSerializableExtra(ItemDetailFragment.ARG_MAIN_GUNS) as Map<EquipmentCategory, List<MainGun>>)
+        mainGuns = (intent.getSerializableExtra(ItemDetailFragment.ARG_MAIN_GUNS)
+                as Map<EquipmentCategory, List<MainGun>>)
+        secondaryList = intent.getParcelableArrayListExtra(ItemDetailFragment.ARG_SECONDARY_GUNS)
+        secondaryGuns[EquipmentCategory.PISTOL] = secondaryList
 
         prepareScreen()
 
@@ -74,16 +77,29 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         textViewHelmet?.text = helmet?.name
         textViewDefuseKit?.text = kit.name
 
-        button = findViewById(R.id.imageButton_add_main_weapon)
-        button?.setOnClickListener {
-            val dialog = GunListDialog()
+        buttonMainGuns = findViewById(R.id.imageButton_add_main_gun)
+        buttonMainGuns?.setOnClickListener {
             val bundle = Bundle()
-            bundle.putSerializable(ItemDetailFragment.ARG_MAIN_GUNS,
+            bundle.putSerializable(ItemDetailFragment.ARG_GUNS,
                 mainGuns as HashMap<EquipmentCategory, List<MainGun>>
             )
-            dialog.arguments = bundle
-            dialog.show(supportFragmentManager, "¿?¿?¿?")
+            openGunDialog(bundle)
         }
+
+        buttonSecondaryGuns = findViewById(R.id.imageButton_add_secondary_gun)
+        buttonSecondaryGuns?.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putSerializable(ItemDetailFragment.ARG_GUNS,
+                secondaryGuns as HashMap<EquipmentCategory, List<SecondaryGun>>
+            )
+            openGunDialog(bundle)
+        }
+    }
+
+    private fun openGunDialog(bundle: Bundle){
+        val dialog = GunListFragmentDialog()
+        dialog.arguments = bundle
+        dialog.show(supportFragmentManager, null)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -94,7 +110,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the Home/Up buttonMainGuns, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
             R.id.action_settings -> return true

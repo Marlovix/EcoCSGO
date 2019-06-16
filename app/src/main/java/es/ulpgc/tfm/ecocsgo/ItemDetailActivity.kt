@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NavUtils
 import android.view.MenuItem
-import kotlinx.android.synthetic.main.activity_item_detail.*
+import kotlinx.android.synthetic.main.zzzactivity_item_detail.*
 
 /**
  * An activity representing a single Item detail screen. This
@@ -17,7 +17,7 @@ class ItemDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_item_detail)
+        setContentView(R.layout.zzzactivity_item_detail)
         setSupportActionBar(detail_toolbar)
 
         // Show the Up button in the action bar.

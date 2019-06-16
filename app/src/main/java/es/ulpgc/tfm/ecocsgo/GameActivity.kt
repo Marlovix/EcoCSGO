@@ -19,7 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import es.ulpgc.tfm.ecocsgo.model.*
-import kotlinx.android.synthetic.main.item_player_list_content.view.*
+import kotlinx.android.synthetic.main.item_player_list.view.*
 import kotlinx.android.synthetic.main.player_list.*
 import java.util.*
 import kotlin.collections.HashMap
@@ -95,7 +95,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.game_manu, menu)
+        menuInflater.inflate(R.menu.game_menu, menu)
         return true
     }
 
@@ -250,9 +250,9 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         mainGuns[EquipmentCategory.HEAVY] = parentActivity.heavyWeapons
                         mainGuns[EquipmentCategory.SMG] = parentActivity.smgWeapons
                         mainGuns[EquipmentCategory.RIFLE] = parentActivity.rifleWeapons
-                        putExtra(ItemDetailFragment.ARG_MAIN_GUNS, mainGuns)
-                        //putExtra(ItemDetailFragment.ARG_SECONDARY_GUNS, parentActivity.game)
 
+                        putExtra(ItemDetailFragment.ARG_MAIN_GUNS, mainGuns)
+                        putExtra(ItemDetailFragment.ARG_SECONDARY_GUNS, parentActivity.pistolWeapons)
                         putExtra(ItemDetailFragment.ARG_GAME, parentActivity.game)
                     }
                     v.context.startActivity(intent)
@@ -262,7 +262,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_player_list_content, parent, false)
+                .inflate(R.layout.item_player_list, parent, false)
             return ViewHolder(view)
         }
 

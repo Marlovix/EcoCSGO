@@ -21,6 +21,6 @@
 
 	</com.google.android.material.appbar.AppBarLayout>
 
-	<include layout="@layout/activity_detail_player_content"/>
+	<include layout="@layout/content_detail_player"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

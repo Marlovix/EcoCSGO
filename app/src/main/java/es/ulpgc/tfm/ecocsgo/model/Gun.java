@@ -3,7 +3,7 @@ package es.ulpgc.tfm.ecocsgo.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-abstract class Gun extends Equipment implements Parcelable {
+abstract public class Gun extends Equipment implements Parcelable {
     Integer reward;
     Integer casualty;
     OriginEquipment origin;

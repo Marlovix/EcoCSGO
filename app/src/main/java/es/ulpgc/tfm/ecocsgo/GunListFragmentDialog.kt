@@ -1,5 +1,6 @@
 package es.ulpgc.tfm.ecocsgo
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,19 +9,14 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import es.ulpgc.tfm.ecocsgo.model.EquipmentCategory
-import es.ulpgc.tfm.ecocsgo.model.MainGun
-import kotlinx.android.synthetic.main.item_category_gun_list_content.view.*
-import kotlinx.android.synthetic.main.item_gun_list_content.view.*
+import es.ulpgc.tfm.ecocsgo.model.Gun
+import kotlinx.android.synthetic.main.item_category_gun_list.view.*
+import kotlinx.android.synthetic.main.item_gun_list.view.*
 import java.util.*
 
-/**
- * A fragment representing a list of Items.
- * Activities containing this fragment MUST implement the
- * [GunListDialog.OnListFragmentInteractionListener] interface.
- */
-class GunListDialog : DialogFragment() {
+class GunListFragmentDialog : DialogFragment() {
 
-    private var mainGuns : Map<EquipmentCategory, List<MainGun>> = HashMap()
+    private var guns : Map<EquipmentCategory, List<Gun>> = HashMap()
 
     //private var listener: OnListFragmentInteractionListener? = null
 
@@ -31,7 +27,7 @@ class GunListDialog : DialogFragment() {
         val rootView = inflater.inflate(R.layout.category_gun_list, container, false)
 
         val bundle = arguments
-        mainGuns = bundle?.getSerializable(ItemDetailFragment.ARG_MAIN_GUNS) as Map<EquipmentCategory, List<MainGun>>
+        guns = bundle?.getSerializable(ItemDetailFragment.ARG_GUNS) as Map<EquipmentCategory, List<Gun>>
 
         val recyclerView = rootView.findViewById(R.id.category_gun_list) as RecyclerView
         setupRecyclerView(recyclerView)
@@ -50,13 +46,13 @@ class GunListDialog : DialogFragment() {
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        val mAdapter = EquipmentCategoryRecyclerViewAdapter(this, mainGuns)
+        val mAdapter = EquipmentCategoryRecyclerViewAdapter(this, guns)
         recyclerView.adapter = mAdapter
     }
 
     class EquipmentCategoryRecyclerViewAdapter(
         private val parentActivity: DialogFragment,
-        private val values: Map<EquipmentCategory, List<MainGun>>
+        private val values: Map<EquipmentCategory, List<Gun>>
     ) :
         RecyclerView.Adapter<EquipmentCategoryRecyclerViewAdapter.ViewHolder>(){
 
@@ -79,19 +75,20 @@ class GunListDialog : DialogFragment() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_category_gun_list_content, parent, false)
+                .inflate(R.layout.item_category_gun_list, parent, false)
             return ViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.nameWeaponTextView.text = values.keys.elementAt(position).toString()
+            holder.nameWeaponTextView.setTypeface(null, Typeface.BOLD)
             when (position) {
                 0 -> holder.gunsRecyclerView.adapter =
-                    values[EquipmentCategory.SMG]?.let { MainGunRecyclerViewAdapter(parentActivity, it) }
+                    values[EquipmentCategory.SMG]?.let { GunRecyclerViewAdapter(parentActivity, it) }
                 1 -> holder.gunsRecyclerView.adapter =
-                    values[EquipmentCategory.HEAVY]?.let { MainGunRecyclerViewAdapter(parentActivity, it) }
+                    values[EquipmentCategory.HEAVY]?.let { GunRecyclerViewAdapter(parentActivity, it) }
                 2 -> holder.gunsRecyclerView.adapter =
-                    values[EquipmentCategory.RIFLE]?.let { MainGunRecyclerViewAdapter(parentActivity, it) }
+                    values[EquipmentCategory.RIFLE]?.let { GunRecyclerViewAdapter(parentActivity, it) }
                 else -> { // Note the block
                     print("x no es 1 o 2")
                 }
@@ -106,11 +103,11 @@ class GunListDialog : DialogFragment() {
         }
     }
 
-    class MainGunRecyclerViewAdapter(
+    class GunRecyclerViewAdapter(
         private val parentActivity: DialogFragment,
-        private val values: List<MainGun>
+        private val values: List<Gun>
     ) :
-        RecyclerView.Adapter<MainGunRecyclerViewAdapter.ViewHolder>(){
+        RecyclerView.Adapter<GunRecyclerViewAdapter.ViewHolder>(){
 
         private val onClickListener: View.OnClickListener
 
@@ -131,7 +128,7 @@ class GunListDialog : DialogFragment() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_gun_list_content, parent, false)
+                .inflate(R.layout.item_gun_list, parent, false)
             return ViewHolder(view)
         }
 

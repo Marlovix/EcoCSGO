@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.item_detail.view.*
+import kotlinx.android.synthetic.main.zzzzzitem_detail.view.*
 
 /**
  * A fragment representing a single Item detail screen.
@@ -39,7 +39,7 @@ class ItemDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.item_detail, container, false)
+        val rootView = inflater.inflate(R.layout.zzzzzitem_detail, container, false)
 
         // Show the dummy content as text in a TextView.
         item?.let {
@@ -58,6 +58,7 @@ class ItemDetailFragment : Fragment() {
         const val ARG_HELMET = "helmet"
         const val ARG_VEST = "vest"
 
+        const val ARG_GUNS = "guns"
         const val ARG_MAIN_GUNS = "mainGuns"
         const val ARG_SECONDARY_GUNS = "secondaryGuns"
 

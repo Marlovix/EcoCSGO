@@ -8,26 +8,30 @@
                                    android:layout_marginEnd="8dp">
 
 	<TextView android:id="@+id/textView_category"
-	          android:layout_width="wrap_content"
+	          android:layout_width="match_parent"
 	          android:layout_height="wrap_content"
+	          android:background="@color/colorPrimary"
 	          android:textAppearance="?attr/textAppearanceListItem"
+	          android:textColor="@android:color/white"
+	          android:padding="8dp"
+	          android:gravity="center"
 	          app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
 	          android:layout_marginLeft="8dp" android:layout_marginStart="8dp" android:layout_marginRight="8dp"
 	          android:layout_marginEnd="8dp" android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"/>
 
 	<androidx.recyclerview.widget.RecyclerView
-			xmlns:app="http://schemas.android.com/apk/res-auto"
-			xmlns:tools="http://schemas.android.com/tools"
 			android:id="@+id/gun_list"
 			android:name="es.ulpgc.tfm.ecocsgo.WeaponListFragment"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			app:layoutManager="LinearLayoutManager"
-			tools:context=".GunListDialog"
-			tools:listitem="@layout/item_gun_list_content"
+			tools:context=".GunListFragmentDialog"
+			tools:listitem="@layout/item_gun_list"
 			app:layout_constraintTop_toBottomOf="@+id/textView_category"
 			app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
 			android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
 			android:layout_marginRight="8dp" android:layout_marginTop="8dp"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
