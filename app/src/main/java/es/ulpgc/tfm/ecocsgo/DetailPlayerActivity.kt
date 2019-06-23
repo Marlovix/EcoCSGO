@@ -3,6 +3,7 @@ package es.ulpgc.tfm.ecocsgo
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -11,9 +12,16 @@ import com.google.android.material.navigation.NavigationView
 import es.ulpgc.tfm.ecocsgo.model.*
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.activity_detail_player.toolbar
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 @Suppress("UNCHECKED_CAST")
-class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    GunListFragmentDialog.GunClickListener {
+    override fun selectGun(view: View, position: Int) {
+        Toast.makeText(this, position.toString(), Toast.LENGTH_SHORT).show()
+    }
 
     private var textViewVest : TextView? = null
     private var textViewHelmet : TextView? = null
@@ -22,8 +30,10 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     private var buttonMainGuns : ImageButton? = null
     private var buttonSecondaryGuns : ImageButton? = null
 
-    private var mainGuns : Map<EquipmentCategory, List<MainGun>> = HashMap()
-    private var secondaryGuns : MutableMap<EquipmentCategory, List<SecondaryGun>> = HashMap()
+    private var mainGuns : Map<EquipmentCategory, List<MainGun>> =
+        EnumMap(es.ulpgc.tfm.ecocsgo.model.EquipmentCategory::class.java)
+    private var secondaryGuns : MutableMap<EquipmentCategory, List<SecondaryGun>> =
+        EnumMap(es.ulpgc.tfm.ecocsgo.model.EquipmentCategory::class.java)
     private var secondaryList : List<SecondaryGun> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,7 +107,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     }
 
     private fun openGunDialog(bundle: Bundle){
-        val dialog = GunListFragmentDialog()
+        val dialog = GunListFragmentDialog(this)
         dialog.arguments = bundle
         dialog.show(supportFragmentManager, null)
     }
