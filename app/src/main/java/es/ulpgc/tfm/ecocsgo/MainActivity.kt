@@ -1,13 +1,12 @@
 package es.ulpgc.tfm.ecocsgo
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
-
-import kotlinx.android.synthetic.main.activity_main.*
-import android.content.Intent
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import es.ulpgc.tfm.ecocsgo.model.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         startGameButton = findViewById(R.id.start_game)
         startGameButton?.setOnClickListener {
+
             val options = arrayOf<CharSequence>(
                 getString(R.string.label_counter_terrorists),
                 getString(R.string.label_terrorist))
@@ -33,7 +33,9 @@ class MainActivity : AppCompatActivity() {
             builder.setCancelable(false)
             builder.setTitle("Select your option:")
             builder.setItems(options) { _, which ->
-                val game = Game.getSingletonInstance(EquipmentTeam.CT)
+
+                val teamSelected = if (which == 0) EquipmentTeam.CT else EquipmentTeam.T
+                val game = Game.getSingletonInstance(teamSelected)
 
                 val intent = Intent(this, GameActivity::class.java)
                 intent.putExtra(ItemDetailFragment.ARG_ITEM_KIT, kit)

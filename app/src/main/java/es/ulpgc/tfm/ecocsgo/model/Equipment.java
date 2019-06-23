@@ -31,6 +31,7 @@ public abstract class Equipment implements Parcelable {
         } else {
             cost = in.readInt();
         }
+        team = EquipmentTeam.valueOf(in.readString());
         Object[] list = in.readArray(EquipmentCategory[].class.getClassLoader());
         if (list != null) {
             EquipmentCategory[] acceptedCategories = new EquipmentCategory[list.length];
@@ -52,6 +53,7 @@ public abstract class Equipment implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeInt(cost);
         }
+        dest.writeString(team.name());
         dest.writeArray(acceptedCategories);
     }
 

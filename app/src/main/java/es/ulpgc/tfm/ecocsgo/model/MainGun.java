@@ -4,12 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class MainGun extends Gun implements Parcelable {
-
-    public MainGun(){
-        super();
-        name = "ADSASDADSADASD";
-    }
-
     public MainGun(String key){
         super(key);
         acceptedCategories = new EquipmentCategory[]{
@@ -17,7 +11,6 @@ public class MainGun extends Gun implements Parcelable {
         };
         getData();
     }
-
     protected MainGun(Parcel in) {
         super(in);
     }

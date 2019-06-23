@@ -25,15 +25,15 @@ public class SecondaryGun extends Gun implements Parcelable {
         return 0;
     }
 
-    public static final Creator<MainGun> CREATOR = new Creator<MainGun>() {
+    public static final Creator<SecondaryGun> CREATOR = new Creator<SecondaryGun>() {
         @Override
-        public MainGun createFromParcel(Parcel in) {
-            return new MainGun(in);
+        public SecondaryGun createFromParcel(Parcel in) {
+            return new SecondaryGun(in);
         }
 
         @Override
-        public MainGun[] newArray(int size) {
-            return new MainGun[size];
+        public SecondaryGun[] newArray(int size) {
+            return new SecondaryGun[size];
         }
     };
 }

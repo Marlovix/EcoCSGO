@@ -12,8 +12,11 @@ abstract public class Gun extends Equipment implements Parcelable {
         super("weapons", key);
     }
 
-    public Gun(Parcel parcel) {
-        super(parcel);
+    public Gun(Parcel in) {
+        super(in);
+        reward = in.readInt();
+        casualty = in.readInt();
+        origin = OriginEquipment.valueOf(in.readString());
     }
 
     public Gun(){
@@ -35,23 +38,14 @@ abstract public class Gun extends Equipment implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
+        dest.writeInt(reward);
+        dest.writeInt(casualty);
+        dest.writeString(origin.name());
     }
 
     @Override
     public int describeContents() {
         return 0;
     }
-
-    public static final Creator<MainGun> CREATOR = new Creator<MainGun>() {
-        @Override
-        public MainGun createFromParcel(Parcel in) {
-            return new MainGun(in);
-        }
-
-        @Override
-        public MainGun[] newArray(int size) {
-            return new MainGun[size];
-        }
-    };
 
 }

@@ -1,24 +1,23 @@
 package es.ulpgc.tfm.ecocsgo
 
-import android.graphics.Typeface
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
+import es.ulpgc.tfm.ecocsgo.adapter.EquipmentCategoryRecyclerViewAdapter
 import es.ulpgc.tfm.ecocsgo.model.EquipmentCategory
 import es.ulpgc.tfm.ecocsgo.model.Gun
-import kotlinx.android.synthetic.main.item_category_gun_list.view.*
-import kotlinx.android.synthetic.main.item_gun_list.view.*
 import java.util.*
 
-class GunListFragmentDialog : DialogFragment() {
+@Suppress("UNCHECKED_CAST")
+class GunListFragmentDialog(
+    private var listener: GunClickListener
+) : DialogFragment() {
 
-    private var guns : Map<EquipmentCategory, List<Gun>> = HashMap()
-
-    //private var listener: OnListFragmentInteractionListener? = null
+    private var guns : Map<EquipmentCategory, List<Gun>> = EnumMap(EquipmentCategory::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,11 +25,12 @@ class GunListFragmentDialog : DialogFragment() {
     ): View? {
         val rootView = inflater.inflate(R.layout.category_gun_list, container, false)
 
+        val recyclerView = rootView.findViewById(R.id.category_gun_list) as RecyclerView
+
         val bundle = arguments
         guns = bundle?.getSerializable(ItemDetailFragment.ARG_GUNS) as Map<EquipmentCategory, List<Gun>>
 
-        val recyclerView = rootView.findViewById(R.id.category_gun_list) as RecyclerView
-        setupRecyclerView(recyclerView)
+        if (rootView is RecyclerView) recyclerView.adapter = EquipmentCategoryRecyclerViewAdapter(guns, listener)
 
         return rootView
     }
@@ -45,102 +45,17 @@ class GunListFragmentDialog : DialogFragment() {
         }
     }
 
-    private fun setupRecyclerView(recyclerView: RecyclerView) {
-        val mAdapter = EquipmentCategoryRecyclerViewAdapter(this, guns)
-        recyclerView.adapter = mAdapter
-    }
-
-    class EquipmentCategoryRecyclerViewAdapter(
-        private val parentActivity: DialogFragment,
-        private val values: Map<EquipmentCategory, List<Gun>>
-    ) :
-        RecyclerView.Adapter<EquipmentCategoryRecyclerViewAdapter.ViewHolder>(){
-
-        private val onClickListener: View.OnClickListener
-
-        init {
-            onClickListener = View.OnClickListener { v ->
-                val item = v.tag as GameActivityContent.PlayerContent
-                //val kit = listFragment.intent?.getParcelableExtra(ItemDetailFragment.ARG_ITEM_KIT)
-                //val intent = Intent(v.context, DetailPlayerActivity::class.java).apply {
-                    /*putExtra(ItemDetailFragment.ARG_ITEM_KIT, listFragment.kit)
-                    putExtra(ItemDetailFragment.ARG_HELMET, listFragment.helmet)
-                    putExtra(ItemDetailFragment.ARG_VEST, listFragment.vest)
-
-                    putExtra(ItemDetailFragment.ARG_GAME, listFragment.game)*/
-                //}
-                //v.context.startActivity(intent)
-            }
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_category_gun_list, parent, false)
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.nameWeaponTextView.text = values.keys.elementAt(position).toString()
-            holder.nameWeaponTextView.setTypeface(null, Typeface.BOLD)
-            when (position) {
-                0 -> holder.gunsRecyclerView.adapter =
-                    values[EquipmentCategory.SMG]?.let { GunRecyclerViewAdapter(parentActivity, it) }
-                1 -> holder.gunsRecyclerView.adapter =
-                    values[EquipmentCategory.HEAVY]?.let { GunRecyclerViewAdapter(parentActivity, it) }
-                2 -> holder.gunsRecyclerView.adapter =
-                    values[EquipmentCategory.RIFLE]?.let { GunRecyclerViewAdapter(parentActivity, it) }
-                else -> { // Note the block
-                    print("x no es 1 o 2")
-                }
-            }
-        }
-
-        override fun getItemCount() = values.size
-
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val nameWeaponTextView : TextView = view.textView_category
-            val gunsRecyclerView : RecyclerView = view.gun_list
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is GunClickListener) {
+            listener = context
+        } else {
+            throw RuntimeException("$context must implement GunClickListener")
         }
     }
 
-    class GunRecyclerViewAdapter(
-        private val parentActivity: DialogFragment,
-        private val values: List<Gun>
-    ) :
-        RecyclerView.Adapter<GunRecyclerViewAdapter.ViewHolder>(){
-
-        private val onClickListener: View.OnClickListener
-
-        init {
-            onClickListener = View.OnClickListener { v ->
-                val item = v.tag as GameActivityContent.PlayerContent
-                //val kit = listFragment.intent?.getParcelableExtra(ItemDetailFragment.ARG_ITEM_KIT)
-                //val intent = Intent(v.context, DetailPlayerActivity::class.java).apply {
-                /*putExtra(ItemDetailFragment.ARG_ITEM_KIT, listFragment.kit)
-                putExtra(ItemDetailFragment.ARG_HELMET, listFragment.helmet)
-                putExtra(ItemDetailFragment.ARG_VEST, listFragment.vest)
-
-                putExtra(ItemDetailFragment.ARG_GAME, listFragment.game)*/
-                //}
-                //v.context.startActivity(intent)
-            }
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_gun_list, parent, false)
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.nameWeaponTextView.text = values[position].name
-        }
-
-        override fun getItemCount() = values.size
-
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val nameWeaponTextView : TextView = view.item_number
-            val gunsRecyclerView : TextView = view.content
-        }
+    interface GunClickListener{
+        fun selectGun(view: View, position: Int)
     }
+
 }
