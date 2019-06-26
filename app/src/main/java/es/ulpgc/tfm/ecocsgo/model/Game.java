@@ -24,6 +24,8 @@ public class Game implements Parcelable {
     private Helmet helmet;
     private Vest vest;
 
+    private EconomyGame economy;
+
     private Game(EquipmentTeam team) {
         this.enemyTeam = team;
         this.rounds = new Round[30];
@@ -49,6 +51,7 @@ public class Game implements Parcelable {
         kit = in.readParcelable(DefuseKit.class.getClassLoader());
         helmet = in.readParcelable(Helmet.class.getClassLoader());
         vest = in.readParcelable(Vest.class.getClassLoader());
+        economy = in.readParcelable(Vest.class.getClassLoader());
     }
 
     public static final Creator<Game> CREATOR = new Creator<Game>() {
@@ -62,26 +65,6 @@ public class Game implements Parcelable {
             return new Game[size];
         }
     };
-
-    public void setPistolWeapons(ArrayList<SecondaryGun> pistolWeapons) {
-        this.pistolWeapons = pistolWeapons;
-    }
-
-    public void setSmgWeapons(ArrayList<MainGun> smgWeapons) {
-        this.smgWeapons = smgWeapons;
-    }
-
-    public void setRifleWeapons(ArrayList<MainGun> rifleWeapons) {
-        this.rifleWeapons = rifleWeapons;
-    }
-
-    public void setHeavyWeapons(ArrayList<MainGun> heavyWeapons) {
-        this.heavyWeapons = heavyWeapons;
-    }
-
-    public void setGrenades(ArrayList<Grenade> grenades) {
-        this.grenades = grenades;
-    }
 
     public void startRound(int nRound) {
         roundInGame = nRound + 1;
@@ -148,6 +131,71 @@ public class Game implements Parcelable {
         dest.writeParcelable(kit, flags);
         dest.writeParcelable(helmet, flags);
         dest.writeParcelable(vest, flags);
+        dest.writeParcelable(economy, flags);
+    }
+
+    public void setPistolWeapons(ArrayList<SecondaryGun> pistolWeapons) {
+        this.pistolWeapons = pistolWeapons;
+    }
+
+    public void setSmgWeapons(ArrayList<MainGun> smgWeapons) {
+        this.smgWeapons = smgWeapons;
+    }
+
+    public void setRifleWeapons(ArrayList<MainGun> rifleWeapons) {
+        this.rifleWeapons = rifleWeapons;
+    }
+
+    public void setHeavyWeapons(ArrayList<MainGun> heavyWeapons) {
+        this.heavyWeapons = heavyWeapons;
+    }
+
+    public void setGrenades(ArrayList<Grenade> grenades) {
+        this.grenades = grenades;
+    }
+
+    public void setEconomy(EconomyGame economy) {
+        this.economy = economy;
+    }
+
+    public EquipmentTeam getEnemyTeam() {
+        return enemyTeam;
+    }
+
+    public ArrayList<SecondaryGun> getPistolWeapons() {
+        return pistolWeapons;
+    }
+
+    public ArrayList<MainGun> getSmgWeapons() {
+        return smgWeapons;
+    }
+
+    public ArrayList<MainGun> getRifleWeapons() {
+        return rifleWeapons;
+    }
+
+    public ArrayList<MainGun> getHeavyWeapons() {
+        return heavyWeapons;
+    }
+
+    public ArrayList<Grenade> getGrenades() {
+        return grenades;
+    }
+
+    public DefuseKit getKit() {
+        return kit;
+    }
+
+    public Helmet getHelmet() {
+        return helmet;
+    }
+
+    public Vest getVest() {
+        return vest;
+    }
+
+    public EconomyGame getEconomy() {
+        return economy;
     }
 
     public int getRoundInGame() {

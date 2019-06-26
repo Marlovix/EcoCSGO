@@ -23,12 +23,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var twoPane: Boolean = false
 
-    val pistolWeapons = ArrayList<SecondaryGun>()
-    val smgWeapons = ArrayList<MainGun>()
-    val rifleWeapons = ArrayList<MainGun>()
-    val heavyWeapons = ArrayList<MainGun>()
-    private val grenades = ArrayList<Grenade>()
-
     var kit = DefuseKit()
     var helmet = Helmet()
     var vest = Vest()
@@ -47,16 +41,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         vest = intent.getParcelableExtra(ItemDetailFragment.ARG_VEST)
 
         game = intent.getParcelableExtra(ItemDetailFragment.ARG_GAME)
-
-        loadWeapons()
-        //loadGrenades()
-        //loadRoundEconomy()
-
-        game?.setPistolWeapons(pistolWeapons)
-        game?.setHeavyWeapons(heavyWeapons)
-        game?.setSmgWeapons(smgWeapons)
-        game?.setRifleWeapons(rifleWeapons)
-        game?.setGrenades(grenades)
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
@@ -145,34 +129,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         recyclerView.adapter = mAdapter
     }
 
-    private fun loadWeapons() {
-        val idPistolWeapons = resources.getStringArray(R.array.pistol_data)
-        for (id : String in idPistolWeapons)
-            pistolWeapons.add(SecondaryGun(id))
-
-        val idSmgWeapons = resources.getStringArray(R.array.smg_data)
-        for (id : String in idSmgWeapons)
-            smgWeapons.add(MainGun(id))
-
-        val idRifleWeapons = resources.getStringArray(R.array.rifle_data)
-        for (id : String in idRifleWeapons)
-            rifleWeapons.add(MainGun(id))
-
-        val idHeavyWeapons = resources.getStringArray(R.array.heavy_data)
-        for (id : String in idHeavyWeapons)
-            heavyWeapons.add(MainGun(id))
-    }
-
-    private fun loadGrenades(){
-        val idGrenades = resources.getStringArray(R.array.grenade_data)
-        for (id : String in idGrenades)
-            grenades.add(Grenade(id))
-    }
-
-    private fun loadRoundEconomy(){//knife
-
-    }
-
     fun firstRound(){
         game?.startRound(0)
     }
@@ -182,12 +138,12 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun findGun(numeration: EquipmentNumeration) : Gun? {
-        var listGuns : List<Gun>? = null
-        when(numeration.category){
-            EquipmentCategory.PISTOL -> listGuns = pistolWeapons
-            EquipmentCategory.HEAVY -> listGuns = heavyWeapons
-            EquipmentCategory.SMG -> listGuns = smgWeapons
-            EquipmentCategory.RIFLE -> listGuns = rifleWeapons
+        val listGuns: List<Gun>? = when(numeration.category){
+            EquipmentCategory.PISTOL -> game?.pistolWeapons
+            EquipmentCategory.HEAVY -> game?.heavyWeapons
+            EquipmentCategory.SMG -> game?.smgWeapons
+            EquipmentCategory.RIFLE -> game?.rifleWeapons
+            else -> return null
         }
         for (gun : Gun in listGuns!!){
             if(gun.numeration.item == numeration.item){
