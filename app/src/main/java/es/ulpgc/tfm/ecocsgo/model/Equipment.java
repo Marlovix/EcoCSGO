@@ -7,12 +7,13 @@ import androidx.annotation.NonNull;
 import com.google.firebase.database.*;
 
 public abstract class Equipment implements Parcelable {
-    private DatabaseReference reference;
+    protected DatabaseReference reference;
     protected String referenceKey;
     protected String name;
     protected EquipmentNumeration numeration;
     protected Integer cost;
     protected EquipmentTeam team;
+    protected Integer reward;
     protected EquipmentCategory[] acceptedCategories;
 
     Equipment(){ }
@@ -32,6 +33,7 @@ public abstract class Equipment implements Parcelable {
             cost = in.readInt();
         }
         team = EquipmentTeam.valueOf(in.readString());
+        reward = in.readInt();
         Object[] list = in.readArray(EquipmentCategory[].class.getClassLoader());
         if (list != null) {
             EquipmentCategory[] acceptedCategories = new EquipmentCategory[list.length];
@@ -54,6 +56,7 @@ public abstract class Equipment implements Parcelable {
             dest.writeInt(cost);
         }
         dest.writeString(team.name());
+        dest.writeInt(reward);
         dest.writeArray(acceptedCategories);
     }
 
@@ -78,8 +81,11 @@ public abstract class Equipment implements Parcelable {
         return team;
     }
 
-    void getData(){
+    public Integer getReward() {
+        return reward;
+    }
 
+    void getData(){
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -113,6 +119,10 @@ public abstract class Equipment implements Parcelable {
                 name = dataSnapshot.child("name").getValue(String.class);
                 numeration = new EquipmentNumeration(item, category);
                 cost = dataSnapshot.child("cost").getValue(Integer.class);
+                reward = dataSnapshot.child("reward").getValue(Integer.class);
+
+                if(reward == null) reward = 0;
+
             }
 
             @Override

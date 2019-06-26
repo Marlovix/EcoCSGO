@@ -42,6 +42,22 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
         toolbar.title = title
 
+        kit = intent.getParcelableExtra(ItemDetailFragment.ARG_ITEM_KIT)
+        helmet = intent.getParcelableExtra(ItemDetailFragment.ARG_HELMET)
+        vest = intent.getParcelableExtra(ItemDetailFragment.ARG_VEST)
+
+        game = intent.getParcelableExtra(ItemDetailFragment.ARG_GAME)
+
+        loadWeapons()
+        //loadGrenades()
+        //loadRoundEconomy()
+
+        game?.setPistolWeapons(pistolWeapons)
+        game?.setHeavyWeapons(heavyWeapons)
+        game?.setSmgWeapons(smgWeapons)
+        game?.setRifleWeapons(rifleWeapons)
+        game?.setGrenades(grenades)
+
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -67,24 +83,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
-
-        kit = intent.getParcelableExtra(ItemDetailFragment.ARG_ITEM_KIT)
-        helmet = intent.getParcelableExtra(ItemDetailFragment.ARG_HELMET)
-        vest = intent.getParcelableExtra(ItemDetailFragment.ARG_VEST)
-
-        game = intent.getParcelableExtra(ItemDetailFragment.ARG_GAME)
-
-        loadWeapons()
-        //loadGrenades()
-        //loadRoundEconomy()
-
-        game?.setPistolWeapons(pistolWeapons)
-        game?.setHeavyWeapons(heavyWeapons)
-        game?.setSmgWeapons(smgWeapons)
-        game?.setRifleWeapons(rifleWeapons)
-        game?.setGrenades(grenades)
-
-        firstRound()
     }
 
     override fun onBackPressed() {
@@ -140,7 +138,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        val mAdapter = PlayerRecyclerViewAdapter(this, GameActivityContent.ITEMS, twoPane)
+        val mAdapter = PlayerRecyclerViewAdapter(this, game!!.rounds[0].players, twoPane)
         val callback = PlayerCallback(mAdapter, this)
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(recyclerView)
@@ -176,7 +174,11 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun firstRound(){
-        game?.startRound(1)
+        game?.startRound(0)
+    }
+
+    fun updateGame(){
+
     }
 
     fun findGun(numeration: EquipmentNumeration) : Gun? {

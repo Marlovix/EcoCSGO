@@ -3,27 +3,31 @@ package es.ulpgc.tfm.ecocsgo.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Round implements Parcelable {
 
     private static final int NUMBER_OF_PLAYERS = 5;
 
-    private Player[] players;
+    private List<Player> players;
     private ResultRound result;
 
     // Constructor for first rounds and the change team round //
     public Round(EquipmentTeam equipmentTeam){
-        players = new Player[NUMBER_OF_PLAYERS];
+        players = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-            players[i] = new Player(equipmentTeam);
+            players.add(new Player(equipmentTeam));
         }
     }
 
     // Constructor to take players' data from last round //
-    public Round(EquipmentTeam equipmentTeam, Player[] players){
+    public Round(EquipmentTeam equipmentTeam, List<Player> players){
 
     }
 
     protected Round(Parcel in) {
+        players = in.createTypedArrayList(Player.CREATOR);
     }
 
     public static final Creator<Round> CREATOR = new Creator<Round>() {
@@ -38,7 +42,7 @@ public class Round implements Parcelable {
         }
     };
 
-    public Player[] getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
@@ -52,9 +56,9 @@ public class Round implements Parcelable {
 
     public void registerGun(Gun gun, int positionPlayer){
         if(gun instanceof MainGun)
-            players[positionPlayer].registerMainGun((MainGun)gun);
+            players.get(positionPlayer).registerMainGun((MainGun)gun);
         else if(gun instanceof SecondaryGun)
-            players[positionPlayer].registerSecondaryGun((SecondaryGun)gun);
+            players.get(positionPlayer).registerSecondaryGun((SecondaryGun)gun);
     }
 
     @Override
@@ -64,5 +68,6 @@ public class Round implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(players);
     }
 }

@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Game implements Parcelable {
     private static Game game;
@@ -83,14 +84,17 @@ public class Game implements Parcelable {
     }
 
     public void startRound(int nRound) {
-        roundInGame = nRound;
+        roundInGame = nRound + 1;
         rounds[nRound] = new Round(enemyTeam);
 
-        int indexPlayer = 0;
-        for (Player player : rounds[nRound].getPlayers()) {
+        for (int i = 0; i < rounds[nRound].getPlayers().size(); i++) {
+            Player player = rounds[nRound].getPlayers().get(i);
+
+            // If the round is not the first one or the change team round //
             if (roundInGame != 1 && roundInGame != rounds.length / 2 + 1) {
-                if (rounds[nRound - 1].getPlayers()[indexPlayer].isAlive()) {
-                    rounds[nRound].getPlayers()[indexPlayer] = player;
+
+                if (rounds[nRound - 1].getPlayers().get(i).isAlive()) {
+                    rounds[nRound].getPlayers().set(i, player);
                 }
                 // Else -> Copiar dinero de la ronda anterior
             }
@@ -98,7 +102,6 @@ public class Game implements Parcelable {
             if (player.getSecondaryGuns().isEmpty()) {
                 EquipmentNumeration numeration = new EquipmentNumeration(1, EquipmentCategory.PISTOL);
                 player.registerSecondaryGun(pistolWeapons.get(0));
-                indexPlayer++;
             }
         }
     }
@@ -112,7 +115,7 @@ public class Game implements Parcelable {
             rounds[roundInGame] = new Round(enemyTeam);
         } else {
             Round lastRound = rounds[roundInGame - 1];
-            Player[] players = lastRound.getPlayers();
+            List<Player> players = lastRound.getPlayers();
             rounds[roundInGame] = new Round(enemyTeam, players);
         }
     }
@@ -145,5 +148,17 @@ public class Game implements Parcelable {
         dest.writeParcelable(kit, flags);
         dest.writeParcelable(helmet, flags);
         dest.writeParcelable(vest, flags);
+    }
+
+    public int getRoundInGame() {
+        return roundInGame;
+    }
+
+    public Round[] getRounds() {
+        return rounds;
+    }
+
+    public int getEnemyEconomy() {
+        return enemyEconomy;
     }
 }

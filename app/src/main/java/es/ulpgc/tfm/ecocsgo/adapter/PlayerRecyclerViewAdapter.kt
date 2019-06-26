@@ -13,17 +13,19 @@ import es.ulpgc.tfm.ecocsgo.*
 import es.ulpgc.tfm.ecocsgo.callback.PlayerCallback
 import es.ulpgc.tfm.ecocsgo.model.EquipmentCategory
 import es.ulpgc.tfm.ecocsgo.model.MainGun
+import es.ulpgc.tfm.ecocsgo.model.Player
 import kotlinx.android.synthetic.main.item_player_list.view.*
 import java.util.*
 import kotlin.collections.HashMap
 
 class PlayerRecyclerViewAdapter(
     private val parentActivity: GameActivity,
-    private val values: List<GameActivityContent.PlayerContent>,
+    //private val values: List<GameActivityContent.PlayerContent>,
+    private val values: List<Player>,
     private val twoPane: Boolean
 ) :
     RecyclerView.Adapter<PlayerRecyclerViewAdapter.ViewHolder>(),
-    PlayerCallback.ItemTouchHelperContract{
+    PlayerCallback.ItemTouchHelperContract {
 
     override fun onRowMoved(fromPosition: Int, toPosition: Int) {
         if (fromPosition < toPosition) {
@@ -88,14 +90,26 @@ class PlayerRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values[position]
-        holder.idView.text = "-"//item.id
-        holder.contentView.text = item.content
-        holder.death.text = "x0"
-        holder.death2.text = "x0"
+        val player = values[position]
+
+        if (player.mainGuns == null || player.mainGuns.isEmpty()) {
+            holder.mainGun.text = "-"
+            holder.mainDeaths.text = "0"
+        } else {
+            holder.mainGun.text = player.mainGuns[0].name
+            holder.mainDeaths.text = player.mainGuns[0].casualty.toString()
+        }
+
+        if (player.secondaryGuns == null || player.secondaryGuns.isEmpty()) {
+            holder.secondaryGun.text = "-"
+            holder.secondaryDeaths.text = "0"
+        } else {
+            holder.secondaryGun.text = player.secondaryGuns[0].name
+            holder.secondaryDeaths.text = player.secondaryGuns[0].casualty.toString()
+        }
 
         with(holder.itemView) {
-            tag = item
+            tag = player
             setOnClickListener(onClickListener)
         }
     }
@@ -103,10 +117,10 @@ class PlayerRecyclerViewAdapter(
     override fun getItemCount() = values.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val cardView : CardView = view.cardView
-        val idView: TextView = view.sub_text2
-        val contentView: TextView = view.sub_text
-        val death: TextView = view.textView2
-        val death2: TextView = view.textView3
+        val cardView: CardView = view.cardView_player
+        val mainGun: TextView = view.textView_main_gun
+        val secondaryGun: TextView = view.textView_secondary_gun
+        val mainDeaths: TextView = view.textView_secondary_deaths
+        val secondaryDeaths: TextView = view.textView_main_deaths
     }
 }
