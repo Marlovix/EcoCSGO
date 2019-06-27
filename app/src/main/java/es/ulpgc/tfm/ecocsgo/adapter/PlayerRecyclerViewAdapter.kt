@@ -20,7 +20,6 @@ import kotlin.collections.HashMap
 
 class PlayerRecyclerViewAdapter(
     private val parentActivity: GameActivity,
-    //private val values: List<GameActivityContent.PlayerContent>,
     private val values: List<Player>,
     private val twoPane: Boolean
 ) :
@@ -51,12 +50,13 @@ class PlayerRecyclerViewAdapter(
     private val onClickListener: View.OnClickListener
 
     init {
+
         onClickListener = View.OnClickListener { v ->
-            val item = v.tag as GameActivityContent.PlayerContent
+            val player = v.tag as Player
             if (twoPane) {
                 val fragment = ItemDetailFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ItemDetailFragment.ARG_ITEM_KIT, item.id)
+                        // putString(ItemDetailFragment.ARG_ITEM_KIT, item)
                     }
                 }
                 parentActivity.supportFragmentManager
@@ -65,18 +65,8 @@ class PlayerRecyclerViewAdapter(
                     .commit()
             } else {
                 val intent = Intent(v.context, DetailPlayerActivity::class.java).apply {
-                    putExtra(ItemDetailFragment.ARG_ITEM_KIT, parentActivity.kit)
-                    putExtra(ItemDetailFragment.ARG_HELMET, parentActivity.helmet)
-                    putExtra(ItemDetailFragment.ARG_VEST, parentActivity.vest)
-
-                    val mainGuns = HashMap<EquipmentCategory, List<MainGun>>()
-                    mainGuns[EquipmentCategory.HEAVY] = parentActivity.heavyWeapons
-                    mainGuns[EquipmentCategory.SMG] = parentActivity.smgWeapons
-                    mainGuns[EquipmentCategory.RIFLE] = parentActivity.rifleWeapons
-
-                    putExtra(ItemDetailFragment.ARG_MAIN_GUNS, mainGuns)
-                    putExtra(ItemDetailFragment.ARG_SECONDARY_GUNS, parentActivity.pistolWeapons)
                     putExtra(ItemDetailFragment.ARG_GAME, parentActivity.game)
+                    putExtra(ItemDetailFragment.ARG_PLAYER, player)
                 }
                 v.context.startActivity(intent)
             }

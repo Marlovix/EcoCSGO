@@ -22,11 +22,6 @@ import java.util.*
 class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private var twoPane: Boolean = false
-
-    var kit = DefuseKit()
-    var helmet = Helmet()
-    var vest = Vest()
-
     var game : Game? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,10 +30,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         toolbar.title = title
-
-        kit = intent.getParcelableExtra(ItemDetailFragment.ARG_ITEM_KIT)
-        helmet = intent.getParcelableExtra(ItemDetailFragment.ARG_HELMET)
-        vest = intent.getParcelableExtra(ItemDetailFragment.ARG_VEST)
 
         game = intent.getParcelableExtra(ItemDetailFragment.ARG_GAME)
 
@@ -122,6 +113,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun setupRecyclerView(recyclerView: RecyclerView) {
+        game?.startRound(0)
         val mAdapter = PlayerRecyclerViewAdapter(this, game!!.rounds[0].players, twoPane)
         val callback = PlayerCallback(mAdapter, this)
         val touchHelper = ItemTouchHelper(callback)
@@ -135,21 +127,5 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun updateGame(){
 
-    }
-
-    fun findGun(numeration: EquipmentNumeration) : Gun? {
-        val listGuns: List<Gun>? = when(numeration.category){
-            EquipmentCategory.PISTOL -> game?.pistolWeapons
-            EquipmentCategory.HEAVY -> game?.heavyWeapons
-            EquipmentCategory.SMG -> game?.smgWeapons
-            EquipmentCategory.RIFLE -> game?.rifleWeapons
-            else -> return null
-        }
-        for (gun : Gun in listGuns!!){
-            if(gun.numeration.item == numeration.item){
-                return gun
-            }
-        }
-        return null
     }
 }

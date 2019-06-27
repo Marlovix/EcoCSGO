@@ -31,15 +31,8 @@ public class Game implements Parcelable {
         this.rounds = new Round[30];
     }
 
-    public static Game getSingletonInstance(EquipmentTeam team) {
-        if (game == null)
-            game = new Game(team);
-        else
-            System.out.println("Singleton pattern. Can not be created another instance of this class.");
-        return game;
-    }
-
     protected Game(Parcel in) {
+        enemyTeam = EquipmentTeam.valueOf(in.readString());
         roundInGame = in.readInt();
         rounds = in.createTypedArray(Round.CREATOR);
         enemyEconomy = in.readInt();
@@ -51,7 +44,7 @@ public class Game implements Parcelable {
         kit = in.readParcelable(DefuseKit.class.getClassLoader());
         helmet = in.readParcelable(Helmet.class.getClassLoader());
         vest = in.readParcelable(Vest.class.getClassLoader());
-        economy = in.readParcelable(Vest.class.getClassLoader());
+        economy = in.readParcelable(EconomyGame.class.getClassLoader());
     }
 
     public static final Creator<Game> CREATOR = new Creator<Game>() {
@@ -65,6 +58,14 @@ public class Game implements Parcelable {
             return new Game[size];
         }
     };
+
+    public static Game getSingletonInstance(EquipmentTeam team) {
+        if (game == null)
+            game = new Game(team);
+        else
+            System.out.println("Singleton pattern. Can not be created another instance of this class.");
+        return game;
+    }
 
     public void startRound(int nRound) {
         roundInGame = nRound + 1;
@@ -84,7 +85,7 @@ public class Game implements Parcelable {
 
             if (player.getSecondaryGuns().isEmpty()) {
                 EquipmentNumeration numeration = new EquipmentNumeration(1, EquipmentCategory.PISTOL);
-                player.registerSecondaryGun(pistolWeapons.get(0));
+                player.registerSecondaryGun((SecondaryGun) findGun(numeration, enemyTeam));
             }
         }
     }
@@ -113,25 +114,34 @@ public class Game implements Parcelable {
         enemyEconomy = 0;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+    public Gun findGun(EquipmentNumeration numeration, EquipmentTeam team) {
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(roundInGame);
-        dest.writeTypedArray(rounds, flags);
-        dest.writeInt(enemyEconomy);
-        dest.writeTypedList(pistolWeapons);
-        dest.writeTypedList(smgWeapons);
-        dest.writeTypedList(rifleWeapons);
-        dest.writeTypedList(heavyWeapons);
-        dest.writeTypedList(grenades);
-        dest.writeParcelable(kit, flags);
-        dest.writeParcelable(helmet, flags);
-        dest.writeParcelable(vest, flags);
-        dest.writeParcelable(economy, flags);
+        List listGuns = new ArrayList<Gun>();
+        switch(numeration.getCategory()){
+            case PISTOL:
+                listGuns = game.getPistolWeapons();
+                break;
+            case HEAVY:
+                listGuns = game.getHeavyWeapons();
+                break;
+            case SMG:
+                listGuns = game.getSmgWeapons();
+                break;
+            case RIFLE:
+                listGuns = game.getRifleWeapons();
+                break;
+        }
+
+        if(listGuns != null){
+            for (int i=0; i<listGuns.size(); i++){
+                Gun gun = (Gun) listGuns.get(i);
+                if(gun.getNumeration().getItem() == numeration.getItem() && gun.getTeam().equals(team)){
+                    return gun;
+                }
+            }
+        }
+
+        return null;
     }
 
     public void setPistolWeapons(ArrayList<SecondaryGun> pistolWeapons) {
@@ -152,6 +162,18 @@ public class Game implements Parcelable {
 
     public void setGrenades(ArrayList<Grenade> grenades) {
         this.grenades = grenades;
+    }
+
+    public void setKit(DefuseKit kit) {
+        this.kit = kit;
+    }
+
+    public void setHelmet(Helmet helmet) {
+        this.helmet = helmet;
+    }
+
+    public void setVest(Vest vest) {
+        this.vest = vest;
     }
 
     public void setEconomy(EconomyGame economy) {
@@ -208,5 +230,27 @@ public class Game implements Parcelable {
 
     public int getEnemyEconomy() {
         return enemyEconomy;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(enemyTeam.name());
+        parcel.writeInt(roundInGame);
+        parcel.writeTypedArray(rounds, i);
+        parcel.writeInt(enemyEconomy);
+        parcel.writeTypedList(pistolWeapons);
+        parcel.writeTypedList(smgWeapons);
+        parcel.writeTypedList(rifleWeapons);
+        parcel.writeTypedList(heavyWeapons);
+        parcel.writeTypedList(grenades);
+        parcel.writeParcelable(kit, i);
+        parcel.writeParcelable(helmet, i);
+        parcel.writeParcelable(vest, i);
+        parcel.writeParcelable(economy, i);
     }
 }

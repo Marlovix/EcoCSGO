@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.zzzzzitem_detail.view.*
 
 /**
  * A fragment representing a single Item detail screen.
- * This fragment is either contained in a [Game3Activity]
+ * This fragment is either contained in a [GameActivity]
  * in two-pane mode (on tablets) or a [ItemDetailActivity]
  * on handsets.
  */
@@ -25,11 +25,11 @@ class ItemDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val s: LinearLayoutManager
         arguments?.let {
-            if (it.containsKey(ARG_ITEM_KIT)) {
+            if (it.containsKey(ARG_GAME)) {
                 // Load the dummy content specified by the fragment
                 // arguments. In a real-world scenario, use a Loader
                 // to load content from a content provider.
-                item = GameActivityContent.ITEM_MAP[it.getString(ARG_ITEM_KIT)]
+                item = GameActivityContent.ITEM_MAP[it.getString(ARG_GAME)]
                 //activity?.toolbar_layout?.title = item?.content
             }
         }
@@ -63,5 +63,6 @@ class ItemDetailFragment : Fragment() {
         const val ARG_SECONDARY_GUNS = "secondaryGuns"
 
         const val ARG_GAME = "game"
+        const val ARG_PLAYER = "player"
     }
 }

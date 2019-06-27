@@ -49,11 +49,11 @@ class MainActivity : AppCompatActivity() {
                 game.smgWeapons = smgWeapons
                 game.rifleWeapons = rifleWeapons
                 game.grenades = grenades
+                game.kit = kit
+                game.helmet = helmet
+                game.vest = vest
 
                 val intent = Intent(this, GameActivity::class.java)
-                intent.putExtra(ItemDetailFragment.ARG_ITEM_KIT, kit)
-                intent.putExtra(ItemDetailFragment.ARG_HELMET, helmet)
-                intent.putExtra(ItemDetailFragment.ARG_VEST, vest)
 
                 intent.putExtra(ItemDetailFragment.ARG_GAME, game)
                 startActivity(intent)
