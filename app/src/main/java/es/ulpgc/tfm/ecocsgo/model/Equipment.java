@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import com.google.firebase.database.*;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class Equipment implements Parcelable {
     protected DatabaseReference reference;
@@ -130,5 +131,11 @@ public abstract class Equipment implements Parcelable {
                 Log.w("", "Failed to read value.", databaseError.toException());
             }
         });
+    }
+
+    @NotNull
+    @Override
+    public String toString() {
+        return (name == null) ? "" : name;
     }
 }

@@ -4,11 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Player implements Parcelable {
-    private List<MainGun> mainGuns;
-    private List<SecondaryGun> secondaryGuns;
+    private ArrayList<MainGun> mainGuns;
+    private ArrayList<SecondaryGun> secondaryGuns;
     private Vest vest;
     private Helmet helmet;
     private DefuseKit defuseKit;
@@ -29,6 +28,21 @@ public class Player implements Parcelable {
         alive = in.readByte() != 0;
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(mainGuns);
+        dest.writeTypedList(secondaryGuns);
+        dest.writeParcelable(vest, flags);
+        dest.writeParcelable(helmet, flags);
+        dest.writeParcelable(defuseKit, flags);
+        dest.writeByte((byte) (alive ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
     public static final Creator<Player> CREATOR = new Creator<Player>() {
         @Override
         public Player createFromParcel(Parcel in) {
@@ -41,16 +55,24 @@ public class Player implements Parcelable {
         }
     };
 
-    public List<MainGun> getMainGuns() {
+    public ArrayList<MainGun> getMainGuns() {
         return mainGuns;
     }
 
-    public List<SecondaryGun> getSecondaryGuns() {
+    public ArrayList<SecondaryGun> getSecondaryGuns() {
         return secondaryGuns;
     }
 
     public boolean isAlive() {
         return alive;
+    }
+
+    public MainGun getLastMainGun(){
+        return (mainGuns != null && !mainGuns.isEmpty()) ? mainGuns.get(mainGuns.size() - 1) : null;
+    }
+
+    public SecondaryGun getLastSecondaryGun(){
+        return (secondaryGuns != null && !secondaryGuns.isEmpty()) ? secondaryGuns.get(secondaryGuns.size() - 1) : null;
     }
 
     public void registerMainGun(MainGun gun){
@@ -60,18 +82,4 @@ public class Player implements Parcelable {
         secondaryGuns.add(gun);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(mainGuns);
-        dest.writeTypedList(secondaryGuns);
-        dest.writeParcelable(vest, flags);
-        dest.writeParcelable(helmet, flags);
-        dest.writeParcelable(defuseKit, flags);
-        dest.writeByte((byte) (alive ? 1 : 0));
-    }
 }

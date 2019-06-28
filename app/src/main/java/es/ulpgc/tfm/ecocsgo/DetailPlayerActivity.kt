@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageButton
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
@@ -15,7 +12,6 @@ import es.ulpgc.tfm.ecocsgo.model.*
 import kotlinx.android.synthetic.main.activity_detail_player.*
 import kotlinx.android.synthetic.main.activity_game.*
 import java.util.*
-import android.widget.ArrayAdapter
 
 @Suppress("UNCHECKED_CAST")
 class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
@@ -31,10 +27,23 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     private var textViewHelmet : TextView? = null
     private var textViewDefuseKit : TextView? = null
 
+    private var editTextMainCasualties : EditText? = null
+    private var editTextSecondaryCasualties : EditText? = null
+
     private var buttonMainGuns : ImageButton? = null
     private var buttonSecondaryGuns : ImageButton? = null
 
+    private var buttonDeleteMainGun : ImageButton? = null
+    private var buttonDeleteSecondaryGun : ImageButton? = null
+
+    private var buttonAddMainCasualty : ImageButton? = null
+    private var buttonRemoveMainCasualty : ImageButton? = null
+
+    private var buttonAddSecondaryCasualty : ImageButton? = null
+    private var buttonRemoveSecondaryCasualty : ImageButton? = null
+
     private var game: Game? = null
+    private var player: Player? = null
 
     private var mainGuns : Map<EquipmentCategory, List<MainGun>> =
         EnumMap(es.ulpgc.tfm.ecocsgo.model.EquipmentCategory::class.java)
@@ -62,6 +71,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         //nav_view.setNavigationItemSelectedListener(this)
 
         game = intent.getParcelableExtra<Game>(ItemDetailFragment.ARG_GAME)
+        player = intent.getParcelableExtra<Player>(ItemDetailFragment.ARG_PLAYER)
 
         mainGuns = EnumMap(EquipmentCategory::class.java)
         (mainGuns as EnumMap<EquipmentCategory, List<MainGun>>)[EquipmentCategory.HEAVY] = game?.heavyWeapons
@@ -89,8 +99,20 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         textViewHelmet = findViewById(R.id.textView_helmet)
         textViewDefuseKit = findViewById(R.id.textView_defuse_kit)
 
+        editTextMainCasualties = findViewById(R.id.editText_main_casualties)
+        editTextSecondaryCasualties = findViewById(R.id.editText_secondary_casualties)
+
         buttonMainGuns = findViewById(R.id.imageButton_add_main_gun)
         buttonSecondaryGuns = findViewById(R.id.imageButton_add_secondary_gun)
+
+        buttonDeleteMainGun = findViewById(R.id.imageButton_delete_main_gun)
+        buttonDeleteSecondaryGun = findViewById(R.id.imageButton_delete_secondary_gun)
+
+        buttonAddMainCasualty = findViewById(R.id.imageButton_add_main_casualty)
+        buttonAddSecondaryCasualty = findViewById(R.id.imageButton_add_secondary_casualty)
+
+        buttonRemoveMainCasualty = findViewById(R.id.imageButton_remove_main_casualty)
+        buttonRemoveSecondaryCasualty = findViewById(R.id.imageButton_remove_secondary_casualty)
 
         spinnerMainGuns = findViewById(R.id.spinner_main_guns)
         spinnerSecondaryGuns = findViewById(R.id.spinner_secondary_guns)
@@ -104,15 +126,25 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         textViewHelmet?.text = game!!.helmet.name
         textViewDefuseKit?.text = game!!.vest.name
 
-        spinnerMainGuns
+        val arrayMainGuns = arrayOfNulls<MainGun>(player!!.mainGuns.size)
+        val arraySecondaryGuns = arrayOfNulls<SecondaryGun>(player!!.secondaryGuns.size)
 
-        val arraySpinner = arrayOf("1", "2", "3", "4", "5", "6", "7")
-        val adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item, arraySpinner
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerMainGuns!!.adapter = adapter
+        val adapterMainGuns = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayMainGuns)
+        val adapterSecondaryGuns = ArrayAdapter(this, android.R.layout.simple_spinner_item, arraySecondaryGuns)
+
+        adapterMainGuns.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapterSecondaryGuns.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        player!!.mainGuns.toArray(arrayMainGuns)
+        player!!.secondaryGuns.toArray(arraySecondaryGuns)
+
+        spinnerMainGuns!!.adapter = adapterMainGuns
+        spinnerSecondaryGuns!!.adapter = adapterSecondaryGuns
+
+        editTextMainCasualties!!.setText(
+            if (player!!.lastMainGun == null) "0" else player!!.lastMainGun.casualty.toString())
+        editTextSecondaryCasualties!!.setText(
+            if (player!!.lastSecondaryGun == null) "0" else player!!.lastSecondaryGun.casualty.toString())
 
         buttonMainGuns?.setOnClickListener {
             val bundle = Bundle()
