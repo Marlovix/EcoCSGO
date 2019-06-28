@@ -128,4 +128,5 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun updateGame(){
 
     }
+
 }
