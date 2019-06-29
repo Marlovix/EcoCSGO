@@ -138,4 +138,6 @@ public abstract class Equipment implements Parcelable {
     public String toString() {
         return (name == null) ? "" : name;
     }
+
+
 }

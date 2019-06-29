@@ -5,4 +5,7 @@
 		<item>Subfusiles</item>
 		<item>Rifles</item>
 	</array>
+	<array name="secondary_gun_titles">
+		<item>Pistolas</item>
+	</array>
 </resources>

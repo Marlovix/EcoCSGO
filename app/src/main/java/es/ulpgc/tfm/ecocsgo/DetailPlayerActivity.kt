@@ -1,5 +1,6 @@
 package es.ulpgc.tfm.ecocsgo
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -12,21 +13,10 @@ import es.ulpgc.tfm.ecocsgo.model.*
 import kotlinx.android.synthetic.main.activity_detail_player.*
 import kotlinx.android.synthetic.main.activity_game.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Suppress("UNCHECKED_CAST")
 class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    GunListFragmentDialog.GunClickListener {
-    override fun selectGun(view: View, position: Int) {
-        when(view.id){
-            R.id.imageButton_add_main_gun -> {
-                Toast.makeText(this, player!!.mainGuns[position].name, Toast.LENGTH_SHORT).show()
-            }
-            R.id.imageButton_add_secondary_gun -> {
-                Toast.makeText(this, player!!.secondaryGuns[position].name, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+    GunListFragmentDialog.GunClickListener, DialogInterface.OnDismissListener {
 
     private var spinnerMainGuns: Spinner? = null
     private var spinnerSecondaryGuns: Spinner? = null
@@ -50,6 +40,10 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     private var buttonAddSecondaryCasualty: ImageButton? = null
     private var buttonRemoveSecondaryCasualty: ImageButton? = null
 
+    private var dialog : GunListFragmentDialog? = null
+    private var mainDialog = false
+    private var secondaryDialog = false
+
     private var game: Game? = null
     private var player: Player? = null
 
@@ -68,6 +62,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
             supportActionBar!!.setDisplayShowHomeEnabled(true)
         }
+
         /*val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
@@ -100,6 +95,76 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner2?.adapter = adapter*/
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.detail_player_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up buttonMainGuns, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        when (item.itemId) {
+            R.id.action_settings -> return true
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Handle navigation view item clicks here.
+        when (item.itemId) {
+            R.id.nav_gallery -> {
+
+            }
+            R.id.nav_slideshow -> {
+
+            }
+            R.id.nav_share -> {
+
+            }
+            R.id.nav_send -> {
+
+            }
+        }
+
+        drawer_layout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
+    override fun onDismiss(dialog: DialogInterface?) {
+        mainDialog = false
+        secondaryDialog = false
+    }
+
+    override fun selectGun(view: View, category: EquipmentCategory, position: Int) {
+        when(category){
+            EquipmentCategory.PISTOL -> {
+                if(secondaryDialog)
+                    Toast.makeText(this, game!!.pistolWeapons[position].name, Toast.LENGTH_SHORT).show()
+            }
+            EquipmentCategory.HEAVY -> {
+                if (mainDialog)
+                    Toast.makeText(this, game!!.heavyWeapons[position].name, Toast.LENGTH_SHORT).show()
+
+            }
+            EquipmentCategory.SMG -> {
+                if (mainDialog)
+                    Toast.makeText(this, game!!.smgWeapons[position].name, Toast.LENGTH_SHORT).show()
+            }
+            EquipmentCategory.RIFLE -> {
+                if (mainDialog)
+                    Toast.makeText(this, game!!.rifleWeapons[position].name, Toast.LENGTH_SHORT).show()
+            }
+        }
+        dialog?.dismiss()
     }
 
     private fun initViews() {
@@ -160,8 +225,9 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
             val bundle = Bundle()
             bundle.putSerializable(
                 ItemDetailFragment.ARG_GUNS,
-                mainGuns as HashMap<EquipmentCategory, List<MainGun>>
+                mainGuns as EnumMap<EquipmentCategory, List<MainGun>>
             )
+            mainDialog = true
             openGunDialog(bundle)
         }
 
@@ -169,58 +235,17 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
             val bundle = Bundle()
             bundle.putSerializable(
                 ItemDetailFragment.ARG_GUNS,
-                secondaryGuns as HashMap<EquipmentCategory, List<SecondaryGun>>
+                secondaryGuns as EnumMap<EquipmentCategory, List<SecondaryGun>>
             )
+            secondaryDialog = true
             openGunDialog(bundle)
         }
     }
 
     private fun openGunDialog(bundle: Bundle) {
-        val dialog = GunListFragmentDialog(this)
-        dialog.arguments = bundle
-        dialog.show(supportFragmentManager, null)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.detail_player_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up buttonMainGuns, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_gallery -> {
-
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
-            }
-        }
-
-        drawer_layout.closeDrawer(GravityCompat.START)
-        return true
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
+        dialog = GunListFragmentDialog(this)
+        dialog!!.arguments = bundle
+        dialog!!.show(supportFragmentManager, null)
     }
 
 }

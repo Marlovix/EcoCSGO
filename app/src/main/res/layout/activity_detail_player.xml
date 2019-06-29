@@ -8,6 +8,7 @@
 		tools:context=".DetailPlayerActivity">
 
 	<com.google.android.material.appbar.AppBarLayout
+			android:id="@+id/bar"
 			android:layout_height="wrap_content"
 			android:layout_width="match_parent"
 			android:theme="@style/AppTheme.AppBarOverlay">
@@ -21,6 +22,11 @@
 
 	</com.google.android.material.appbar.AppBarLayout>
 
-	<include layout="@layout/content_detail_player"/>
+	<ScrollView
+			android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+			app:layout_behavior="@string/appbar_scrolling_view_behavior">
+		<include layout="@layout/content_detail_player"/>
+	</ScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

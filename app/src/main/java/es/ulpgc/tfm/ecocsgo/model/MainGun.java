@@ -3,21 +3,29 @@ package es.ulpgc.tfm.ecocsgo.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MainGun extends Gun implements Parcelable {
+public class MainGun extends Equipment implements Gun, Parcelable {
+    private Integer casualty;
+    private OriginEquipment origin;
     public MainGun(String key){
-        super(key);
+        super("weapons", key);
         acceptedCategories = new EquipmentCategory[]{
                 EquipmentCategory.HEAVY, EquipmentCategory.SMG, EquipmentCategory.RIFLE
         };
+        casualty = 0;
+        origin = OriginEquipment.PURCHASED;
         getData();
     }
     protected MainGun(Parcel in) {
         super(in);
+        casualty = in.readInt();
+        origin = OriginEquipment.valueOf(in.readString());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
+        dest.writeInt(casualty);
+        dest.writeString(origin.name());
     }
 
     @Override
@@ -36,4 +44,12 @@ public class MainGun extends Gun implements Parcelable {
             return new MainGun[size];
         }
     };
+
+    public Integer getCasualty() {
+        return casualty;
+    }
+
+    public OriginEquipment getOrigin() {
+        return origin;
+    }
 }

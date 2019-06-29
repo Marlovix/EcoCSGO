@@ -8,11 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import es.ulpgc.tfm.ecocsgo.GunListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.R
+import es.ulpgc.tfm.ecocsgo.model.Equipment
+import es.ulpgc.tfm.ecocsgo.model.EquipmentCategory
 import es.ulpgc.tfm.ecocsgo.model.Gun
 import kotlinx.android.synthetic.main.item_gun_list.view.*
 
 class GunRecyclerViewAdapter(
-    private val values: List<Gun>,
+    private val values: List<Equipment>,
+    private val category: EquipmentCategory,
     private val listener: GunListFragmentDialog.GunClickListener
 ) :
     RecyclerView.Adapter<GunRecyclerViewAdapter.ViewHolder>() {
@@ -28,10 +31,10 @@ class GunRecyclerViewAdapter(
         holder.nameGunTextView.text = values[position].name
         val cost = values[position].cost.toString() + "$"
         holder.costGun.text = cost
-        if(position % 2 == 0)
-            holder.selectedGun.visibility = View.INVISIBLE
-        else
+        if(false)
             holder.selectedGun.visibility = View.VISIBLE
+        else
+            holder.selectedGun.visibility = View.INVISIBLE
     }
 
     override fun getItemCount(): Int {
@@ -44,7 +47,7 @@ class GunRecyclerViewAdapter(
         val selectedGun: ImageView = view.imageView_selected
 
         override fun onClick(v: View?) {
-            listener.selectGun(v!!, adapterPosition)
+            listener.selectGun(v!!, category, adapterPosition)
         }
     }
 }
