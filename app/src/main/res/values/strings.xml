@@ -9,7 +9,6 @@
 	<string name="title_item_detail">Item Detail</string>
 	<string name="title_activity_scrolling">ScrollingActivity</string>
 	<string name="action_settings">Settings</string>
-	<string name="title_activity_main3">Main3Activity</string>
 	<string name="navigation_drawer_open">Open navigation drawer</string>
 	<string name="navigation_drawer_close">Close navigation drawer</string>
 	<string name="nav_header_title">Android Studio</string>
@@ -17,6 +16,7 @@
 	<string name="nav_header_desc">Navigation header</string>
 
 	<string name="label_casualties">Bajas</string>
+	<string name="label_loading">Cargando</string>
 	<string name="label_main_weapon">Arma principal</string>
 	<string name="label_secondary_weapon">Arma secundaria</string>
 
@@ -94,8 +94,6 @@
 	<string name="attachment_title">Download incoming attachments</string>
 	<string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
 	<string name="attachment_summary_off">Only download attachments when manually requested</string>
-	<string name="title_activity_main2">Main2Activity</string>
-	<string name="title_activity_game2">Game2Activity</string>
 
 	<string name="menu_home">Home</string>
 	<string name="menu_gallery">Gallery</string>

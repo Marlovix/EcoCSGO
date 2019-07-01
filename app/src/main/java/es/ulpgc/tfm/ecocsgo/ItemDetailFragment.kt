@@ -63,6 +63,7 @@ class ItemDetailFragment : Fragment() {
         const val ARG_SECONDARY_GUNS = "secondaryGuns"
 
         const val ARG_GAME = "game"
+        const val ARG_TEAM = "team"
         const val ARG_PLAYER = "player"
     }
 }

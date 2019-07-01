@@ -1,15 +1,19 @@
 package es.ulpgc.tfm.ecocsgo
 
+import android.os.Build
 import android.os.Bundle
 import android.view.*
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -17,10 +21,10 @@ import es.ulpgc.tfm.ecocsgo.adapter.PlayerRecyclerViewAdapter
 import es.ulpgc.tfm.ecocsgo.callback.PlayerCallback
 import es.ulpgc.tfm.ecocsgo.model.*
 import kotlinx.android.synthetic.main.player_list.*
-import java.util.*
 
 class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    private var dialog : AlertDialog? = null
     private var twoPane: Boolean = false
     var game : Game? = null
 
@@ -31,7 +35,18 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
         toolbar.title = title
 
-        game = intent.getParcelableExtra(ItemDetailFragment.ARG_GAME)
+        val teamSelected = intent.getStringExtra(ItemDetailFragment.ARG_TEAM)
+        if(teamSelected != null){
+            setProgressDialog()
+            game = Game.getSingletonInstance(EquipmentTeam.valueOf(teamSelected))
+
+            loadWeapons()
+            loadUtilities()
+            loadGrenades()
+            loadEconomy()
+
+            //game?.startRound(0)
+        }
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
@@ -47,7 +62,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             twoPane = true
         }
 
-        setupRecyclerView(player_list)
+        //setupRecyclerView()
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -112,13 +127,47 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    private fun setupRecyclerView(recyclerView: RecyclerView) {
-        game?.startRound(0)
+    private fun setupRecyclerView() {
         val mAdapter = PlayerRecyclerViewAdapter(this, game!!.rounds[0].players, twoPane)
         val callback = PlayerCallback(mAdapter, this)
         val touchHelper = ItemTouchHelper(callback)
-        touchHelper.attachToRecyclerView(recyclerView)
-        recyclerView.adapter = mAdapter
+        touchHelper.attachToRecyclerView(player_list)
+        player_list.adapter = mAdapter
+    }
+
+    private fun loadWeapons() {
+        val idPistolWeapons = resources.getStringArray(R.array.pistol_data)
+        for (id : String in idPistolWeapons)
+            game!!.pistolWeapons.add(SecondaryGun(id))
+
+        val idSmgWeapons = resources.getStringArray(R.array.smg_data)
+        for (id : String in idSmgWeapons)
+            game!!.smgWeapons.add(MainGun(id))
+
+        val idRifleWeapons = resources.getStringArray(R.array.rifle_data)
+        for (id : String in idRifleWeapons)
+            game!!.rifleWeapons.add(MainGun(id))
+
+        val idHeavyWeapons = resources.getStringArray(R.array.heavy_data)
+        for(id : String in idHeavyWeapons)
+            game!!.heavyWeapons.add(MainGun(id))
+    }
+
+    private fun loadUtilities(){//4
+        game?.kit = DefuseKit(resources.getString(R.string.defuse_kit_data))
+        game?.helmet = Helmet(resources.getString(R.string.helmet_data))
+        game?.taser = Taser(resources.getString(R.string.taser_data))
+        game?.vest = Vest(resources.getString(R.string.vest_data))
+    }
+
+    private fun loadGrenades(){
+        val idGrenades = resources.getStringArray(R.array.grenade_data)
+        for (id : String in idGrenades)
+            game!!.grenades.add(Grenade(id))
+    }
+
+    private fun loadEconomy(){
+        game!!.economy = EconomyGame(dialog, game)
     }
 
     fun firstRound(){
@@ -127,6 +176,56 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun updateGame(){
 
+    }
+
+    private fun setProgressDialog() {
+        val llPadding = 30
+        val ll = LinearLayout(this)
+        ll.orientation = LinearLayout.HORIZONTAL
+        ll.setPadding(llPadding, llPadding, llPadding, llPadding)
+        ll.gravity = Gravity.CENTER
+        var llParam = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        llParam.gravity = Gravity.CENTER
+        ll.layoutParams = llParam
+
+        val progressBar = ProgressBar(this)
+        progressBar.isIndeterminate = true
+        progressBar.setPadding(0, 0, llPadding, 0)
+        progressBar.layoutParams = llParam
+
+        llParam = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        llParam.gravity = Gravity.CENTER
+        val tvText = TextView(this)
+        tvText.text = resources.getString(R.string.label_loading)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            tvText.setTextColor(getColor(android.R.color.black))
+        }
+        tvText.textSize = 20f
+        tvText.layoutParams = llParam
+
+        ll.addView(progressBar)
+        ll.addView(tvText)
+
+        val builder = AlertDialog.Builder(this)
+        builder.setCancelable(true)
+        builder.setView(ll)
+
+        dialog = builder.create()
+        dialog!!.show()
+        val window = dialog!!.window
+        if (window != null) {
+            val layoutParams = WindowManager.LayoutParams()
+            layoutParams.copyFrom(dialog!!.window!!.attributes)
+            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+            dialog!!.window!!.attributes = layoutParams
+        }
     }
 
 }

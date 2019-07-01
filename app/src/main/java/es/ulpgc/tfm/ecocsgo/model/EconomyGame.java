@@ -4,15 +4,18 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import com.google.firebase.database.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class EconomyGame implements Parcelable {
     protected DatabaseReference reference;
     private Integer beginning;
-    private List<Integer> defeatBonus;
+    private ArrayList<Integer> defeatBonus;
     private Integer defuseBonus;
     private Integer explosionBonus;
     private Integer grenadeKill;
@@ -21,15 +24,16 @@ public class EconomyGame implements Parcelable {
     private Integer leavingGame;
     private Integer max;
     private Integer plantBonus;
-    private Map<VictoryResult, Integer> typeVictories;
+    private Map<TypeVictoryGame, Integer> typeVictories;
 
-    EconomyGame(){
+    public EconomyGame(final AlertDialog dialog, final Game game){
+        defeatBonus = new ArrayList<>();
+        typeVictories = new HashMap<>();
         reference = FirebaseDatabase.getInstance().getReference("economy");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 beginning = dataSnapshot.child("beginning").getValue(Integer.class);
-                Object prueba = dataSnapshot.child("victory").getValue(Integer.class);
                 defuseBonus = dataSnapshot.child("defuse_bonus").getValue(Integer.class);
                 explosionBonus = dataSnapshot.child("explosion_bonus").getValue(Integer.class);
                 grenadeKill = dataSnapshot.child("grenade_kill").getValue(Integer.class);
@@ -38,12 +42,22 @@ public class EconomyGame implements Parcelable {
                 leavingGame = dataSnapshot.child("leaving_game").getValue(Integer.class);
                 max = dataSnapshot.child("max").getValue(Integer.class);
                 plantBonus = dataSnapshot.child("plant_bonus").getValue(Integer.class);
-                Object prueba2 = dataSnapshot.child("victory").getValue(Integer.class);
+
+                for(DataSnapshot snapshot : dataSnapshot.child("defeat_bonus").getChildren()){
+                    defeatBonus.add(snapshot.getValue(Integer.class));
+                }
+                for(DataSnapshot snapshot : dataSnapshot.child("victory").getChildren()){
+                    typeVictories.put(TypeVictoryGame.valueOf(snapshot.getKey()), snapshot.getValue(Integer.class));
+                }
+                game.startRound(0);
+
+                dialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.w("", "Failed to read value.", databaseError.toException());
+                dialog.dismiss();
             }
         });
     }

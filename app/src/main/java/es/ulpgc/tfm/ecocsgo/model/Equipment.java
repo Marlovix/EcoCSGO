@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import com.google.firebase.database.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -86,7 +87,7 @@ public abstract class Equipment implements Parcelable {
         return reward;
     }
 
-    void getData(){
+    void getData(final AlertDialog... dialog){
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -124,6 +125,8 @@ public abstract class Equipment implements Parcelable {
 
                 if(reward == null) reward = 0;
 
+                if (dialog.length != 0)
+                    dialog[0].dismiss();
             }
 
             @Override

@@ -1,5 +1,6 @@
 package es.ulpgc.tfm.ecocsgo.model;
 
+import android.app.AlertDialog;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -15,6 +16,11 @@ public class MainGun extends Equipment implements Gun, Parcelable {
         origin = OriginEquipment.PURCHASED;
         getData();
     }
+
+    public MainGun(String key, AlertDialog dialog){
+
+    }
+
     protected MainGun(Parcel in) {
         super(in);
         casualty = in.readInt();

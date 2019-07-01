@@ -4,8 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.List;
-
 public class Game implements Parcelable {
     private static Game game;
 
@@ -15,20 +13,26 @@ public class Game implements Parcelable {
     private int enemyEconomy;
 
     private ArrayList<SecondaryGun> pistolWeapons;
+    private ArrayList<MainGun> heavyWeapons;
     private ArrayList<MainGun> smgWeapons;
     private ArrayList<MainGun> rifleWeapons;
-    private ArrayList<MainGun> heavyWeapons;
     private ArrayList<Grenade> grenades;
 
     private DefuseKit kit;
     private Helmet helmet;
     private Vest vest;
+    private Taser taser;
 
     private EconomyGame economy;
 
     private Game(EquipmentTeam team) {
         this.enemyTeam = team;
         this.rounds = new Round[30];
+        pistolWeapons = new ArrayList<>();
+        heavyWeapons = new ArrayList<>();
+        smgWeapons = new ArrayList<>();
+        rifleWeapons = new ArrayList<>();
+        grenades = new ArrayList<>();
     }
 
     protected Game(Parcel in) {
@@ -67,6 +71,10 @@ public class Game implements Parcelable {
         return game;
     }
 
+    public void firstRound(){
+
+    }
+
     public void startRound(int nRound) {
         roundInGame = nRound + 1;
         rounds[nRound] = new Round(enemyTeam);
@@ -99,7 +107,7 @@ public class Game implements Parcelable {
             rounds[roundInGame] = new Round(enemyTeam);
         } else {
             Round lastRound = rounds[roundInGame - 1];
-            List<Player> players = lastRound.getPlayers();
+            ArrayList<Player> players = lastRound.getPlayers();
             rounds[roundInGame] = new Round(enemyTeam, players);
         }
     }
@@ -116,7 +124,7 @@ public class Game implements Parcelable {
 
     public Equipment findGun(EquipmentNumeration numeration, EquipmentTeam team) {
 
-        List listGuns = new ArrayList<Gun>();
+        ArrayList listGuns = new ArrayList<Gun>();
         switch(numeration.getCategory()){
             case PISTOL:
                 listGuns = game.getPistolWeapons();
@@ -166,6 +174,14 @@ public class Game implements Parcelable {
 
     public void setKit(DefuseKit kit) {
         this.kit = kit;
+    }
+
+    public Taser getTaser() {
+        return taser;
+    }
+
+    public void setTaser(Taser taser) {
+        this.taser = taser;
     }
 
     public void setHelmet(Helmet helmet) {

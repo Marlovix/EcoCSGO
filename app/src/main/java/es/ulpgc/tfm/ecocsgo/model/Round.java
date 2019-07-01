@@ -4,13 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Round implements Parcelable {
 
     private static final int NUMBER_OF_PLAYERS = 5;
 
-    private List<Player> players;
+    private ArrayList<Player> players;
     private ResultRound result;
 
     // Constructor for first rounds and the change team round //
@@ -22,7 +21,7 @@ public class Round implements Parcelable {
     }
 
     // Constructor to take players' data from last round //
-    public Round(EquipmentTeam equipmentTeam, List<Player> players){
+    public Round(EquipmentTeam equipmentTeam, ArrayList<Player> players){
 
     }
 
@@ -42,7 +41,7 @@ public class Round implements Parcelable {
         }
     };
 
-    public List<Player> getPlayers() {
+    public ArrayList<Player> getPlayers() {
         return players;
     }
 
