@@ -3,7 +3,7 @@ package es.ulpgc.tfm.ecocsgo.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Vest extends Equipment implements Parcelable {
+public class Vest extends EquipmentJava implements Parcelable {
     private OriginEquipment origin;
 
     public Vest(String key){

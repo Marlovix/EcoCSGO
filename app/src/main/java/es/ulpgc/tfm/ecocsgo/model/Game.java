@@ -122,7 +122,7 @@ public class Game implements Parcelable {
         enemyEconomy = 0;
     }
 
-    public Equipment findGun(EquipmentNumeration numeration, EquipmentTeam team) {
+    public EquipmentJava findGun(EquipmentNumeration numeration, EquipmentTeam team) {
 
         ArrayList listGuns = new ArrayList<Gun>();
         switch(numeration.getCategory()){
@@ -142,7 +142,7 @@ public class Game implements Parcelable {
 
         if(listGuns != null){
             for (int i=0; i<listGuns.size(); i++){
-                Equipment gun = (Equipment) listGuns.get(i);
+                EquipmentJava gun = (EquipmentJava) listGuns.get(i);
                 if(gun.getNumeration().getItem() == numeration.getItem() && gun.getTeam().equals(team)){
                     return gun;
                 }

@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MainGun extends Equipment implements Gun, Parcelable {
+public class MainGun extends EquipmentJava implements Gun, Parcelable {
     private Integer casualty;
     private OriginEquipment origin;
     public MainGun(String key){

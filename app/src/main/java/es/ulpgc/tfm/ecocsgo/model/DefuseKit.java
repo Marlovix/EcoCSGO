@@ -3,7 +3,7 @@ package es.ulpgc.tfm.ecocsgo.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DefuseKit extends Equipment implements Parcelable {
+public class DefuseKit extends EquipmentJava implements Parcelable {
     private OriginEquipment origin;
 
     public DefuseKit(String key){

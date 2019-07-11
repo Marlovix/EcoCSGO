@@ -40,10 +40,13 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             setProgressDialog()
             game = Game.getSingletonInstance(EquipmentTeam.valueOf(teamSelected))
 
-            loadWeapons()
+            val firebase = DataFirebaseProvider(game!!)
+            firebase.loadData()
+
+            /*loadWeapons()
             loadUtilities()
             loadGrenades()
-            loadEconomy()
+            loadEconomy()*/
 
             //game?.startRound(0)
         }
@@ -168,6 +171,10 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun loadEconomy(){
         game!!.economy = EconomyGame(dialog, game)
+    }
+
+    private fun economyLoaded() : Boolean{
+        return game!!.economy != null
     }
 
     fun firstRound(){

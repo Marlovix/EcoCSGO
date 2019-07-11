@@ -3,7 +3,7 @@ package es.ulpgc.tfm.ecocsgo.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Grenade extends Equipment implements Parcelable {
+public class Grenade extends EquipmentJava implements Parcelable {
     public Grenade(String key){
         super("grenades", key);
         this.acceptedCategories = new EquipmentCategory[]{

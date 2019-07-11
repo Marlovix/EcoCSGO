@@ -8,7 +8,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.firebase.database.*;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class Equipment implements Parcelable {
+public abstract class EquipmentJava implements Parcelable {
     protected DatabaseReference reference;
     protected String referenceKey;
     protected String name;
@@ -18,14 +18,14 @@ public abstract class Equipment implements Parcelable {
     protected Integer reward;
     protected EquipmentCategory[] acceptedCategories;
 
-    Equipment(){ }
+    EquipmentJava(){ }
 
-    Equipment(String referenceKey, String key){
+    EquipmentJava(String referenceKey, String key){
         this.referenceKey = referenceKey;
         this.reference = FirebaseDatabase.getInstance().getReference(referenceKey).child(key);
     }
 
-    Equipment(Parcel in) {
+    EquipmentJava(Parcel in) {
         referenceKey = in.readString();
         name = in.readString();
         numeration = in.readParcelable(EquipmentNumeration.class.getClassLoader());

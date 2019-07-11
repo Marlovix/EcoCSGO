@@ -10,9 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import es.ulpgc.tfm.ecocsgo.adapter.EquipmentCategoryRecyclerViewAdapter
 import es.ulpgc.tfm.ecocsgo.model.EquipmentCategory
-import es.ulpgc.tfm.ecocsgo.model.Gun
 import java.util.*
-import android.app.Activity
 import es.ulpgc.tfm.ecocsgo.model.Equipment
 
 @Suppress("UNCHECKED_CAST")

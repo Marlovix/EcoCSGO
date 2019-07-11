@@ -3,7 +3,7 @@ package es.ulpgc.tfm.ecocsgo.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Taser extends Equipment implements Parcelable {
+public class Taser extends EquipmentJava implements Parcelable {
     public Taser(String key){
         super("utilities", key);
         this.acceptedCategories = new EquipmentCategory[]{

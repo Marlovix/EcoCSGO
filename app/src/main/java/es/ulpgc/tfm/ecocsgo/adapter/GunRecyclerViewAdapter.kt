@@ -10,7 +10,6 @@ import es.ulpgc.tfm.ecocsgo.GunListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.model.Equipment
 import es.ulpgc.tfm.ecocsgo.model.EquipmentCategory
-import es.ulpgc.tfm.ecocsgo.model.Gun
 import kotlinx.android.synthetic.main.item_gun_list.view.*
 
 class GunRecyclerViewAdapter(
