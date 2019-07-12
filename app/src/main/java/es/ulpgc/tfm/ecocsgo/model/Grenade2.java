@@ -3,8 +3,8 @@ package es.ulpgc.tfm.ecocsgo.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Grenade extends EquipmentJava implements Parcelable {
-    public Grenade(String key){
+public class Grenade2 extends EquipmentJava implements Parcelable {
+    public Grenade2(String key){
         super("grenades", key);
         this.acceptedCategories = new EquipmentCategory[]{
                 EquipmentCategory.GRENADE
@@ -12,7 +12,7 @@ public class Grenade extends EquipmentJava implements Parcelable {
         getData();
     }
 
-    protected Grenade(Parcel in) {
+    protected Grenade2(Parcel in) {
         super(in);
     }
 
@@ -26,15 +26,15 @@ public class Grenade extends EquipmentJava implements Parcelable {
         return 0;
     }
 
-    public static final Creator<Grenade> CREATOR = new Creator<Grenade>() {
+    public static final Creator<Grenade2> CREATOR = new Creator<Grenade2>() {
         @Override
-        public Grenade createFromParcel(Parcel in) {
-            return new Grenade(in);
+        public Grenade2 createFromParcel(Parcel in) {
+            return new Grenade2(in);
         }
 
         @Override
-        public Grenade[] newArray(int size) {
-            return new Grenade[size];
+        public Grenade2[] newArray(int size) {
+            return new Grenade2[size];
         }
     };
 }

@@ -24,7 +24,6 @@ import kotlinx.android.synthetic.main.player_list.*
 
 class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private var dialog : AlertDialog? = null
     private var twoPane: Boolean = false
     var game : Game? = null
 
@@ -37,10 +36,9 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val teamSelected = intent.getStringExtra(ItemDetailFragment.ARG_TEAM)
         if(teamSelected != null){
-            setProgressDialog()
             game = Game.getSingletonInstance(EquipmentTeam.valueOf(teamSelected))
 
-            val firebase = DataFirebaseProvider(game!!)
+            val firebase = DataFirebaseProvider(game!!, this)
             firebase.loadData()
 
             /*loadWeapons()
@@ -137,7 +135,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         touchHelper.attachToRecyclerView(player_list)
         player_list.adapter = mAdapter
     }
-
+/*
     private fun loadWeapons() {
         val idPistolWeapons = resources.getStringArray(R.array.pistol_data)
         for (id : String in idPistolWeapons)
@@ -166,7 +164,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun loadGrenades(){
         val idGrenades = resources.getStringArray(R.array.grenade_data)
         for (id : String in idGrenades)
-            game!!.grenades.add(Grenade(id))
+            game!!.grenades.add(Grenade2(id))
     }
 
     private fun loadEconomy(){
@@ -176,63 +174,13 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun economyLoaded() : Boolean{
         return game!!.economy != null
     }
-
+*/
     fun firstRound(){
         game?.startRound(0)
     }
 
     fun updateGame(){
 
-    }
-
-    private fun setProgressDialog() {
-        val llPadding = 30
-        val ll = LinearLayout(this)
-        ll.orientation = LinearLayout.HORIZONTAL
-        ll.setPadding(llPadding, llPadding, llPadding, llPadding)
-        ll.gravity = Gravity.CENTER
-        var llParam = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        llParam.gravity = Gravity.CENTER
-        ll.layoutParams = llParam
-
-        val progressBar = ProgressBar(this)
-        progressBar.isIndeterminate = true
-        progressBar.setPadding(0, 0, llPadding, 0)
-        progressBar.layoutParams = llParam
-
-        llParam = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        llParam.gravity = Gravity.CENTER
-        val tvText = TextView(this)
-        tvText.text = resources.getString(R.string.label_loading)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            tvText.setTextColor(getColor(android.R.color.black))
-        }
-        tvText.textSize = 20f
-        tvText.layoutParams = llParam
-
-        ll.addView(progressBar)
-        ll.addView(tvText)
-
-        val builder = AlertDialog.Builder(this)
-        builder.setCancelable(true)
-        builder.setView(ll)
-
-        dialog = builder.create()
-        dialog!!.show()
-        val window = dialog!!.window
-        if (window != null) {
-            val layoutParams = WindowManager.LayoutParams()
-            layoutParams.copyFrom(dialog!!.window!!.attributes)
-            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
-            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
-            dialog!!.window!!.attributes = layoutParams
-        }
     }
 
 }

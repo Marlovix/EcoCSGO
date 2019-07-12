@@ -1,6 +1,6 @@
 package es.ulpgc.tfm.ecocsgo.model
 
-class Gun {
+class Gun2 {
 
     var course: String = ""
     var name: String = ""

@@ -16,7 +16,7 @@ public class Game implements Parcelable {
     private ArrayList<MainGun> heavyWeapons;
     private ArrayList<MainGun> smgWeapons;
     private ArrayList<MainGun> rifleWeapons;
-    private ArrayList<Grenade> grenades;
+    private ArrayList<Grenade2> grenades;
 
     private DefuseKit kit;
     private Helmet helmet;
@@ -44,7 +44,7 @@ public class Game implements Parcelable {
         smgWeapons = in.createTypedArrayList(MainGun.CREATOR);
         rifleWeapons = in.createTypedArrayList(MainGun.CREATOR);
         heavyWeapons = in.createTypedArrayList(MainGun.CREATOR);
-        grenades = in.createTypedArrayList(Grenade.CREATOR);
+        grenades = in.createTypedArrayList(Grenade2.CREATOR);
         kit = in.readParcelable(DefuseKit.class.getClassLoader());
         helmet = in.readParcelable(Helmet.class.getClassLoader());
         vest = in.readParcelable(Vest.class.getClassLoader());
@@ -124,7 +124,7 @@ public class Game implements Parcelable {
 
     public EquipmentJava findGun(EquipmentNumeration numeration, EquipmentTeam team) {
 
-        ArrayList listGuns = new ArrayList<Gun>();
+        ArrayList listGuns = new ArrayList<Gun2>();
         switch(numeration.getCategory()){
             case PISTOL:
                 listGuns = game.getPistolWeapons();
@@ -168,7 +168,7 @@ public class Game implements Parcelable {
         this.heavyWeapons = heavyWeapons;
     }
 
-    public void setGrenades(ArrayList<Grenade> grenades) {
+    public void setGrenades(ArrayList<Grenade2> grenades) {
         this.grenades = grenades;
     }
 
@@ -216,7 +216,7 @@ public class Game implements Parcelable {
         return heavyWeapons;
     }
 
-    public ArrayList<Grenade> getGrenades() {
+    public ArrayList<Grenade2> getGrenades() {
         return grenades;
     }
 
