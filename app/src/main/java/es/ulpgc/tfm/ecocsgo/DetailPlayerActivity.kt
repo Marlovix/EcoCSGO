@@ -47,9 +47,9 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     private var game: Game? = null
     private var player: Player? = null
 
-    private var mainGuns: Map<EquipmentCategory, List<MainGun>> =
+    private var mainGuns: Map<EquipmentCategory, List<MainGunJava>> =
         EnumMap(es.ulpgc.tfm.ecocsgo.model.EquipmentCategory::class.java)
-    private var secondaryGuns: MutableMap<EquipmentCategory, List<SecondaryGun>> =
+    private var secondaryGuns: MutableMap<EquipmentCategory, List<SecondaryGunJava>> =
         EnumMap(es.ulpgc.tfm.ecocsgo.model.EquipmentCategory::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,12 +77,12 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         player = intent.getParcelableExtra<Player>(ItemDetailFragment.ARG_PLAYER)
 
         mainGuns = EnumMap(EquipmentCategory::class.java)
-        (mainGuns as EnumMap<EquipmentCategory, List<MainGun>>)[EquipmentCategory.HEAVY] = game?.heavyWeapons
-        (mainGuns as EnumMap<EquipmentCategory, List<MainGun>>)[EquipmentCategory.SMG] = game?.smgWeapons
-        (mainGuns as EnumMap<EquipmentCategory, List<MainGun>>)[EquipmentCategory.RIFLE] = game?.rifleWeapons
+        (mainGuns as EnumMap<EquipmentCategory, List<MainGunJava>>)[EquipmentCategory.HEAVY] = game?.heavyWeapons
+        (mainGuns as EnumMap<EquipmentCategory, List<MainGunJava>>)[EquipmentCategory.SMG] = game?.smgWeapons
+        (mainGuns as EnumMap<EquipmentCategory, List<MainGunJava>>)[EquipmentCategory.RIFLE] = game?.rifleWeapons
 
         secondaryGuns = EnumMap(EquipmentCategory::class.java)
-        (secondaryGuns as EnumMap<EquipmentCategory, List<SecondaryGun>>)[EquipmentCategory.PISTOL] =
+        (secondaryGuns as EnumMap<EquipmentCategory, List<SecondaryGunJava>>)[EquipmentCategory.PISTOL] =
             game?.pistolWeapons
 
         prepareScreen()
@@ -199,8 +199,8 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         textViewHelmet?.text = game!!.helmet.name
         textViewDefuseKit?.text = game!!.vest.name
 
-        val arrayMainGuns = arrayOfNulls<MainGun>(player!!.mainGuns.size)
-        val arraySecondaryGuns = arrayOfNulls<SecondaryGun>(player!!.secondaryGuns.size)
+        val arrayMainGuns = arrayOfNulls<MainGunJava>(player!!.mainGuns.size)
+        val arraySecondaryGuns = arrayOfNulls<SecondaryGunJava>(player!!.secondaryGuns.size)
 
         val adapterMainGuns = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayMainGuns)
         val adapterSecondaryGuns = ArrayAdapter(this, android.R.layout.simple_spinner_item, arraySecondaryGuns)
@@ -225,7 +225,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
             val bundle = Bundle()
             bundle.putSerializable(
                 ItemDetailFragment.ARG_GUNS,
-                mainGuns as EnumMap<EquipmentCategory, List<MainGun>>
+                mainGuns as EnumMap<EquipmentCategory, List<MainGunJava>>
             )
             mainDialog = true
             openGunDialog(bundle)
@@ -235,7 +235,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
             val bundle = Bundle()
             bundle.putSerializable(
                 ItemDetailFragment.ARG_GUNS,
-                secondaryGuns as EnumMap<EquipmentCategory, List<SecondaryGun>>
+                secondaryGuns as EnumMap<EquipmentCategory, List<SecondaryGunJava>>
             )
             secondaryDialog = true
             openGunDialog(bundle)

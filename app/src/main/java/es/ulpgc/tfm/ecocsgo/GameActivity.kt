@@ -139,19 +139,19 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun loadWeapons() {
         val idPistolWeapons = resources.getStringArray(R.array.pistol_data)
         for (id : String in idPistolWeapons)
-            game!!.pistolWeapons.add(SecondaryGun(id))
+            game!!.pistolWeapons.add(SecondaryGunJava(id))
 
         val idSmgWeapons = resources.getStringArray(R.array.smg_data)
         for (id : String in idSmgWeapons)
-            game!!.smgWeapons.add(MainGun(id))
+            game!!.smgWeapons.add(MainGunJava(id))
 
         val idRifleWeapons = resources.getStringArray(R.array.rifle_data)
         for (id : String in idRifleWeapons)
-            game!!.rifleWeapons.add(MainGun(id))
+            game!!.rifleWeapons.add(MainGunJava(id))
 
         val idHeavyWeapons = resources.getStringArray(R.array.heavy_data)
         for(id : String in idHeavyWeapons)
-            game!!.heavyWeapons.add(MainGun(id))
+            game!!.heavyWeapons.add(MainGunJava(id))
     }
 
     private fun loadUtilities(){//4

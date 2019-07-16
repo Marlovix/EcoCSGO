@@ -53,11 +53,11 @@ public class Round implements Parcelable {
         this.result = result;
     }
 
-    public void registerGun(Gun gun, int positionPlayer){
-        if(gun instanceof MainGun)
-            players.get(positionPlayer).registerMainGun((MainGun)gun);
-        else if(gun instanceof SecondaryGun)
-            players.get(positionPlayer).registerSecondaryGun((SecondaryGun)gun);
+    public void registerGun(GunJava gun, int positionPlayer){
+        if(gun instanceof MainGunJava)
+            players.get(positionPlayer).registerMainGun((MainGunJava)gun);
+        else if(gun instanceof SecondaryGunJava)
+            players.get(positionPlayer).registerSecondaryGun((SecondaryGunJava)gun);
     }
 
     @Override

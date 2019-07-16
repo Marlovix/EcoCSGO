@@ -3,10 +3,10 @@ package es.ulpgc.tfm.ecocsgo.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class SecondaryGun extends EquipmentJava implements Gun, Parcelable {
+public class SecondaryGunJava extends EquipmentJava implements GunJava, Parcelable {
     private Integer casualty;
     private OriginEquipment origin;
-    public SecondaryGun(String key){
+    public SecondaryGunJava(String key){
         super("weapons", key);
         this.acceptedCategories = new EquipmentCategory[]{
                 EquipmentCategory.PISTOL
@@ -15,7 +15,7 @@ public class SecondaryGun extends EquipmentJava implements Gun, Parcelable {
         origin = OriginEquipment.PURCHASED;
         getData();
     }
-    protected SecondaryGun(Parcel in) {
+    protected SecondaryGunJava(Parcel in) {
         super(in);
         casualty = in.readInt();
         origin = OriginEquipment.valueOf(in.readString());
@@ -33,15 +33,15 @@ public class SecondaryGun extends EquipmentJava implements Gun, Parcelable {
         return 0;
     }
 
-    public static final Creator<SecondaryGun> CREATOR = new Creator<SecondaryGun>() {
+    public static final Creator<SecondaryGunJava> CREATOR = new Creator<SecondaryGunJava>() {
         @Override
-        public SecondaryGun createFromParcel(Parcel in) {
-            return new SecondaryGun(in);
+        public SecondaryGunJava createFromParcel(Parcel in) {
+            return new SecondaryGunJava(in);
         }
 
         @Override
-        public SecondaryGun[] newArray(int size) {
-            return new SecondaryGun[size];
+        public SecondaryGunJava[] newArray(int size) {
+            return new SecondaryGunJava[size];
         }
     };
 

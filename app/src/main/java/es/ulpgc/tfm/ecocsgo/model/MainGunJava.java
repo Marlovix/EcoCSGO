@@ -4,10 +4,10 @@ import android.app.AlertDialog;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MainGun extends EquipmentJava implements Gun, Parcelable {
+public class MainGunJava extends EquipmentJava implements GunJava, Parcelable {
     private Integer casualty;
     private OriginEquipment origin;
-    public MainGun(String key){
+    public MainGunJava(String key){
         super("weapons", key);
         acceptedCategories = new EquipmentCategory[]{
                 EquipmentCategory.HEAVY, EquipmentCategory.SMG, EquipmentCategory.RIFLE
@@ -17,11 +17,11 @@ public class MainGun extends EquipmentJava implements Gun, Parcelable {
         getData();
     }
 
-    public MainGun(String key, AlertDialog dialog){
+    public MainGunJava(String key, AlertDialog dialog){
 
     }
 
-    protected MainGun(Parcel in) {
+    protected MainGunJava(Parcel in) {
         super(in);
         casualty = in.readInt();
         origin = OriginEquipment.valueOf(in.readString());
@@ -39,15 +39,15 @@ public class MainGun extends EquipmentJava implements Gun, Parcelable {
         return 0;
     }
 
-    public static final Creator<MainGun> CREATOR = new Creator<MainGun>() {
+    public static final Creator<MainGunJava> CREATOR = new Creator<MainGunJava>() {
         @Override
-        public MainGun createFromParcel(Parcel in) {
-            return new MainGun(in);
+        public MainGunJava createFromParcel(Parcel in) {
+            return new MainGunJava(in);
         }
 
         @Override
-        public MainGun[] newArray(int size) {
-            return new MainGun[size];
+        public MainGunJava[] newArray(int size) {
+            return new MainGunJava[size];
         }
     };
 

@@ -11,12 +11,9 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import es.ulpgc.tfm.ecocsgo.*
 import es.ulpgc.tfm.ecocsgo.callback.PlayerCallback
-import es.ulpgc.tfm.ecocsgo.model.EquipmentCategory
-import es.ulpgc.tfm.ecocsgo.model.MainGun
 import es.ulpgc.tfm.ecocsgo.model.Player
 import kotlinx.android.synthetic.main.item_player_list.view.*
 import java.util.*
-import kotlin.collections.HashMap
 
 class PlayerRecyclerViewAdapter(
     private val parentActivity: GameActivity,

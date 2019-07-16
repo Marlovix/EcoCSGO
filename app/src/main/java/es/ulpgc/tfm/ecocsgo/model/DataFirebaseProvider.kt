@@ -96,11 +96,14 @@ class DataFirebaseProvider(var game: Game, val context: Context) {
             override fun onCancelled(error: DatabaseError) {
             }
 
-            override fun onDataChange(snapshot: DataSnapshot) {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val list : ArrayList<Equipment> = ArrayList()
-                for(children : DataSnapshot in snapshot.children){
-                    val weapon : Grenade = children.getValue(Grenade::class.java)!!
-                    list.add(weapon)
+                val otraprueba = dataSnapshot.children
+                for(grenadeCode : String in context.resources.getStringArray(R.array.grenade_data)){
+
+                    //grenade.reward = dataSnapshot.child("reward").getValue(Int::class.java)
+
+                    list.add(loadEquipment(dataSnapshot, grenadeCode, Grenade()))
                 }
             }
 
@@ -127,6 +130,60 @@ class DataFirebaseProvider(var game: Game, val context: Context) {
             }
 
         })
+    }
+
+    private fun loadEquipment(dataSnapshot: DataSnapshot, code: String, equipment: Equipment) : Equipment{
+        val snapshot = dataSnapshot.child(code)
+
+        var item = snapshot.child("numeration").child("item").getValue(Int::class.java)
+        val idCategory =
+            snapshot.child("numeration").child("category").child("id").getValue(Int::class.java)
+        val description = snapshot.child("numeration").child("category").child("description").getValue(
+            String::class.java
+        )
+
+        if (item == null) {
+            item = 0
+        }
+
+        var category = EquipmentCategory.NONE
+        if (description != null && idCategory != null) {
+            for (categoryAux in equipment.acceptedCategories) {
+                if (categoryAux.description == description && categoryAux.id == idCategory) {
+                    category = categoryAux
+                    break
+                }
+            }
+        }
+
+        val equipmentTeam = snapshot.child("team").getValue(String::class.java)
+
+        for (teamAux in EquipmentTeam.values()) {
+            if (teamAux.team == equipmentTeam) {
+                equipment.team = teamAux
+                break
+            }
+        }
+
+        equipment.name = snapshot.child("name").getValue(String::class.java)!!
+        equipment.numeration = EquipmentNumeration(item, category)
+        equipment.cost = snapshot.child("cost").getValue(Int::class.java)!!
+
+        return equipment
+    }
+
+    private fun loadGun(dataSnapshot: DataSnapshot, code: String, gun: Gun) : Gun? {
+        val snapshot = dataSnapshot.child(code)
+        if (gun is SecondaryGun){
+            val secondaryGun = loadEquipment(dataSnapshot, code, gun) as SecondaryGun
+            secondaryGun.reward = snapshot.child("reward").getValue(Int::class.java)
+            return secondaryGun
+        }else if(gun is MainGun){
+            val mainGun = loadEquipment(dataSnapshot, code, gun) as MainGun
+            mainGun.reward = snapshot.child("reward").getValue(Int::class.java)
+            return mainGun
+        }
+        return null
     }
 
 }

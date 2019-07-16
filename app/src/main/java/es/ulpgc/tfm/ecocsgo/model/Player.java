@@ -6,8 +6,8 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 public class Player implements Parcelable {
-    private ArrayList<MainGun> mainGuns;
-    private ArrayList<SecondaryGun> secondaryGuns;
+    private ArrayList<MainGunJava> mainGuns;
+    private ArrayList<SecondaryGunJava> secondaryGuns;
     private Vest vest;
     private Helmet helmet;
     private DefuseKit defuseKit;
@@ -20,8 +20,8 @@ public class Player implements Parcelable {
     }
 
     protected Player(Parcel in) {
-        mainGuns = in.createTypedArrayList(MainGun.CREATOR);
-        secondaryGuns = in.createTypedArrayList(SecondaryGun.CREATOR);
+        mainGuns = in.createTypedArrayList(MainGunJava.CREATOR);
+        secondaryGuns = in.createTypedArrayList(SecondaryGunJava.CREATOR);
         vest = in.readParcelable(Vest.class.getClassLoader());
         helmet = in.readParcelable(Helmet.class.getClassLoader());
         defuseKit = in.readParcelable(DefuseKit.class.getClassLoader());
@@ -55,11 +55,11 @@ public class Player implements Parcelable {
         }
     };
 
-    public ArrayList<MainGun> getMainGuns() {
+    public ArrayList<MainGunJava> getMainGuns() {
         return mainGuns;
     }
 
-    public ArrayList<SecondaryGun> getSecondaryGuns() {
+    public ArrayList<SecondaryGunJava> getSecondaryGuns() {
         return secondaryGuns;
     }
 
@@ -67,18 +67,18 @@ public class Player implements Parcelable {
         return alive;
     }
 
-    public MainGun getLastMainGun(){
+    public MainGunJava getLastMainGun(){
         return (mainGuns != null && !mainGuns.isEmpty()) ? mainGuns.get(mainGuns.size() - 1) : null;
     }
 
-    public SecondaryGun getLastSecondaryGun(){
+    public SecondaryGunJava getLastSecondaryGun(){
         return (secondaryGuns != null && !secondaryGuns.isEmpty()) ? secondaryGuns.get(secondaryGuns.size() - 1) : null;
     }
 
-    public void registerMainGun(MainGun gun){
+    public void registerMainGun(MainGunJava gun){
         mainGuns.add(gun);
     }
-    public void registerSecondaryGun(SecondaryGun gun){
+    public void registerSecondaryGun(SecondaryGunJava gun){
         secondaryGuns.add(gun);
     }
 

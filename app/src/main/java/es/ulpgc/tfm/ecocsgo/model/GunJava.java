@@ -1,5 +1,5 @@
 package es.ulpgc.tfm.ecocsgo.model;
 
-public interface Gun{
+public interface GunJava {
 
 }

@@ -12,10 +12,10 @@ public class Game implements Parcelable {
     private Round[] rounds;
     private int enemyEconomy;
 
-    private ArrayList<SecondaryGun> pistolWeapons;
-    private ArrayList<MainGun> heavyWeapons;
-    private ArrayList<MainGun> smgWeapons;
-    private ArrayList<MainGun> rifleWeapons;
+    private ArrayList<SecondaryGunJava> pistolWeapons;
+    private ArrayList<MainGunJava> heavyWeapons;
+    private ArrayList<MainGunJava> smgWeapons;
+    private ArrayList<MainGunJava> rifleWeapons;
     private ArrayList<Grenade2> grenades;
 
     private DefuseKit kit;
@@ -40,10 +40,10 @@ public class Game implements Parcelable {
         roundInGame = in.readInt();
         rounds = in.createTypedArray(Round.CREATOR);
         enemyEconomy = in.readInt();
-        pistolWeapons = in.createTypedArrayList(SecondaryGun.CREATOR);
-        smgWeapons = in.createTypedArrayList(MainGun.CREATOR);
-        rifleWeapons = in.createTypedArrayList(MainGun.CREATOR);
-        heavyWeapons = in.createTypedArrayList(MainGun.CREATOR);
+        pistolWeapons = in.createTypedArrayList(SecondaryGunJava.CREATOR);
+        smgWeapons = in.createTypedArrayList(MainGunJava.CREATOR);
+        rifleWeapons = in.createTypedArrayList(MainGunJava.CREATOR);
+        heavyWeapons = in.createTypedArrayList(MainGunJava.CREATOR);
         grenades = in.createTypedArrayList(Grenade2.CREATOR);
         kit = in.readParcelable(DefuseKit.class.getClassLoader());
         helmet = in.readParcelable(Helmet.class.getClassLoader());
@@ -93,7 +93,7 @@ public class Game implements Parcelable {
 
             if (player.getSecondaryGuns().isEmpty()) {
                 EquipmentNumeration numeration = new EquipmentNumeration(1, EquipmentCategory.PISTOL);
-                player.registerSecondaryGun((SecondaryGun) findGun(numeration, enemyTeam));
+                player.registerSecondaryGun((SecondaryGunJava) findGun(numeration, enemyTeam));
             }
         }
     }
@@ -124,7 +124,7 @@ public class Game implements Parcelable {
 
     public EquipmentJava findGun(EquipmentNumeration numeration, EquipmentTeam team) {
 
-        ArrayList listGuns = new ArrayList<Gun2>();
+        ArrayList listGuns = new ArrayList<Gun>();
         switch(numeration.getCategory()){
             case PISTOL:
                 listGuns = game.getPistolWeapons();
@@ -152,19 +152,19 @@ public class Game implements Parcelable {
         return null;
     }
 
-    public void setPistolWeapons(ArrayList<SecondaryGun> pistolWeapons) {
+    public void setPistolWeapons(ArrayList<SecondaryGunJava> pistolWeapons) {
         this.pistolWeapons = pistolWeapons;
     }
 
-    public void setSmgWeapons(ArrayList<MainGun> smgWeapons) {
+    public void setSmgWeapons(ArrayList<MainGunJava> smgWeapons) {
         this.smgWeapons = smgWeapons;
     }
 
-    public void setRifleWeapons(ArrayList<MainGun> rifleWeapons) {
+    public void setRifleWeapons(ArrayList<MainGunJava> rifleWeapons) {
         this.rifleWeapons = rifleWeapons;
     }
 
-    public void setHeavyWeapons(ArrayList<MainGun> heavyWeapons) {
+    public void setHeavyWeapons(ArrayList<MainGunJava> heavyWeapons) {
         this.heavyWeapons = heavyWeapons;
     }
 
@@ -200,19 +200,19 @@ public class Game implements Parcelable {
         return enemyTeam;
     }
 
-    public ArrayList<SecondaryGun> getPistolWeapons() {
+    public ArrayList<SecondaryGunJava> getPistolWeapons() {
         return pistolWeapons;
     }
 
-    public ArrayList<MainGun> getSmgWeapons() {
+    public ArrayList<MainGunJava> getSmgWeapons() {
         return smgWeapons;
     }
 
-    public ArrayList<MainGun> getRifleWeapons() {
+    public ArrayList<MainGunJava> getRifleWeapons() {
         return rifleWeapons;
     }
 
-    public ArrayList<MainGun> getHeavyWeapons() {
+    public ArrayList<MainGunJava> getHeavyWeapons() {
         return heavyWeapons;
     }
 
