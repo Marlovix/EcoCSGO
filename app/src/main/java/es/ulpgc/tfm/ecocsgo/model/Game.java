@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-public class Game implements Parcelable {
+public class Game /*implements Parcelable*/ {
     private static Game game;
 
     private EquipmentTeam enemyTeam;
@@ -12,11 +12,11 @@ public class Game implements Parcelable {
     private Round[] rounds;
     private int enemyEconomy;
 
-    private ArrayList<SecondaryGunJava> pistolWeapons;
-    private ArrayList<MainGunJava> heavyWeapons;
-    private ArrayList<MainGunJava> smgWeapons;
-    private ArrayList<MainGunJava> rifleWeapons;
-    private ArrayList<Grenade2> grenades;
+    private ArrayList<SecondaryGun> pistolWeapons;
+    private ArrayList<MainGun> heavyWeapons;
+    private ArrayList<MainGun> smgWeapons;
+    private ArrayList<MainGun> rifleWeapons;
+    private ArrayList<Equipment> grenades;
 
     private DefuseKit kit;
     private Helmet helmet;
@@ -35,7 +35,7 @@ public class Game implements Parcelable {
         grenades = new ArrayList<>();
     }
 
-    protected Game(Parcel in) {
+    /*protected Game(Parcel in) {
         enemyTeam = EquipmentTeam.valueOf(in.readString());
         roundInGame = in.readInt();
         rounds = in.createTypedArray(Round.CREATOR);
@@ -61,7 +61,7 @@ public class Game implements Parcelable {
         public Game[] newArray(int size) {
             return new Game[size];
         }
-    };
+    };*/
 
     public static Game getSingletonInstance(EquipmentTeam team) {
         if (game == null)
@@ -152,23 +152,23 @@ public class Game implements Parcelable {
         return null;
     }
 
-    public void setPistolWeapons(ArrayList<SecondaryGunJava> pistolWeapons) {
+    public void setPistolWeapons(ArrayList<SecondaryGun> pistolWeapons) {
         this.pistolWeapons = pistolWeapons;
     }
 
-    public void setSmgWeapons(ArrayList<MainGunJava> smgWeapons) {
+    public void setSmgWeapons(ArrayList<MainGun> smgWeapons) {
         this.smgWeapons = smgWeapons;
     }
 
-    public void setRifleWeapons(ArrayList<MainGunJava> rifleWeapons) {
+    public void setRifleWeapons(ArrayList<MainGun> rifleWeapons) {
         this.rifleWeapons = rifleWeapons;
     }
 
-    public void setHeavyWeapons(ArrayList<MainGunJava> heavyWeapons) {
+    public void setHeavyWeapons(ArrayList<MainGun> heavyWeapons) {
         this.heavyWeapons = heavyWeapons;
     }
 
-    public void setGrenades(ArrayList<Grenade2> grenades) {
+    public void setGrenades(ArrayList<Equipment> grenades) {
         this.grenades = grenades;
     }
 
@@ -200,23 +200,23 @@ public class Game implements Parcelable {
         return enemyTeam;
     }
 
-    public ArrayList<SecondaryGunJava> getPistolWeapons() {
+    public ArrayList<SecondaryGun> getPistolWeapons() {
         return pistolWeapons;
     }
 
-    public ArrayList<MainGunJava> getSmgWeapons() {
+    public ArrayList<MainGun> getSmgWeapons() {
         return smgWeapons;
     }
 
-    public ArrayList<MainGunJava> getRifleWeapons() {
+    public ArrayList<MainGun> getRifleWeapons() {
         return rifleWeapons;
     }
 
-    public ArrayList<MainGunJava> getHeavyWeapons() {
+    public ArrayList<MainGun> getHeavyWeapons() {
         return heavyWeapons;
     }
 
-    public ArrayList<Grenade2> getGrenades() {
+    public ArrayList<Equipment> getGrenades() {
         return grenades;
     }
 
@@ -247,7 +247,7 @@ public class Game implements Parcelable {
     public int getEnemyEconomy() {
         return enemyEconomy;
     }
-
+/*
     @Override
     public int describeContents() {
         return 0;
@@ -268,5 +268,5 @@ public class Game implements Parcelable {
         parcel.writeParcelable(helmet, i);
         parcel.writeParcelable(vest, i);
         parcel.writeParcelable(economy, i);
-    }
+    }*/
 }

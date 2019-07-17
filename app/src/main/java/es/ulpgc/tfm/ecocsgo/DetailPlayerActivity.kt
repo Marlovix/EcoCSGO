@@ -72,7 +72,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         toolbar.setNavigationOnClickListener { finish() }*/
 
         //nav_view.setNavigationItemSelectedListener(this)
-
+/*
         game = intent.getParcelableExtra<Game>(ItemDetailFragment.ARG_GAME)
         player = intent.getParcelableExtra<Player>(ItemDetailFragment.ARG_PLAYER)
 
@@ -84,7 +84,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         secondaryGuns = EnumMap(EquipmentCategory::class.java)
         (secondaryGuns as EnumMap<EquipmentCategory, List<SecondaryGunJava>>)[EquipmentCategory.PISTOL] =
             game?.pistolWeapons
-
+*/
         prepareScreen()
 
         /*spinner2 = findViewById(R.id.spinner2)

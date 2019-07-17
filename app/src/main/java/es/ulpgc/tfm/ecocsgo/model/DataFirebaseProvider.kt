@@ -96,14 +96,12 @@ class DataFirebaseProvider(var game: Game, val context: Context) {
             override fun onCancelled(error: DatabaseError) {
             }
 
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val list : ArrayList<Equipment> = ArrayList()
-                val otraprueba = dataSnapshot.children
+            override fun onDataChange(snapshot: DataSnapshot) {
                 for(grenadeCode : String in context.resources.getStringArray(R.array.grenade_data)){
 
                     //grenade.reward = dataSnapshot.child("reward").getValue(Int::class.java)
 
-                    list.add(loadEquipment(dataSnapshot, grenadeCode, Grenade()))
+                    game.grenades.add(loadEquipment(snapshot, grenadeCode, Grenade()))
                 }
             }
 
@@ -127,6 +125,15 @@ class DataFirebaseProvider(var game: Game, val context: Context) {
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
+                for(pistolCode : String in context.resources.getStringArray(R.array.pistol_data))
+                    game.pistolWeapons.add(loadGun(snapshot.child("secondary"), pistolCode, SecondaryGun())
+                            as SecondaryGun?)
+                for(heavyCode : String in context.resources.getStringArray(R.array.heavy_data))
+                    game.heavyWeapons.add(loadGun(snapshot.child("heavy"), heavyCode, MainGun()) as MainGun?)
+                for(smgCode : String in context.resources.getStringArray(R.array.smg_data))
+                    game.smgWeapons.add(loadGun(snapshot.child("smg"), smgCode, MainGun()) as MainGun?)
+                for(rifleCode : String in context.resources.getStringArray(R.array.rifle_data))
+                    game.rifleWeapons.add(loadGun(snapshot.child("rifle"), rifleCode, MainGun()) as MainGun?)
             }
 
         })

@@ -62,7 +62,7 @@ class PlayerRecyclerViewAdapter(
                     .commit()
             } else {
                 val intent = Intent(v.context, DetailPlayerActivity::class.java).apply {
-                    putExtra(ItemDetailFragment.ARG_GAME, parentActivity.game)
+                    //putExtra(ItemDetailFragment.ARG_GAME, parentActivity.game)
                     putExtra(ItemDetailFragment.ARG_PLAYER, player)
                 }
                 v.context.startActivity(intent)
