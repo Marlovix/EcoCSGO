@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import es.ulpgc.tfm.ecocsgo.model.*
+import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,9 +28,9 @@ class MainActivity : AppCompatActivity() {
             builder.setCancelable(false)
             builder.setTitle("Select your option:")
             builder.setItems(options) { _, which ->
-                val teamSelected = if (which == 0) EquipmentTeam.CT.name else EquipmentTeam.T.name
+                val teamSelected = if (which == 0) EquipmentTeamEnum.CT.name else EquipmentTeamEnum.T.name
                 val intent = Intent(this, GameActivity::class.java)
-                intent.putExtra(ItemDetailFragment.ARG_TEAM, teamSelected)
+                intent.putExtra(ARG_TEAM, teamSelected)
                 startActivity(intent)
                 finish()
             }
@@ -41,6 +39,10 @@ class MainActivity : AppCompatActivity() {
             }
             builder.show()
         }
+    }
+
+    companion object{
+        const val ARG_TEAM = "ARG_TEAM"
     }
 
 }

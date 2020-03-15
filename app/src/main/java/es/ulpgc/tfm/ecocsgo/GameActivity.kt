@@ -1,31 +1,40 @@
 package es.ulpgc.tfm.ecocsgo
 
-import android.os.Build
 import android.os.Bundle
-import android.view.*
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import es.ulpgc.tfm.ecocsgo.MainActivity.Companion.ARG_TEAM
 import es.ulpgc.tfm.ecocsgo.adapter.PlayerRecyclerViewAdapter
 import es.ulpgc.tfm.ecocsgo.callback.PlayerCallback
-import es.ulpgc.tfm.ecocsgo.model.*
+import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
+import es.ulpgc.tfm.ecocsgo.model.Game
+import es.ulpgc.tfm.ecocsgo.model.Player
+import es.ulpgc.tfm.ecocsgo.viewmodel.PlayersViewModel
+import kotlinx.android.synthetic.main.content_game.*
 import kotlinx.android.synthetic.main.player_list.*
+import java.util.*
 
-class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, DataLoadListener {
 
     private var twoPane: Boolean = false
     var game : Game? = null
+
+    private var playerAdapter: PlayerRecyclerViewAdapter? = null
+    private var playersViewModel: PlayersViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,20 +43,11 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
         toolbar.title = title
 
-        val teamSelected = intent.getStringExtra(ItemDetailFragment.ARG_TEAM)
-        if(teamSelected != null){
-            game = Game.getSingletonInstance(EquipmentTeam.valueOf(teamSelected))
+        val teamSelected = intent.getStringExtra(ARG_TEAM)
+        if(teamSelected != null) game = Game(EquipmentTeamEnum.valueOf(teamSelected))
 
-            val firebase = DataFirebaseProvider(game!!, this)
-            firebase.loadData()
-
-            /*loadWeapons()
-            loadUtilities()
-            loadGrenades()
-            loadEconomy()*/
-
-            //game?.startRound(0)
-        }
+        val repo = RepoEquipment(game!!, this)
+        repo.loadData()
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
@@ -63,8 +63,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             twoPane = true
         }
 
-        //setupRecyclerView()
-
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
@@ -74,6 +72,11 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
+    }
+
+    fun finishRepoLoading(){
+        startGame()
+        setupRecyclerView()
     }
 
     override fun onBackPressed() {
@@ -128,55 +131,44 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    override fun onNameLoaded() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private fun setupRecyclerView() {
-        val mAdapter = PlayerRecyclerViewAdapter(this, game!!.rounds[0].players, twoPane)
-        val callback = PlayerCallback(mAdapter, this)
-        val touchHelper = ItemTouchHelper(callback)
-        touchHelper.attachToRecyclerView(player_list)
-        player_list.adapter = mAdapter
-    }
-/*
-    private fun loadWeapons() {
-        val idPistolWeapons = resources.getStringArray(R.array.pistol_data)
-        for (id : String in idPistolWeapons)
-            game!!.pistolWeapons.add(SecondaryGunJava(id))
+        val players = MutableLiveData<ArrayList<Player>>()
+        players.value = game!!.rounds[0]?.players
+        playersViewModel = ViewModelProviders.of(this).get(PlayersViewModel::class.java)
+        playersViewModel!!.init(players)
 
-        val idSmgWeapons = resources.getStringArray(R.array.smg_data)
-        for (id : String in idSmgWeapons)
-            game!!.smgWeapons.add(MainGunJava(id))
+        playerAdapter = playersViewModel!!.getPlayers()?.value?.let {
+            PlayerRecyclerViewAdapter(this, it, twoPane)
+        }
+        val callback = playerAdapter?.let { PlayerCallback(it, this) }
+        val touchHelper = callback?.let { ItemTouchHelper(it) }
+        touchHelper?.attachToRecyclerView(player_list)
 
-        val idRifleWeapons = resources.getStringArray(R.array.rifle_data)
-        for (id : String in idRifleWeapons)
-            game!!.rifleWeapons.add(MainGunJava(id))
+        //player_list.setHasFixedSize(true)
+        //player_list.layoutManager = LinearLayoutManager(this)
 
-        val idHeavyWeapons = resources.getStringArray(R.array.heavy_data)
-        for(id : String in idHeavyWeapons)
-            game!!.heavyWeapons.add(MainGunJava(id))
-    }
+        player_list.adapter = playerAdapter
 
-    private fun loadUtilities(){//4
-        game?.kit = DefuseKit(resources.getString(R.string.defuse_kit_data))
-        game?.helmet = Helmet(resources.getString(R.string.helmet_data))
-        game?.taser = Taser(resources.getString(R.string.taser_data))
-        game?.vest = Vest(resources.getString(R.string.vest_data))
+        progress_bar.visibility = View.GONE
+
+        val model = ViewModelProviders.of(this)[PlayersViewModel::class.java]
+        model.getPlayers()?.observe(this, Observer<List<Player>>{ players ->
+            for (player : Player in players){
+                player.toString()
+            }
+        })
     }
 
-    private fun loadGrenades(){
-        val idGrenades = resources.getStringArray(R.array.grenade_data)
-        for (id : String in idGrenades)
-            game!!.grenades.add(Grenade2(id))
+    private fun startGame() {
+        game?.initRound()
     }
 
-    private fun loadEconomy(){
-        game!!.economy = EconomyGame(dialog, game)
-    }
-
-    private fun economyLoaded() : Boolean{
-        return game!!.economy != null
-    }
-*/
     fun firstRound(){
-        game?.startRound(0)
+        //game?.startRound(0)
     }
 
     fun updateGame(){

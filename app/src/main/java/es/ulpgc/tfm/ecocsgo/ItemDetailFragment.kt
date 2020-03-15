@@ -25,11 +25,11 @@ class ItemDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val s: LinearLayoutManager
         arguments?.let {
-            if (it.containsKey(ARG_GAME)) {
+            if (it.containsKey(ARG_PLAYER)) {
                 // Load the dummy content specified by the fragment
                 // arguments. In a real-world scenario, use a Loader
                 // to load content from a content provider.
-                item = GameActivityContent.ITEM_MAP[it.getString(ARG_GAME)]
+                item = GameActivityContent.ITEM_MAP[it.getString(ARG_PLAYER)]
                 //activity?.toolbar_layout?.title = item?.content
             }
         }
@@ -50,20 +50,14 @@ class ItemDetailFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * The fragment argument representing the item ID that this fragment
-         * represents.
-         */
-        const val ARG_ITEM_KIT = "kit"
-        const val ARG_HELMET = "helmet"
-        const val ARG_VEST = "vest"
-
+        const val ARG_DEFUSE_KIT = "ARG_DEFUSE_KIT"
+        const val ARG_HELMET = "ARG_HELMET"
+        const val ARG_VEST = "ARG_VEST"
         const val ARG_GUNS = "guns"
-        const val ARG_MAIN_GUNS = "mainGuns"
-        const val ARG_SECONDARY_GUNS = "secondaryGuns"
-
-        const val ARG_GAME = "game"
-        const val ARG_TEAM = "team"
-        const val ARG_PLAYER = "player"
+        const val ARG_PISTOL = "ARG_PISTOL"
+        const val ARG_HEAVY = "ARG_HEAVY"
+        const val ARG_SMG = "ARG_SMG"
+        const val ARG_RIFLE = "ARG_RIFLE"
+        const val ARG_PLAYER = "ARG_PLAYER"
     }
 }

@@ -12,14 +12,16 @@ import es.ulpgc.tfm.ecocsgo.adapter.EquipmentCategoryRecyclerViewAdapter
 import es.ulpgc.tfm.ecocsgo.model.EquipmentCategory
 import java.util.*
 import es.ulpgc.tfm.ecocsgo.model.Equipment
+import es.ulpgc.tfm.ecocsgo.model.Gun
+import kotlin.collections.ArrayList
 
-@Suppress("UNCHECKED_CAST")
 class GunListFragmentDialog(
     private var listener: GunClickListener
 ) : DialogFragment() {
 
     private var guns : Map<EquipmentCategory, List<Equipment>> = EnumMap(EquipmentCategory::class.java)
 
+    @Suppress("UNCHECKED_CAST")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,7 +31,7 @@ class GunListFragmentDialog(
         val recyclerView = rootView.findViewById(R.id.category_gun_list) as RecyclerView
 
         val bundle = arguments
-        guns = bundle?.getSerializable(ItemDetailFragment.ARG_GUNS) as EnumMap<EquipmentCategory, List<Equipment>>
+        guns = bundle?.getSerializable(ItemDetailFragment.ARG_GUNS) as Map<EquipmentCategory, ArrayList<Gun>>
 
         if (rootView is RecyclerView) recyclerView.adapter = EquipmentCategoryRecyclerViewAdapter(guns, listener)
 

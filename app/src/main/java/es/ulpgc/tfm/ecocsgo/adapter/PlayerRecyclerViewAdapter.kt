@@ -2,7 +2,6 @@ package es.ulpgc.tfm.ecocsgo.adapter
 
 import android.content.Intent
 import android.graphics.Color
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,7 @@ import java.util.*
 
 class PlayerRecyclerViewAdapter(
     private val parentActivity: GameActivity,
-    private val values: List<Player>,
+    private val values: ArrayList<Player>,
     private val twoPane: Boolean
 ) :
     RecyclerView.Adapter<PlayerRecyclerViewAdapter.ViewHolder>(),
@@ -50,7 +49,7 @@ class PlayerRecyclerViewAdapter(
 
         onClickListener = View.OnClickListener { v ->
             val player = v.tag as Player
-            if (twoPane) {
+            /*if (twoPane) {
                 val fragment = ItemDetailFragment().apply {
                     arguments = Bundle().apply {
                         // putString(ItemDetailFragment.ARG_ITEM_KIT, item)
@@ -60,13 +59,19 @@ class PlayerRecyclerViewAdapter(
                     .beginTransaction()
                     .replace(R.id.item_detail_container, fragment)
                     .commit()
-            } else {
+            } else {*/
                 val intent = Intent(v.context, DetailPlayerActivity::class.java).apply {
-                    //putExtra(ItemDetailFragment.ARG_GAME, parentActivity.game)
                     putExtra(ItemDetailFragment.ARG_PLAYER, player)
+                    putParcelableArrayListExtra(ItemDetailFragment.ARG_PISTOL, parentActivity.game?.pistolWeapons)
+                    putParcelableArrayListExtra(ItemDetailFragment.ARG_HEAVY, parentActivity.game?.heavyWeapons)
+                    putParcelableArrayListExtra(ItemDetailFragment.ARG_SMG, parentActivity.game?.smgWeapons)
+                    putParcelableArrayListExtra(ItemDetailFragment.ARG_RIFLE, parentActivity.game?.rifleWeapons)
+                    putExtra(ItemDetailFragment.ARG_DEFUSE_KIT, parentActivity.game?.defuseKit)
+                    putExtra(ItemDetailFragment.ARG_HELMET, parentActivity.game?.helmet)
+                    putExtra(ItemDetailFragment.ARG_VEST, parentActivity.game?.vest)
                 }
                 v.context.startActivity(intent)
-            }
+            //}
         }
     }
 
@@ -79,21 +84,14 @@ class PlayerRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val player = values[position]
 
-        if (player.mainGuns == null || player.mainGuns.isEmpty()) {
-            holder.mainGun.text = "-"
-            holder.mainDeaths.text = "0"
-        } else {
-            holder.mainGun.text = player.mainGuns[0].name
-            holder.mainDeaths.text = player.mainGuns[0].casualty.toString()
-        }
-
-        if (player.secondaryGuns == null || player.secondaryGuns.isEmpty()) {
-            holder.secondaryGun.text = "-"
-            holder.secondaryDeaths.text = "0"
-        } else {
-            holder.secondaryGun.text = player.secondaryGuns[0].name
-            holder.secondaryDeaths.text = player.secondaryGuns[0].casualty.toString()
-        }
+        holder.mainGun.text = if (player.mainGunInGame != null)
+            player.mainGunInGame!!.name else "-"
+        holder.mainDeaths.text = if (player.mainGunInGame != null)
+            "x" + player.mainGunInGame!!.name else "x0"
+        holder.secondaryGun.text = if (player.secondaryGunInGame != null)
+            player.secondaryGunInGame!!.name else "-"
+        holder.secondaryDeaths.text = if (player.secondaryGunInGame != null)
+            "x" + player.secondaryGunInGame!!.casualty.toString() else "x0"
 
         with(holder.itemView) {
             tag = player

@@ -1,7 +1,10 @@
 package es.ulpgc.tfm.ecocsgo.model
 
-class Grenade() : Equipment() {
-    init{
-        this.acceptedCategories = arrayOf(EquipmentCategory.GRENADE)
-    }
-}
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class Grenade(override var name: String, override var team: EquipmentTeamEnum,
+                   override var category: EquipmentCategory,
+                   override var numeration: EquipmentNumeration, override var cost: Int) :
+    Equipment(name, team, category, numeration, cost), Parcelable

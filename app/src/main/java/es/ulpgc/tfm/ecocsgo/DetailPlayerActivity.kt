@@ -12,9 +12,10 @@ import com.google.android.material.navigation.NavigationView
 import es.ulpgc.tfm.ecocsgo.model.*
 import kotlinx.android.synthetic.main.activity_detail_player.*
 import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.android.synthetic.main.content_detail_player.*
 import java.util.*
+import kotlin.collections.ArrayList
 
-@Suppress("UNCHECKED_CAST")
 class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     GunListFragmentDialog.GunClickListener, DialogInterface.OnDismissListener {
 
@@ -44,13 +45,19 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     private var mainDialog = false
     private var secondaryDialog = false
 
-    private var game: Game? = null
     private var player: Player? = null
+    private var pistolGuns: ArrayList<SecondaryGun>? = null
+    private var heavyGuns: ArrayList<MainGun>? = null
+    private var smgGuns: ArrayList<MainGun>? = null
+    private var rifleGuns: ArrayList<MainGun>? = null
+    private var defuseKit: DefuseKit? = null
+    private var helmet: Helmet? = null
+    private var vest: Vest? = null
 
-    private var mainGuns: Map<EquipmentCategory, List<MainGunJava>> =
-        EnumMap(es.ulpgc.tfm.ecocsgo.model.EquipmentCategory::class.java)
-    private var secondaryGuns: MutableMap<EquipmentCategory, List<SecondaryGunJava>> =
-        EnumMap(es.ulpgc.tfm.ecocsgo.model.EquipmentCategory::class.java)
+    private var mainGuns: MutableMap<EquipmentCategory, ArrayList<MainGun>?> =
+        EnumMap(EquipmentCategory::class.java)
+    private var secondaryGuns: MutableMap<EquipmentCategory, ArrayList<SecondaryGun>?> =
+        EnumMap(EquipmentCategory::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,43 +65,11 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         setSupportActionBar(toolbar)
 
         // add back arrow to toolbar
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setDisplayShowHomeEnabled(true)
-        }
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
 
-        /*val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        )
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
-        toolbar.setNavigationIcon(R.drawable.ic_back_arrow)
-        toolbar.setNavigationOnClickListener { finish() }*/
-
-        //nav_view.setNavigationItemSelectedListener(this)
-/*
-        game = intent.getParcelableExtra<Game>(ItemDetailFragment.ARG_GAME)
-        player = intent.getParcelableExtra<Player>(ItemDetailFragment.ARG_PLAYER)
-
-        mainGuns = EnumMap(EquipmentCategory::class.java)
-        (mainGuns as EnumMap<EquipmentCategory, List<MainGunJava>>)[EquipmentCategory.HEAVY] = game?.heavyWeapons
-        (mainGuns as EnumMap<EquipmentCategory, List<MainGunJava>>)[EquipmentCategory.SMG] = game?.smgWeapons
-        (mainGuns as EnumMap<EquipmentCategory, List<MainGunJava>>)[EquipmentCategory.RIFLE] = game?.rifleWeapons
-
-        secondaryGuns = EnumMap(EquipmentCategory::class.java)
-        (secondaryGuns as EnumMap<EquipmentCategory, List<SecondaryGunJava>>)[EquipmentCategory.PISTOL] =
-            game?.pistolWeapons
-*/
+        getData()
         prepareScreen()
-
-        /*spinner2 = findViewById(R.id.spinner2)
-        val arraySpinner = arrayOf("1", "2", "3", "4", "5", "6", "7")
-        val adapter = ArrayAdapter<String>(
-            this,
-            android.R.layout.simple_spinner_item, arraySpinner
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner2?.adapter = adapter*/
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -148,23 +123,77 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         when(category){
             EquipmentCategory.PISTOL -> {
                 if(secondaryDialog)
-                    Toast.makeText(this, game!!.pistolWeapons[position].name, Toast.LENGTH_SHORT).show()
+                    pistolGuns?.get(position)?.let { player?.registerSecondaryGun(it) }
             }
             EquipmentCategory.HEAVY -> {
                 if (mainDialog)
-                    Toast.makeText(this, game!!.heavyWeapons[position].name, Toast.LENGTH_SHORT).show()
-
+                    Toast.makeText(this, heavyGuns?.get(position)?.name, Toast.LENGTH_SHORT).show()
             }
             EquipmentCategory.SMG -> {
                 if (mainDialog)
-                    Toast.makeText(this, game!!.smgWeapons[position].name, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, smgGuns?.get(position)?.name, Toast.LENGTH_SHORT).show()
             }
             EquipmentCategory.RIFLE -> {
                 if (mainDialog)
-                    Toast.makeText(this, game!!.rifleWeapons[position].name, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, rifleGuns?.get(position)?.name, Toast.LENGTH_SHORT).show()
+            }
+            else -> Toast.makeText(this, "NEIN!", Toast.LENGTH_SHORT).show()
+        }
+        updateView()
+        dialog?.dismiss()
+    }
+
+    private fun updateView(){
+        val adapterMainGuns =
+            ArrayAdapter(this, android.R.layout.simple_spinner_item, player!!.mainGuns!!)
+        val adapterSecondaryGuns =
+            ArrayAdapter(this, android.R.layout.simple_spinner_item, player!!.secondaryGuns!!)
+
+        adapterMainGuns.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapterSecondaryGuns.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        spinnerMainGuns!!.adapter = adapterMainGuns
+        spinnerSecondaryGuns!!.adapter = adapterSecondaryGuns
+
+        for (i in 0 .. player!!.mainGuns!!.size) {
+            if(player?.mainGuns!!.isNotEmpty() &&
+                player!!.mainGuns!![i] == player!!.mainGunInGame) {
+                spinnerMainGuns!!.setSelection(i)
+                break
             }
         }
-        dialog?.dismiss()
+
+        for (i in 0 .. player!!.secondaryGuns!!.size) {
+            if(player?.secondaryGuns!!.isNotEmpty() &&
+                player!!.secondaryGuns!![i] == player!!.secondaryGunInGame){
+                spinnerSecondaryGuns!!.setSelection(i)
+                break
+            }
+        }
+
+        editTextMainCasualties!!.setText(
+            if (player!!.mainGunInGame == null) "0" else player!!.mainGunInGame?.casualty.toString()
+        )
+        editTextSecondaryCasualties!!.setText(
+            if (player!!.secondaryGunInGame == null) "0"
+            else player!!.secondaryGunInGame?.casualty.toString()
+        )
+    }
+
+    private fun getData() {
+        player = intent.getParcelableExtra(ItemDetailFragment.ARG_PLAYER)
+        pistolGuns = intent.getParcelableArrayListExtra(ItemDetailFragment.ARG_PISTOL)
+        heavyGuns = intent.getParcelableArrayListExtra(ItemDetailFragment.ARG_HEAVY)
+        smgGuns = intent.getParcelableArrayListExtra(ItemDetailFragment.ARG_SMG)
+        rifleGuns = intent.getParcelableArrayListExtra(ItemDetailFragment.ARG_RIFLE)
+        defuseKit = intent.getParcelableExtra(ItemDetailFragment.ARG_DEFUSE_KIT)
+        helmet = intent.getParcelableExtra(ItemDetailFragment.ARG_HELMET)
+        vest = intent.getParcelableExtra(ItemDetailFragment.ARG_VEST)
+
+        secondaryGuns[EquipmentCategory.PISTOL] = pistolGuns
+        mainGuns[EquipmentCategory.HEAVY] = heavyGuns
+        mainGuns[EquipmentCategory.SMG] = smgGuns
+        mainGuns[EquipmentCategory.RIFLE] = rifleGuns
     }
 
     private fun initViews() {
@@ -187,6 +216,8 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         buttonRemoveMainCasualty = findViewById(R.id.imageButton_remove_main_casualty)
         buttonRemoveSecondaryCasualty = findViewById(R.id.imageButton_remove_secondary_casualty)
 
+        initButtons()
+
         spinnerMainGuns = findViewById(R.id.spinner_main_guns)
         spinnerSecondaryGuns = findViewById(R.id.spinner_secondary_guns)
     }
@@ -195,37 +226,19 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
 
         initViews()
 
-        textViewVest?.text = game!!.kit.name
-        textViewHelmet?.text = game!!.helmet.name
-        textViewDefuseKit?.text = game!!.vest.name
+        updateView()
 
-        val arrayMainGuns = arrayOfNulls<MainGunJava>(player!!.mainGuns.size)
-        val arraySecondaryGuns = arrayOfNulls<SecondaryGunJava>(player!!.secondaryGuns.size)
+        textViewVest?.text = defuseKit?.name
+        textViewHelmet?.text = helmet?.name
+        textViewDefuseKit?.text = vest?.name
+    }
 
-        val adapterMainGuns = ArrayAdapter(this, android.R.layout.simple_spinner_item, arrayMainGuns)
-        val adapterSecondaryGuns = ArrayAdapter(this, android.R.layout.simple_spinner_item, arraySecondaryGuns)
-
-        adapterMainGuns.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        adapterSecondaryGuns.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        player!!.mainGuns.toArray(arrayMainGuns)
-        player!!.secondaryGuns.toArray(arraySecondaryGuns)
-
-        spinnerMainGuns!!.adapter = adapterMainGuns
-        spinnerSecondaryGuns!!.adapter = adapterSecondaryGuns
-
-        editTextMainCasualties!!.setText(
-            if (player!!.lastMainGun == null) "0" else player!!.lastMainGun.casualty.toString()
-        )
-        editTextSecondaryCasualties!!.setText(
-            if (player!!.lastSecondaryGun == null) "0" else player!!.lastSecondaryGun.casualty.toString()
-        )
-
+    private fun initButtons() {
         buttonMainGuns?.setOnClickListener {
             val bundle = Bundle()
             bundle.putSerializable(
                 ItemDetailFragment.ARG_GUNS,
-                mainGuns as EnumMap<EquipmentCategory, List<MainGunJava>>
+                mainGuns as EnumMap<*, *>
             )
             mainDialog = true
             openGunDialog(bundle)
@@ -235,10 +248,40 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
             val bundle = Bundle()
             bundle.putSerializable(
                 ItemDetailFragment.ARG_GUNS,
-                secondaryGuns as EnumMap<EquipmentCategory, List<SecondaryGunJava>>
+                secondaryGuns as EnumMap<*, *>
             )
             secondaryDialog = true
             openGunDialog(bundle)
+        }
+
+        buttonAddMainCasualty?.setOnClickListener {
+            if(player?.mainGunInGame != null && player?.mainGunInGame?.casualty!! < 5){
+                player?.mainGunInGame?.casualty!!.inc()
+                editText_main_casualties.setText(player?.mainGunInGame?.casualty.toString())
+            }
+        }
+
+        buttonRemoveMainCasualty?.setOnClickListener {
+            if(player?.mainGunInGame != null && player?.mainGunInGame?.casualty!! > 0){
+                player?.mainGunInGame?.casualty!!.dec()
+                editText_main_casualties.setText(player?.mainGunInGame?.casualty.toString())
+            }
+        }
+
+        buttonAddSecondaryCasualty?.setOnClickListener {
+            if(player?.secondaryGunInGame != null && player?.secondaryGunInGame?.casualty!! < 5){
+                player?.secondaryGunInGame?.casualty = player?.secondaryGunInGame?.casualty!!.inc()
+                editText_secondary_casualties.setText(
+                    player?.secondaryGunInGame?.casualty.toString())
+            }
+        }
+
+        buttonRemoveSecondaryCasualty?.setOnClickListener {
+            if(player?.secondaryGunInGame != null && player?.secondaryGunInGame?.casualty!! > 0){
+                player?.secondaryGunInGame?.casualty = player?.secondaryGunInGame?.casualty!!.dec()
+                editText_secondary_casualties.setText(
+                    player?.secondaryGunInGame?.casualty.toString())
+            }
         }
     }
 
