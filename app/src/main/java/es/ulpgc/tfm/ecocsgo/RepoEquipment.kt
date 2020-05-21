@@ -5,11 +5,26 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import es.ulpgc.tfm.ecocsgo.db.AppDatabase
+import es.ulpgc.tfm.ecocsgo.db.AppHelperDB
 import es.ulpgc.tfm.ecocsgo.model.*
 
-class RepoEquipment(var game: Game, val context: Context) {
+
+class RepoEquipment(val context: Context) {
+
+    private var customerHelper: AppHelperDB? = null
+    private var helper: AppDatabase? = null
+
+    private var weaponsLoaded: Boolean = false
+    private var grenadesLoaded: Boolean = false
+    private var utilitiesLoaded: Boolean = false
+    private var economyLoaded: Boolean = false
 
     fun loadData(){
+        helper = AppDatabase(context)
+        customerHelper = AppHelperDB(helper)
+        customerHelper!!.open()
+
         loadWeapons()
         loadGrenades()
         loadUtilities()
@@ -29,9 +44,9 @@ class RepoEquipment(var game: Game, val context: Context) {
             item = 0
         }
 
-        var category = EquipmentCategory.NONE
+        var category = EquipmentCategoryEnum.NONE
         if (description != null && idCategory != null) {
-            for (categoryAux in EquipmentCategory.values()) {
+            for (categoryAux in EquipmentCategoryEnum.values()) {
                 if (categoryAux.description == description && categoryAux.id == idCategory) {
                     category = categoryAux
                     break
@@ -54,17 +69,17 @@ class RepoEquipment(var game: Game, val context: Context) {
         val cost = snapshot.child("cost").getValue(Int::class.java)!!
 
         return when(category){
-            EquipmentCategory.PISTOL ->
+            EquipmentCategoryEnum.PISTOL ->
                 loadGun(snapshot, name, equipmentTeam, category, numeration, cost)
-            EquipmentCategory.HEAVY ->
+            EquipmentCategoryEnum.HEAVY ->
                 loadGun(snapshot, name, equipmentTeam, category, numeration, cost)
-            EquipmentCategory.SMG ->
+            EquipmentCategoryEnum.SMG ->
                 loadGun(snapshot, name, equipmentTeam, category, numeration, cost)
-            EquipmentCategory.RIFLE ->
+            EquipmentCategoryEnum.RIFLE ->
                 loadGun(snapshot, name, equipmentTeam, category, numeration, cost)
-            EquipmentCategory.GEAR ->
+            EquipmentCategoryEnum.GEAR ->
                 loadUtility(name, equipmentTeam, category, numeration, cost)
-            EquipmentCategory.GRENADE ->
+            EquipmentCategoryEnum.GRENADE ->
                 loadGrenade(name, equipmentTeam, category, numeration, cost)
             else -> null
         }
@@ -80,24 +95,23 @@ class RepoEquipment(var game: Game, val context: Context) {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(pistolCode : String in context.resources.getStringArray(R.array.pistol_data))
-                    game.pistolWeapons.add(loadEquipment(
-                        snapshot.child("secondary"), pistolCode) as SecondaryGun
-                    )
+                    customerHelper!!.createWeapon(loadEquipment(
+                        snapshot.child("secondary"), pistolCode) as SecondaryWeapon)
                 for(heavyCode : String in context.resources.getStringArray(R.array.heavy_data))
-                    game.heavyWeapons.add(
-                        loadEquipment(snapshot.child("heavy"), heavyCode) as MainGun
+                    customerHelper!!.createWeapon(
+                        loadEquipment(snapshot.child("heavy"), heavyCode) as MainWeapon
                     )
                 for(smgCode : String in context.resources.getStringArray(R.array.smg_data))
-                    game.smgWeapons.add(
-                        loadEquipment(snapshot.child("smg"), smgCode) as MainGun
+                    customerHelper!!.createWeapon(
+                        loadEquipment(snapshot.child("smg"), smgCode) as MainWeapon
                     )
                 for(rifleCode : String in context.resources.getStringArray(R.array.rifle_data))
-                    game.rifleWeapons.add(
-                        loadEquipment(snapshot.child("rifle"), rifleCode) as MainGun
+                    customerHelper!!.createWeapon(
+                        loadEquipment(snapshot.child("rifle"), rifleCode) as MainWeapon
                     )
 
-                val gameActivity = context as GameActivity
-                gameActivity.finishRepoLoading()
+                weaponsLoaded = true
+                checkDataLoaded()
             }
         })
     }
@@ -111,7 +125,10 @@ class RepoEquipment(var game: Game, val context: Context) {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(grenadeCode : String in context.resources.getStringArray(R.array.grenade_data))
-                    game.grenades.add(loadEquipment(snapshot, grenadeCode) as Grenade)
+                    customerHelper!!.createGrenade(loadEquipment(snapshot, grenadeCode) as Grenade)
+
+                grenadesLoaded = true
+                checkDataLoaded()
             }
 
         })
@@ -130,10 +147,13 @@ class RepoEquipment(var game: Game, val context: Context) {
                 val zeusCode = context.resources.getString(R.string.zeus_data)
                 val vestCode = context.resources.getString(R.string.vest_data)
 
-                game.defuseKit = loadEquipment(snapshot, defuseKitCode) as DefuseKit
-                game.helmet = loadEquipment(snapshot, helmetCode) as Helmet
-                game.zeus = loadEquipment(snapshot, zeusCode) as Zeus
-                game.vest = loadEquipment(snapshot, vestCode) as Vest
+                customerHelper!!.createUtility(loadEquipment(snapshot, defuseKitCode) as DefuseKit)
+                customerHelper!!.createUtility(loadEquipment(snapshot, helmetCode) as Helmet)
+                customerHelper!!.createUtility(loadEquipment(snapshot, zeusCode) as Zeus)
+                customerHelper!!.createUtility(loadEquipment(snapshot, vestCode) as Vest)
+
+                utilitiesLoaded = true
+                checkDataLoaded()
             }
 
         })
@@ -167,22 +187,23 @@ class RepoEquipment(var game: Game, val context: Context) {
                     victory[TypeVictoryGameEnum.valueOf(quantity.key!!)] =
                         quantity.getValue(Int::class.java)!!
 
-                game.economy = EconomyGame(
-                    beginning, defeatBonus, defuseBonus, explosionBonus,
-                    grenadeKill, killPartnerPenalty, knifeKill,
-                    leavingGame, max, plantBonus, victory
-                )
+                customerHelper!!.createEconomy(EconomyGame(beginning, defeatBonus, defuseBonus,
+                    explosionBonus, grenadeKill, killPartnerPenalty, knifeKill, leavingGame,
+                    max, plantBonus, victory))
+
+                economyLoaded = true
+                checkDataLoaded()
             }
 
         })
     }
 
     private fun loadGun(dataSnapshot: DataSnapshot, name: String, team: EquipmentTeamEnum,
-                        category: EquipmentCategory, numeration: EquipmentNumeration,
-                        cost: Int) : Gun? {
+                        category: EquipmentCategoryEnum, numeration: EquipmentNumeration,
+                        cost: Int) : Weapon? {
         val reward = dataSnapshot.child("reward").getValue(Int::class.java)!!
-        return if(category == EquipmentCategory.PISTOL)
-            SecondaryGun(
+        return if(category == EquipmentCategoryEnum.PISTOL)
+            SecondaryWeapon(
                 name,
                 team,
                 category,
@@ -190,7 +211,7 @@ class RepoEquipment(var game: Game, val context: Context) {
                 cost,
                 reward
             )
-        else MainGun(
+        else MainWeapon(
             name,
             team,
             category,
@@ -201,7 +222,7 @@ class RepoEquipment(var game: Game, val context: Context) {
     }
 
     private fun loadGrenade(name: String, team: EquipmentTeamEnum,
-                            category: EquipmentCategory, numeration: EquipmentNumeration,
+                            category: EquipmentCategoryEnum, numeration: EquipmentNumeration,
                             cost: Int) : Grenade? {
         return Grenade(
             name,
@@ -213,7 +234,7 @@ class RepoEquipment(var game: Game, val context: Context) {
     }
 
     private fun loadUtility(name: String, team: EquipmentTeamEnum,
-                            category: EquipmentCategory, numeration: EquipmentNumeration,
+                            category: EquipmentCategoryEnum, numeration: EquipmentNumeration,
                             cost: Int) : Equipment?{
         return when (numeration.item){
             1 -> Vest(
@@ -248,4 +269,12 @@ class RepoEquipment(var game: Game, val context: Context) {
         }
     }
 
+    private fun checkDataLoaded(){
+        if (weaponsLoaded && grenadesLoaded && utilitiesLoaded && economyLoaded){
+            customerHelper!!.close()
+            val mainActivity = context as MainActivity
+            mainActivity.finishRepoLoading()
+            helper?.listaPuntuaciones()
+        }
+    }
 }

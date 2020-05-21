@@ -4,11 +4,12 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
+import es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment
+import es.ulpgc.tfm.ecocsgo.fragment.GunListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.model.*
 import kotlinx.android.synthetic.main.activity_detail_player.*
 import kotlinx.android.synthetic.main.activity_game.*
@@ -17,7 +18,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    GunListFragmentDialog.GunClickListener, DialogInterface.OnDismissListener {
+    DialogInterface.OnDismissListener,
+    DetailPlayerFragment.OnDetailPlayerFragmentInteraction{
 
     private var spinnerMainGuns: Spinner? = null
     private var spinnerSecondaryGuns: Spinner? = null
@@ -46,18 +48,18 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     private var secondaryDialog = false
 
     private var player: Player? = null
-    private var pistolGuns: ArrayList<SecondaryGun>? = null
-    private var heavyGuns: ArrayList<MainGun>? = null
-    private var smgGuns: ArrayList<MainGun>? = null
-    private var rifleGuns: ArrayList<MainGun>? = null
+    private var pistolGuns: ArrayList<SecondaryWeapon>? = null
+    private var heavyGuns: ArrayList<MainWeapon>? = null
+    private var smgGuns: ArrayList<MainWeapon>? = null
+    private var rifleGuns: ArrayList<MainWeapon>? = null
     private var defuseKit: DefuseKit? = null
     private var helmet: Helmet? = null
     private var vest: Vest? = null
 
-    private var mainGuns: MutableMap<EquipmentCategory, ArrayList<MainGun>?> =
-        EnumMap(EquipmentCategory::class.java)
-    private var secondaryGuns: MutableMap<EquipmentCategory, ArrayList<SecondaryGun>?> =
-        EnumMap(EquipmentCategory::class.java)
+    private var mainGuns: MutableMap<EquipmentCategoryEnum, ArrayList<MainWeapon>?> =
+        EnumMap(EquipmentCategoryEnum::class.java)
+    private var secondaryGuns: MutableMap<EquipmentCategoryEnum, ArrayList<SecondaryWeapon>?> =
+        EnumMap(EquipmentCategoryEnum::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,7 +120,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         mainDialog = false
         secondaryDialog = false
     }
-
+/*
     override fun selectGun(view: View, category: EquipmentCategory, position: Int) {
         when(category){
             EquipmentCategory.PISTOL -> {
@@ -141,7 +143,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         }
         updateView()
         dialog?.dismiss()
-    }
+    }*/
 
     private fun updateView(){
         val adapterMainGuns =
@@ -181,19 +183,19 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     }
 
     private fun getData() {
-        player = intent.getParcelableExtra(ItemDetailFragment.ARG_PLAYER)
-        pistolGuns = intent.getParcelableArrayListExtra(ItemDetailFragment.ARG_PISTOL)
-        heavyGuns = intent.getParcelableArrayListExtra(ItemDetailFragment.ARG_HEAVY)
-        smgGuns = intent.getParcelableArrayListExtra(ItemDetailFragment.ARG_SMG)
-        rifleGuns = intent.getParcelableArrayListExtra(ItemDetailFragment.ARG_RIFLE)
-        defuseKit = intent.getParcelableExtra(ItemDetailFragment.ARG_DEFUSE_KIT)
-        helmet = intent.getParcelableExtra(ItemDetailFragment.ARG_HELMET)
-        vest = intent.getParcelableExtra(ItemDetailFragment.ARG_VEST)
+        player = intent.getParcelableExtra(DetailPlayerFragment.ARG_PLAYER)
+        pistolGuns = intent.getParcelableArrayListExtra(DetailPlayerFragment.ARG_PISTOL)
+        heavyGuns = intent.getParcelableArrayListExtra(DetailPlayerFragment.ARG_HEAVY)
+        smgGuns = intent.getParcelableArrayListExtra(DetailPlayerFragment.ARG_SMG)
+        rifleGuns = intent.getParcelableArrayListExtra(DetailPlayerFragment.ARG_RIFLE)
+        defuseKit = intent.getParcelableExtra(DetailPlayerFragment.ARG_DEFUSE_KIT)
+        helmet = intent.getParcelableExtra(DetailPlayerFragment.ARG_HELMET)
+        vest = intent.getParcelableExtra(DetailPlayerFragment.ARG_VEST)
 
-        secondaryGuns[EquipmentCategory.PISTOL] = pistolGuns
-        mainGuns[EquipmentCategory.HEAVY] = heavyGuns
-        mainGuns[EquipmentCategory.SMG] = smgGuns
-        mainGuns[EquipmentCategory.RIFLE] = rifleGuns
+        secondaryGuns[EquipmentCategoryEnum.PISTOL] = pistolGuns
+        mainGuns[EquipmentCategoryEnum.HEAVY] = heavyGuns
+        mainGuns[EquipmentCategoryEnum.SMG] = smgGuns
+        mainGuns[EquipmentCategoryEnum.RIFLE] = rifleGuns
     }
 
     private fun initViews() {
@@ -237,7 +239,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         buttonMainGuns?.setOnClickListener {
             val bundle = Bundle()
             bundle.putSerializable(
-                ItemDetailFragment.ARG_GUNS,
+                DetailPlayerFragment.ARG_GUNS,
                 mainGuns as EnumMap<*, *>
             )
             mainDialog = true
@@ -247,7 +249,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         buttonSecondaryGuns?.setOnClickListener {
             val bundle = Bundle()
             bundle.putSerializable(
-                ItemDetailFragment.ARG_GUNS,
+                DetailPlayerFragment.ARG_GUNS,
                 secondaryGuns as EnumMap<*, *>
             )
             secondaryDialog = true
@@ -286,9 +288,13 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     }
 
     private fun openGunDialog(bundle: Bundle) {
-        dialog = GunListFragmentDialog(this)
+       /* dialog = GunListFragmentDialog(this)
         dialog!!.arguments = bundle
-        dialog!!.show(supportFragmentManager, null)
+        dialog!!.show(supportFragmentManager, null)*/
+    }
+
+    override fun prueba() {
+        Toast.makeText(this, "DetailPlayerActivity", Toast.LENGTH_LONG).show()
     }
 
 }

@@ -2,6 +2,7 @@ package es.ulpgc.tfm.ecocsgo.adapter
 
 import android.content.Intent
 import android.graphics.Color
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,9 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import es.ulpgc.tfm.ecocsgo.*
 import es.ulpgc.tfm.ecocsgo.callback.PlayerCallback
+import es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment
 import es.ulpgc.tfm.ecocsgo.model.Player
-import kotlinx.android.synthetic.main.item_player_list.view.*
+import kotlinx.android.synthetic.main.item_player.view.*
 import java.util.*
 
 class PlayerRecyclerViewAdapter(
@@ -49,35 +51,43 @@ class PlayerRecyclerViewAdapter(
 
         onClickListener = View.OnClickListener { v ->
             val player = v.tag as Player
-            /*if (twoPane) {
-                val fragment = ItemDetailFragment().apply {
+            if (twoPane) {
+                val fragment = DetailPlayerFragment()
+                    .apply {
                     arguments = Bundle().apply {
-                        // putString(ItemDetailFragment.ARG_ITEM_KIT, item)
+                        putParcelable(DetailPlayerFragment.ARG_PLAYER, player)
+                        /*putParcelableArrayList(DetailPlayerFragment.ARG_PISTOL, parentActivity.game?.pistolWeapons)
+                        putParcelableArrayList(DetailPlayerFragment.ARG_HEAVY, parentActivity.game?.heavyWeapons)
+                        putParcelableArrayList(DetailPlayerFragment.ARG_SMG, parentActivity.game?.smgWeapons)
+                        putParcelableArrayList(DetailPlayerFragment.ARG_RIFLE, parentActivity.game?.rifleWeapons)
+                        putParcelable(DetailPlayerFragment.ARG_DEFUSE_KIT, parentActivity.game?.defuseKit)
+                        putParcelable(DetailPlayerFragment.ARG_HELMET, parentActivity.game?.helmet)
+                        putParcelable(DetailPlayerFragment.ARG_VEST, parentActivity.game?.vest)*/
                     }
                 }
                 parentActivity.supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.item_detail_container, fragment)
                     .commit()
-            } else {*/
+            } else {
                 val intent = Intent(v.context, DetailPlayerActivity::class.java).apply {
-                    putExtra(ItemDetailFragment.ARG_PLAYER, player)
-                    putParcelableArrayListExtra(ItemDetailFragment.ARG_PISTOL, parentActivity.game?.pistolWeapons)
-                    putParcelableArrayListExtra(ItemDetailFragment.ARG_HEAVY, parentActivity.game?.heavyWeapons)
-                    putParcelableArrayListExtra(ItemDetailFragment.ARG_SMG, parentActivity.game?.smgWeapons)
-                    putParcelableArrayListExtra(ItemDetailFragment.ARG_RIFLE, parentActivity.game?.rifleWeapons)
-                    putExtra(ItemDetailFragment.ARG_DEFUSE_KIT, parentActivity.game?.defuseKit)
-                    putExtra(ItemDetailFragment.ARG_HELMET, parentActivity.game?.helmet)
-                    putExtra(ItemDetailFragment.ARG_VEST, parentActivity.game?.vest)
+                    putExtra(DetailPlayerFragment.ARG_PLAYER, player)
+                    /*putParcelableArrayListExtra(DetailPlayerFragment.ARG_PISTOL, parentActivity.game?.pistolWeapons)
+                    putParcelableArrayListExtra(DetailPlayerFragment.ARG_HEAVY, parentActivity.game?.heavyWeapons)
+                    putParcelableArrayListExtra(DetailPlayerFragment.ARG_SMG, parentActivity.game?.smgWeapons)
+                    putParcelableArrayListExtra(DetailPlayerFragment.ARG_RIFLE, parentActivity.game?.rifleWeapons)
+                    putExtra(DetailPlayerFragment.ARG_DEFUSE_KIT, parentActivity.game?.defuseKit)
+                    putExtra(DetailPlayerFragment.ARG_HELMET, parentActivity.game?.helmet)
+                    putExtra(DetailPlayerFragment.ARG_VEST, parentActivity.game?.vest)*/
                 }
                 v.context.startActivity(intent)
-            //}
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_player_list, parent, false)
+            .inflate(R.layout.item_player, parent, false)
         return ViewHolder(view)
     }
 

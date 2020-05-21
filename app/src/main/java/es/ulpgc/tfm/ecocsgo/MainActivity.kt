@@ -2,11 +2,13 @@ package es.ulpgc.tfm.ecocsgo
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         startGameButton = findViewById(R.id.start_game)
+        startGameButton?.visibility = View.GONE
         startGameButton?.setOnClickListener {
 
             val options = arrayOf<CharSequence>(
@@ -39,6 +42,14 @@ class MainActivity : AppCompatActivity() {
             }
             builder.show()
         }
+
+        val repo = RepoEquipment(this)
+        repo.loadData()
+    }
+
+    fun finishRepoLoading(){
+        progress_bar.visibility = View.GONE
+        startGameButton?.visibility = View.VISIBLE
     }
 
     companion object{

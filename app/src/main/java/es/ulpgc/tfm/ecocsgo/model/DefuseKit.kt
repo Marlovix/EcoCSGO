@@ -5,6 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class DefuseKit(override var name: String, override var team: EquipmentTeamEnum,
-                     override var category: EquipmentCategory,
+                     override var category: EquipmentCategoryEnum,
                      override var numeration: EquipmentNumeration, override var cost: Int) :
     Equipment(name, team, category, numeration, cost), Parcelable

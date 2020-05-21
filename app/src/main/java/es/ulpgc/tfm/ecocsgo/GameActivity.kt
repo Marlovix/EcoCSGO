@@ -1,14 +1,14 @@
 package es.ulpgc.tfm.ecocsgo
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
+import androidx.core.view.setMargins
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -20,15 +20,20 @@ import com.google.android.material.snackbar.Snackbar
 import es.ulpgc.tfm.ecocsgo.MainActivity.Companion.ARG_TEAM
 import es.ulpgc.tfm.ecocsgo.adapter.PlayerRecyclerViewAdapter
 import es.ulpgc.tfm.ecocsgo.callback.PlayerCallback
+import es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment
+import es.ulpgc.tfm.ecocsgo.fragment.GunListFragmentDialog
+import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
 import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
 import es.ulpgc.tfm.ecocsgo.model.Game
 import es.ulpgc.tfm.ecocsgo.model.Player
 import es.ulpgc.tfm.ecocsgo.viewmodel.PlayersViewModel
 import kotlinx.android.synthetic.main.content_game.*
-import kotlinx.android.synthetic.main.player_list.*
+import kotlinx.android.synthetic.main.list_players.*
 import java.util.*
 
-class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, DataLoadListener {
+class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    GunListFragmentDialog.OnGunListFragmentInteraction,
+    DetailPlayerFragment.OnDetailPlayerFragmentInteraction {
 
     private var twoPane: Boolean = false
     var game : Game? = null
@@ -46,21 +51,20 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val teamSelected = intent.getStringExtra(ARG_TEAM)
         if(teamSelected != null) game = Game(EquipmentTeamEnum.valueOf(teamSelected))
 
-        val repo = RepoEquipment(game!!, this)
-        repo.loadData()
-
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
 
+        // large-screen layouts (res/values-w900dp) //
         if (item_detail_container != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
             twoPane = true
+            val params = CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.WRAP_CONTENT,
+                CoordinatorLayout.LayoutParams.MATCH_PARENT)
+            params.gravity = Gravity.START or Gravity.BOTTOM
+            params.setMargins(resources.getDimension(R.dimen.fab_margin).toInt())
+            fab.layoutParams = params
         }
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -72,11 +76,10 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
-    }
 
-    fun finishRepoLoading(){
-        startGame()
         setupRecyclerView()
+
+        startGame()
     }
 
     override fun onBackPressed() {
@@ -131,29 +134,21 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun onNameLoaded() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     private fun setupRecyclerView() {
         val players = MutableLiveData<ArrayList<Player>>()
         players.value = game!!.rounds[0]?.players
+
         playersViewModel = ViewModelProviders.of(this).get(PlayersViewModel::class.java)
         playersViewModel!!.init(players)
-
         playerAdapter = playersViewModel!!.getPlayers()?.value?.let {
             PlayerRecyclerViewAdapter(this, it, twoPane)
         }
-        val callback = playerAdapter?.let { PlayerCallback(it, this) }
-        val touchHelper = callback?.let { ItemTouchHelper(it) }
-        touchHelper?.attachToRecyclerView(player_list)
-
-        //player_list.setHasFixedSize(true)
-        //player_list.layoutManager = LinearLayoutManager(this)
 
         player_list.adapter = playerAdapter
 
-        progress_bar.visibility = View.GONE
+        val callback = playerAdapter?.let { PlayerCallback(it, this) }
+        val touchHelper = callback?.let { ItemTouchHelper(it) }
+        touchHelper?.attachToRecyclerView(player_list)
 
         val model = ViewModelProviders.of(this)[PlayersViewModel::class.java]
         model.getPlayers()?.observe(this, Observer<List<Player>>{ players ->
@@ -164,7 +159,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun startGame() {
-        game?.initRound()
+        //game?.initRound()
     }
 
     fun firstRound(){
@@ -173,6 +168,14 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun updateGame(){
 
+    }
+
+    override fun prueba() {
+        Toast.makeText(this, "GameActivity", Toast.LENGTH_LONG).show()
+    }
+
+    override fun selectGun(view: View, category: EquipmentCategoryEnum, position: Int) {
+        TODO("Not yet implemented")
     }
 
 }

@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-enum class EquipmentCategory(var description: String, var id: Int) : Parcelable {
+enum class EquipmentCategoryEnum(var description: String, var id: Int) : Parcelable {
     NONE("", 0),
     PISTOL("PISTOL", 1),
     HEAVY("HEAVY", 2),

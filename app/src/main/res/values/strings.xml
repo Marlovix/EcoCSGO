@@ -102,4 +102,6 @@
 	<string name="menu_share">Share</string>
 	<string name="menu_send">Send</string>
 	<string name="todo">TODO</string>
+	<string name="title_prueba_list">pruebas</string>
+	<string name="title_prueba_detail">prueba Detail</string>
 </resources>

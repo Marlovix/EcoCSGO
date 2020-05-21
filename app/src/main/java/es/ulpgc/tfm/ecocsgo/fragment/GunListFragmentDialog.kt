@@ -1,4 +1,4 @@
-package es.ulpgc.tfm.ecocsgo
+package es.ulpgc.tfm.ecocsgo.fragment
 
 import android.content.Context
 import android.content.DialogInterface
@@ -8,32 +8,41 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
+import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.adapter.EquipmentCategoryRecyclerViewAdapter
-import es.ulpgc.tfm.ecocsgo.model.EquipmentCategory
-import java.util.*
 import es.ulpgc.tfm.ecocsgo.model.Equipment
-import es.ulpgc.tfm.ecocsgo.model.Gun
-import kotlin.collections.ArrayList
+import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
+import es.ulpgc.tfm.ecocsgo.model.Weapon
+import java.util.*
 
 class GunListFragmentDialog(
-    private var listener: GunClickListener
+    private var interaction: OnGunListFragmentInteraction?
 ) : DialogFragment() {
 
-    private var guns : Map<EquipmentCategory, List<Equipment>> = EnumMap(EquipmentCategory::class.java)
+    private var guns : Map<EquipmentCategoryEnum, List<Equipment>> = EnumMap(EquipmentCategoryEnum::class.java)
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnGunListFragmentInteraction) {
+            interaction = context
+        } else {
+            throw RuntimeException("$context must implement OnGunListFragmentInteraction")
+        }
+    }
 
     @Suppress("UNCHECKED_CAST")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.category_gun_list, container, false)
+        val rootView = inflater.inflate(R.layout.list_category_gun, container, false)
 
         val recyclerView = rootView.findViewById(R.id.category_gun_list) as RecyclerView
 
         val bundle = arguments
-        guns = bundle?.getSerializable(ItemDetailFragment.ARG_GUNS) as Map<EquipmentCategory, ArrayList<Gun>>
+        guns = bundle?.getSerializable(DetailPlayerFragment.ARG_GUNS) as Map<EquipmentCategoryEnum, ArrayList<Weapon>>
 
-        if (rootView is RecyclerView) recyclerView.adapter = EquipmentCategoryRecyclerViewAdapter(guns, listener)
+        if (rootView is RecyclerView) recyclerView.adapter = EquipmentCategoryRecyclerViewAdapter(guns, interaction)
 
         return rootView
     }
@@ -48,15 +57,6 @@ class GunListFragmentDialog(
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is GunClickListener) {
-            listener = context
-        } else {
-            throw RuntimeException("$context must implement GunClickListener")
-        }
-    }
-
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         val activity = activity
@@ -65,8 +65,13 @@ class GunListFragmentDialog(
         }
     }
 
-    interface GunClickListener{
-        fun selectGun(view: View, category: EquipmentCategory, position: Int)
+    override fun onDetach() {
+        interaction = null
+        super.onDetach()
+    }
+
+    interface OnGunListFragmentInteraction{
+        fun selectGun(view: View, category: EquipmentCategoryEnum, position: Int)
     }
 
 }

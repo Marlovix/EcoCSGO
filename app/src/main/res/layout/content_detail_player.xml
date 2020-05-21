@@ -5,7 +5,6 @@
 		xmlns:app="http://schemas.android.com/apk/res-auto"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-
 		tools:showIn="@layout/activity_detail_player"
 		tools:context=".DetailPlayerActivity">
 	<TextView
@@ -274,16 +273,32 @@
 			android:layout_marginBottom="8dp"
 			app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="12dp"
 			app:layout_constraintTop_toBottomOf="@+id/textView_helmet" app:layout_constraintVertical_bias="0.043"/>
+
 	<Switch
+			android:id="@+id/switch_defuse_kit"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginLeft="8dp"
+			android:layout_marginTop="16dp"
+			android:layout_marginEnd="16dp"
+			android:layout_marginRight="16dp"
+			android:layout_marginBottom="16dp"
 			android:gravity="center_vertical"
 			android:switchMinWidth="100dp"
-			android:id="@+id/switch_defuse_kit"
+			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
-			android:layout_marginEnd="16dp" android:layout_marginRight="16dp"
-			app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
-			android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="1.0"
-			android:layout_marginTop="16dp"
-			app:layout_constraintTop_toBottomOf="@+id/switch_helmet"/>
+			app:layout_constraintHorizontal_bias="1.0"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/switch_helmet" />
+
+	<Button
+			android:id="@+id/button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Button"
+			app:layout_constraintBottom_toTopOf="@+id/switch_vest"
+			app:layout_constraintEnd_toEndOf="@+id/imageButton_delete_secondary_gun"
+			app:layout_constraintStart_toEndOf="@+id/imageButton_add_secondary_casualty"
+			app:layout_constraintTop_toBottomOf="@+id/imageButton_add_secondary_gun" />
 </androidx.constraintlayout.widget.ConstraintLayout>

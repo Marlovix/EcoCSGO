@@ -9,7 +9,7 @@ class Round(equipmentTeam: EquipmentTeamEnum, nPlayers: Int){
         for (i in 0 until nPlayers) players?.add(Player(equipmentTeam))
     }
 
-    fun initPlayers(secondaryGun: SecondaryGun){
+    fun initPlayers(secondaryGun: SecondaryWeapon){
         for (player in players!!) player.registerSecondaryGun(secondaryGun)
     }
 }

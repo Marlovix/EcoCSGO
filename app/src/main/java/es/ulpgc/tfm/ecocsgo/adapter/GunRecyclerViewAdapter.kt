@@ -6,21 +6,21 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import es.ulpgc.tfm.ecocsgo.GunListFragmentDialog
+import es.ulpgc.tfm.ecocsgo.fragment.GunListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.model.Equipment
-import es.ulpgc.tfm.ecocsgo.model.EquipmentCategory
-import kotlinx.android.synthetic.main.item_gun_list.view.*
+import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
+import kotlinx.android.synthetic.main.item_gun.view.*
 
 class GunRecyclerViewAdapter(
     private val values: List<Equipment>,
-    private val category: EquipmentCategory,
-    private val listener: GunListFragmentDialog.GunClickListener
+    private val category: EquipmentCategoryEnum,
+    private val interaction: GunListFragmentDialog.OnGunListFragmentInteraction?
 ) :
     RecyclerView.Adapter<GunRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_gun_list, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_gun, parent, false)
         val viewHolder = ViewHolder(view)
         view.setOnClickListener(viewHolder)
         return viewHolder
@@ -46,7 +46,7 @@ class GunRecyclerViewAdapter(
         val selectedGun: ImageView = view.imageView_selected
 
         override fun onClick(v: View?) {
-            listener.selectGun(v!!, category, adapterPosition)
+            interaction?.selectGun(v!!, category, adapterPosition)
         }
     }
 }

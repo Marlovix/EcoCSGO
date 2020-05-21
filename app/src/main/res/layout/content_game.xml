@@ -11,14 +11,12 @@
 			android:layout_height="wrap_content"
 			android:layout_width="match_parent"
 			android:theme="@style/AppTheme.AppBarOverlay">
-
 		<androidx.appcompat.widget.Toolbar
 				android:id="@+id/toolbar"
 				android:layout_width="match_parent"
 				android:layout_height="?attr/actionBarSize"
 				android:background="?attr/colorPrimary"
 				app:popupTheme="@style/AppTheme.PopupOverlay"/>
-
 	</com.google.android.material.appbar.AppBarLayout>
 
 	<FrameLayout
@@ -26,13 +24,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-		<ProgressBar
-				android:id="@+id/progress_bar"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"/>
-
-		<include layout="@layout/player_list"/>
+		<include layout="@layout/list_players"/>
 	</FrameLayout>
 
 	<com.google.android.material.floatingactionbutton.FloatingActionButton
