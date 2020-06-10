@@ -5,6 +5,5 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Grenade(override var name: String, override var team: EquipmentTeamEnum,
-                   override var category: EquipmentCategoryEnum,
                    override var numeration: EquipmentNumeration, override var cost: Int) :
-    Equipment(name, team, category, numeration, cost), Parcelable
+    Equipment(name, team, numeration, cost), Parcelable

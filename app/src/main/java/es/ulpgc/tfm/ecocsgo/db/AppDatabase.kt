@@ -1,9 +1,11 @@
 package es.ulpgc.tfm.ecocsgo.db
 
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.widget.Toast
+import es.ulpgc.tfm.ecocsgo.model.EquipmentNumeration
+import java.sql.SQLException
 
 class AppDatabase(var context: Context?) :
     SQLiteOpenHelper(
@@ -33,20 +35,6 @@ class AppDatabase(var context: Context?) :
         db.execSQL("DROP TABLE IF EXISTS $KEY_DEFEAT_TABLE")
         db.execSQL("DROP TABLE IF EXISTS $KEY_VICTORY_TABLE")
         onCreate(db)
-    }
-
-    fun listaPuntuaciones(): Array<String> {
-        val result: Array<String> = emptyArray()
-        val db = readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $KEY_WEAPON_TABLE", null)
-        while (cursor.moveToNext()) {
-            cursor.getInt(0).toString()
-            Toast.makeText(context, cursor.getString(2), Toast.LENGTH_SHORT).show()
-            break;
-        }
-        cursor.close()
-        db.close()
-        return result
     }
 
     companion object {

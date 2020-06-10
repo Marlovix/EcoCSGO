@@ -18,7 +18,7 @@ import java.util.*
 
 class PlayerRecyclerViewAdapter(
     private val parentActivity: GameActivity,
-    private val values: ArrayList<Player>,
+    private val players: ArrayList<Player>,
     private val twoPane: Boolean
 ) :
     RecyclerView.Adapter<PlayerRecyclerViewAdapter.ViewHolder>(),
@@ -27,11 +27,11 @@ class PlayerRecyclerViewAdapter(
     override fun onRowMoved(fromPosition: Int, toPosition: Int) {
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
-                Collections.swap(values, i, i + 1)
+                Collections.swap(players, i, i + 1)
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(values, i, i - 1)
+                Collections.swap(players, i, i - 1)
             }
         }
         notifyItemMoved(fromPosition, toPosition)
@@ -92,7 +92,7 @@ class PlayerRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val player = values[position]
+        val player = players[position]
 
         holder.mainGun.text = if (player.mainGunInGame != null)
             player.mainGunInGame!!.name else "-"
@@ -109,7 +109,7 @@ class PlayerRecyclerViewAdapter(
         }
     }
 
-    override fun getItemCount() = values.size
+    override fun getItemCount() = players.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardView: CardView = view.cardView_player

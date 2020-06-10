@@ -1,9 +1,9 @@
 package es.ulpgc.tfm.ecocsgo.db
 
 import android.content.ContentValues
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import es.ulpgc.tfm.ecocsgo.model.*
+import java.sql.SQLException
 
 class AppHelperDB(private val helper: AppDatabase?) {
     private var database: SQLiteDatabase? = null
@@ -112,6 +112,32 @@ class AppHelperDB(private val helper: AppDatabase?) {
         return database!!.insert(AppDatabase.KEY_VICTORY_TABLE, null, contentDB)
     }
 
+    @Throws(SQLException::class)
+    fun fetchWeaponByNumeration(numeration: EquipmentNumeration): Weapon? {
+        val selection = AppDatabase.KEY_CATEGORY_FIELD + " = '" + numeration.category.description +
+                "' AND " + AppDatabase.KEY_ITEM_FIELD + " = " + numeration.item
+        val cursor = database!!.query(true, AppDatabase.KEY_WEAPON_TABLE, columnsWeapon,
+            selection, null, null, null, null, null)
+
+        cursor?.moveToFirst()
+
+        val nameIndex = cursor.getColumnIndexOrThrow(AppDatabase.KEY_NAME_FIELD)
+        val teamIndex = cursor.getColumnIndexOrThrow(AppDatabase.KEY_TEAM_FIELD)
+        val costIndex = cursor.getColumnIndexOrThrow(AppDatabase.KEY_COST_FIELD)
+        val rewardIndex = cursor.getColumnIndexOrThrow(AppDatabase.KEY_REWARD_FIELD)
+
+        val name = cursor.getString(nameIndex)
+        val team = EquipmentTeamEnum.filterTeam(cursor.getString(teamIndex))
+        val cost = cursor.getInt(costIndex)
+        val reward = cursor.getInt(rewardIndex)
+
+        cursor.close()
+
+        return if(numeration.category == EquipmentCategoryEnum.PISTOL)
+            SecondaryWeapon(name, team, numeration, cost, reward)
+        else MainWeapon(name, team, numeration, cost, reward)
+    }
+
 /*
     @Throws(SQLException::class)
     fun fetchCustomerByID(idCustomer: Int): Cursor? {
@@ -212,7 +238,7 @@ class AppHelperDB(private val helper: AppDatabase?) {
         val initialValues = ContentValues()
         initialValues.put(AppDatabase.KEY_COST_FIELD, equipment.cost)
         initialValues.put(AppDatabase.KEY_NAME_FIELD, equipment.name)
-        initialValues.put(AppDatabase.KEY_CATEGORY_FIELD, equipment.category.id)
+        initialValues.put(AppDatabase.KEY_CATEGORY_FIELD, equipment.numeration.category.id)
         initialValues.put(AppDatabase.KEY_ITEM_FIELD, equipment.numeration.item)
         initialValues.put(AppDatabase.KEY_TEAM_FIELD, equipment.team.name)
         return initialValues

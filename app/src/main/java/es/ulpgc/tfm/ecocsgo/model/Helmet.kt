@@ -5,6 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Helmet(override var name: String, override var team: EquipmentTeamEnum,
-                  override var category: EquipmentCategoryEnum, override var numeration: EquipmentNumeration,
+                  override var numeration: EquipmentNumeration,
                   override var cost: Int) :
-    Equipment(name, team, category, numeration, cost), Parcelable
+    Equipment(name, team, numeration, cost), Parcelable

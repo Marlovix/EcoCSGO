@@ -37,7 +37,7 @@ class GunListFragmentDialog(
     ): View? {
         val rootView = inflater.inflate(R.layout.list_category_gun, container, false)
 
-        val recyclerView = rootView.findViewById(R.id.category_gun_list) as RecyclerView
+        val recyclerView = rootView.findViewById(R.id.list_category_gun) as RecyclerView
 
         val bundle = arguments
         guns = bundle?.getSerializable(DetailPlayerFragment.ARG_GUNS) as Map<EquipmentCategoryEnum, ArrayList<Weapon>>

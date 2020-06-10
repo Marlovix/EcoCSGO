@@ -70,17 +70,17 @@ class RepoEquipment(val context: Context) {
 
         return when(category){
             EquipmentCategoryEnum.PISTOL ->
-                loadGun(snapshot, name, equipmentTeam, category, numeration, cost)
+                loadGun(snapshot, name, equipmentTeam, numeration, cost)
             EquipmentCategoryEnum.HEAVY ->
-                loadGun(snapshot, name, equipmentTeam, category, numeration, cost)
+                loadGun(snapshot, name, equipmentTeam, numeration, cost)
             EquipmentCategoryEnum.SMG ->
-                loadGun(snapshot, name, equipmentTeam, category, numeration, cost)
+                loadGun(snapshot, name, equipmentTeam, numeration, cost)
             EquipmentCategoryEnum.RIFLE ->
-                loadGun(snapshot, name, equipmentTeam, category, numeration, cost)
+                loadGun(snapshot, name, equipmentTeam, numeration, cost)
             EquipmentCategoryEnum.GEAR ->
-                loadUtility(name, equipmentTeam, category, numeration, cost)
+                loadUtility(name, equipmentTeam, numeration, cost)
             EquipmentCategoryEnum.GRENADE ->
-                loadGrenade(name, equipmentTeam, category, numeration, cost)
+                loadGrenade(name, equipmentTeam, numeration, cost)
             else -> null
         }
 
@@ -199,14 +199,13 @@ class RepoEquipment(val context: Context) {
     }
 
     private fun loadGun(dataSnapshot: DataSnapshot, name: String, team: EquipmentTeamEnum,
-                        category: EquipmentCategoryEnum, numeration: EquipmentNumeration,
+                        numeration: EquipmentNumeration,
                         cost: Int) : Weapon? {
         val reward = dataSnapshot.child("reward").getValue(Int::class.java)!!
-        return if(category == EquipmentCategoryEnum.PISTOL)
+        return if(numeration.category == EquipmentCategoryEnum.PISTOL)
             SecondaryWeapon(
                 name,
                 team,
-                category,
                 numeration,
                 cost,
                 reward
@@ -214,54 +213,46 @@ class RepoEquipment(val context: Context) {
         else MainWeapon(
             name,
             team,
-            category,
             numeration,
             cost,
             reward
         )
     }
 
-    private fun loadGrenade(name: String, team: EquipmentTeamEnum,
-                            category: EquipmentCategoryEnum, numeration: EquipmentNumeration,
+    private fun loadGrenade(name: String, team: EquipmentTeamEnum, numeration: EquipmentNumeration,
                             cost: Int) : Grenade? {
         return Grenade(
             name,
             team,
-            category,
             numeration,
             cost
         )
     }
 
-    private fun loadUtility(name: String, team: EquipmentTeamEnum,
-                            category: EquipmentCategoryEnum, numeration: EquipmentNumeration,
+    private fun loadUtility(name: String, team: EquipmentTeamEnum, numeration: EquipmentNumeration,
                             cost: Int) : Equipment?{
         return when (numeration.item){
             1 -> Vest(
                 name,
                 team,
-                category,
                 numeration,
                 cost
             )
             2 -> Helmet(
                 name,
                 team,
-                category,
                 numeration,
                 cost
             )
             3 -> Zeus(
                 name,
                 team,
-                category,
                 numeration,
                 cost
             )
             4 -> DefuseKit(
                 name,
                 team,
-                category,
                 numeration,
                 cost
             )
@@ -274,7 +265,6 @@ class RepoEquipment(val context: Context) {
             customerHelper!!.close()
             val mainActivity = context as MainActivity
             mainActivity.finishRepoLoading()
-            helper?.listaPuntuaciones()
         }
     }
 }

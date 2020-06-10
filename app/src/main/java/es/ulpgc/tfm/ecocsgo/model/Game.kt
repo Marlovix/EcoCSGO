@@ -1,10 +1,10 @@
 package es.ulpgc.tfm.ecocsgo.model
 
+import android.content.Context
 import es.ulpgc.tfm.ecocsgo.db.AppDatabase
 import es.ulpgc.tfm.ecocsgo.db.AppHelperDB
-import kotlin.collections.ArrayList
 
-class Game(private val enemyTeam: EquipmentTeamEnum) {
+class Game(context : Context, private val enemyTeam: EquipmentTeamEnum) {
 
     internal val ROUNDS = 30
     internal val ENEMIES = 5
@@ -15,52 +15,32 @@ class Game(private val enemyTeam: EquipmentTeamEnum) {
 
     var economy: EconomyGame? = null
 
-    private var customerHelper: AppHelperDB? = null
-    private var helper: AppDatabase? = null
+    private var appDatabase: AppDatabase? = null
+    private var appHelperDB: AppHelperDB? = null
 
     init {
-        createGameRounds()
-    }
+        appDatabase = AppDatabase(context)
+        appHelperDB = AppHelperDB(appDatabase)
 
-    private fun createGameRounds() {
-        for (i in 0 until ROUNDS) rounds[i] = Round(enemyTeam, ENEMIES)
+        val numeration = EquipmentNumeration(1, EquipmentCategoryEnum.PISTOL)
+
+        val weapon = findGunByNumeration(numeration)
+        val weapon2 = weapon
     }
 
     fun initRound(){
         if(roundInGame == 1 || roundInGame == (ROUNDS / 2) + 1){
             var numeration = EquipmentNumeration(1, EquipmentCategoryEnum.PISTOL)
-            var secondaryGun = findGun(numeration) as SecondaryWeapon
+            var secondaryGun = findGunByNumeration(numeration) as SecondaryWeapon
             rounds[roundInGame-1]?.initPlayers(secondaryGun)
         }
     }
 
-    fun findGun(numeration: EquipmentNumeration): Weapon? {
-
-        val listWeapons: ArrayList<Weapon>? = ArrayList()
-        when (numeration.category) {
-            EquipmentCategoryEnum.PISTOL -> {
-                //for (pistolWeapon in pistolWeapons) listWeapons?.add(pistolWeapon)
-            }
-            EquipmentCategoryEnum.HEAVY -> {
-                //for (heavyWeapon in heavyWeapons) listWeapons?.add(heavyWeapon)
-            }
-            EquipmentCategoryEnum.SMG -> {
-                //for (smgWeapon in smgWeapons) listWeapons?.add(smgWeapon)
-            }
-            EquipmentCategoryEnum.RIFLE -> {
-                //for (rifleWeapon in rifleWeapons) listWeapons?.add(rifleWeapon)
-            }
-            else -> return null
-        }
-        return selectGun(listWeapons, numeration.item)
-    }
-
-    fun selectGun(listWeapons: ArrayList<Weapon>?, item: Int): Weapon? {
-        for (i in listWeapons?.indices!!) {
-            val gun = listWeapons[i]
-            if (gun.numeration.item == item && gun.team == enemyTeam) return gun
-        }
-        return null
+    fun findGunByNumeration(numeration: EquipmentNumeration): Weapon? {
+        appHelperDB!!.open()
+        val weapon: Weapon? = appHelperDB!!.fetchWeaponByNumeration(numeration)
+        appHelperDB!!.close()
+        return weapon
     }
 
 }

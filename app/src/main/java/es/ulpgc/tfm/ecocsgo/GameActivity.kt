@@ -3,6 +3,7 @@ package es.ulpgc.tfm.ecocsgo
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -26,8 +27,8 @@ import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
 import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
 import es.ulpgc.tfm.ecocsgo.model.Game
 import es.ulpgc.tfm.ecocsgo.model.Player
+import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
 import es.ulpgc.tfm.ecocsgo.viewmodel.PlayersViewModel
-import kotlinx.android.synthetic.main.content_game.*
 import kotlinx.android.synthetic.main.list_players.*
 import java.util.*
 
@@ -49,7 +50,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toolbar.title = title
 
         val teamSelected = intent.getStringExtra(ARG_TEAM)
-        if(teamSelected != null) game = Game(EquipmentTeamEnum.valueOf(teamSelected))
+        if(teamSelected != null) game = Game(this, EquipmentTeamEnum.valueOf(teamSelected))
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
@@ -135,20 +136,21 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun setupRecyclerView() {
+        val playersViewModel : PlayersViewModel by viewModels()
+        this.playersViewModel = playersViewModel
+
         val players = MutableLiveData<ArrayList<Player>>()
         players.value = game!!.rounds[0]?.players
 
-        playersViewModel = ViewModelProviders.of(this).get(PlayersViewModel::class.java)
-        playersViewModel!!.init(players)
         playerAdapter = playersViewModel!!.getPlayers()?.value?.let {
-            PlayerRecyclerViewAdapter(this, it, twoPane)
+            PlayerRecyclerViewAdapter(this, it as ArrayList<Player>, twoPane)
         }
 
-        player_list.adapter = playerAdapter
+        list_players.adapter = playerAdapter
 
         val callback = playerAdapter?.let { PlayerCallback(it, this) }
         val touchHelper = callback?.let { ItemTouchHelper(it) }
-        touchHelper?.attachToRecyclerView(player_list)
+        touchHelper?.attachToRecyclerView(list_players)
 
         val model = ViewModelProviders.of(this)[PlayersViewModel::class.java]
         model.getPlayers()?.observe(this, Observer<List<Player>>{ players ->
