@@ -56,6 +56,10 @@ class AppHelperDB(private val helper: AppDatabase?) {
         AppDatabase.KEY_BONUS_FIELD
     )
 
+    private fun existData(numeration: EquipmentNumeration) : Boolean {
+        return false
+    }
+
     fun open(): AppHelperDB {
         database = helper?.writableDatabase
         return this
@@ -67,21 +71,50 @@ class AppHelperDB(private val helper: AppDatabase?) {
 
     fun createWeapon(weapon: Weapon): Long {
         val contentDB = weaponMapper(weapon)
+        contentDB.getAsInteger(AppDatabase.KEY_ITEM_FIELD)
+
+        if(equipmentAlreadyExists(weapon.numeration, weapon.name)){
+            val selectionArgs = arrayOf(weapon.numeration.category.id.toString(),
+                weapon.numeration.item.toString(), weapon.name)
+            database!!.delete(AppDatabase.KEY_WEAPON_TABLE,
+                AppDatabase.SELECTION_NUMERATION + " AND " +
+                        AppDatabase.SELECTION_NAME, selectionArgs)
+        }
+
         return database!!.insert(AppDatabase.KEY_WEAPON_TABLE, null, contentDB)
     }
 
     fun createUtility(utility: Equipment): Long {
         val contentDB = equipmentMapper(utility)
+
+        if(equipmentAlreadyExists(utility.numeration)){
+            val selectionArgs = arrayOf(
+                utility.numeration.category.id.toString(), utility.numeration.item.toString())
+            database!!.delete(AppDatabase.KEY_UTILITY_TABLE,
+                AppDatabase.SELECTION_NUMERATION, selectionArgs)
+        }
+
         return database!!.insert(AppDatabase.KEY_UTILITY_TABLE, null, contentDB)
     }
 
     fun createGrenade(grenade: Grenade): Long {
         val contentDB = equipmentMapper(grenade)
+
+        if(equipmentAlreadyExists(grenade.numeration)){
+            val selectionArgs = arrayOf(
+                grenade.numeration.category.id.toString(), grenade.numeration.item.toString())
+            database!!.delete(AppDatabase.KEY_GRENADE_TABLE,
+                AppDatabase.SELECTION_NUMERATION, selectionArgs)
+        }
+
         return database!!.insert(AppDatabase.KEY_GRENADE_TABLE, null, contentDB)
     }
 
     fun createEconomy(economy: EconomyGame): Long {
         val contentDB = economyMapper(economy)
+
+        database!!.delete(AppDatabase.KEY_DEFEAT_TABLE, null, null)
+        database!!.delete(AppDatabase.KEY_VICTORY_TABLE, null, null)
 
         var order = 1
         for(bonus in economy.defeatBonus){
@@ -93,6 +126,7 @@ class AppHelperDB(private val helper: AppDatabase?) {
             createVictory(victory.key, victory.value)
         }
 
+        database!!.delete(AppDatabase.KEY_ECONOMY_TABLE, null, null)
         return database!!.insert(AppDatabase.KEY_ECONOMY_TABLE, null, contentDB)
     }
 
@@ -113,21 +147,93 @@ class AppHelperDB(private val helper: AppDatabase?) {
     }
 
     @Throws(SQLException::class)
-    fun fetchWeaponByNumeration(numeration: EquipmentNumeration): Weapon? {
-        val selection = AppDatabase.KEY_CATEGORY_FIELD + " = '" + numeration.category.description +
-                "' AND " + AppDatabase.KEY_ITEM_FIELD + " = " + numeration.item
-        val cursor = database!!.query(true, AppDatabase.KEY_WEAPON_TABLE, columnsWeapon,
-            selection, null, null, null, null, null)
+    fun equipmentAlreadyExists(numeration: EquipmentNumeration): Boolean {
+        val table = when(numeration.category){
+            EquipmentCategoryEnum.PISTOL,
+            EquipmentCategoryEnum.HEAVY,
+            EquipmentCategoryEnum.SMG,
+            EquipmentCategoryEnum.RIFLE-> AppDatabase.KEY_WEAPON_TABLE
+            EquipmentCategoryEnum.GEAR -> AppDatabase.KEY_UTILITY_TABLE
+            EquipmentCategoryEnum.GRENADE -> AppDatabase.KEY_GRENADE_TABLE
+            else -> ""
+        }
+
+        val fields = when(numeration.category){
+            EquipmentCategoryEnum.PISTOL,
+            EquipmentCategoryEnum.HEAVY,
+            EquipmentCategoryEnum.SMG,
+            EquipmentCategoryEnum.RIFLE-> columnsWeapon
+            EquipmentCategoryEnum.GEAR -> columnsUtility
+            EquipmentCategoryEnum.GRENADE -> columnsGrenade
+            else -> emptyArray()
+        }
+
+        val selectionArgs = arrayOf(numeration.category.id.toString(), numeration.item.toString())
+
+        val cursor = database!!.query(true, table, fields, AppDatabase.SELECTION_NUMERATION,
+            selectionArgs, null, null, null, null)
+
+        val equipmentAlreadyExists = cursor.count != 0
+
+        cursor.close()
+
+        return equipmentAlreadyExists
+    }
+
+    fun equipmentAlreadyExists(numeration: EquipmentNumeration, name: String): Boolean {
+        val table = when(numeration.category){
+            EquipmentCategoryEnum.PISTOL,
+            EquipmentCategoryEnum.HEAVY,
+            EquipmentCategoryEnum.SMG,
+            EquipmentCategoryEnum.RIFLE-> AppDatabase.KEY_WEAPON_TABLE
+            EquipmentCategoryEnum.GEAR -> AppDatabase.KEY_UTILITY_TABLE
+            EquipmentCategoryEnum.GRENADE -> AppDatabase.KEY_GRENADE_TABLE
+            else -> ""
+        }
+
+        val fields = when(numeration.category){
+            EquipmentCategoryEnum.PISTOL,
+            EquipmentCategoryEnum.HEAVY,
+            EquipmentCategoryEnum.SMG,
+            EquipmentCategoryEnum.RIFLE-> columnsWeapon
+            EquipmentCategoryEnum.GEAR -> columnsUtility
+            EquipmentCategoryEnum.GRENADE -> columnsGrenade
+            else -> emptyArray()
+        }
+
+        val selectionArgs = arrayOf(
+            numeration.category.id.toString(), numeration.item.toString(), name)
+
+        val cursor = database!!.query(true, table, fields,
+            AppDatabase.SELECTION_NUMERATION + " AND " +
+                    AppDatabase.SELECTION_NAME,
+            selectionArgs, null, null, null, null)
+
+        val equipmentAlreadyExists = cursor.count != 0
+
+        cursor.close()
+
+        return equipmentAlreadyExists
+    }
+
+    @Throws(SQLException::class)
+    fun fetchWeaponByNumeration(numeration: EquipmentNumeration,
+                                team : EquipmentTeamEnum = EquipmentTeamEnum.BOTH): Weapon? {
+        val selectionArgs = arrayOf(
+            numeration.category.id.toString(), numeration.item.toString(), team.name)
+
+        val cursor = database!!.query(true, AppDatabase.KEY_WEAPON_TABLE,
+            columnsWeapon, AppDatabase.SELECTION_NUMERATION + " AND " +
+                    AppDatabase.SELECTION_TEAM, selectionArgs,
+            null, null, null, null)
 
         cursor?.moveToFirst()
 
-        val nameIndex = cursor.getColumnIndexOrThrow(AppDatabase.KEY_NAME_FIELD)
-        val teamIndex = cursor.getColumnIndexOrThrow(AppDatabase.KEY_TEAM_FIELD)
-        val costIndex = cursor.getColumnIndexOrThrow(AppDatabase.KEY_COST_FIELD)
-        val rewardIndex = cursor.getColumnIndexOrThrow(AppDatabase.KEY_REWARD_FIELD)
+        val nameIndex = cursor.getColumnIndex(AppDatabase.KEY_NAME_FIELD)
+        val costIndex = cursor.getColumnIndex(AppDatabase.KEY_COST_FIELD)
+        val rewardIndex = cursor.getColumnIndex(AppDatabase.KEY_REWARD_FIELD)
 
         val name = cursor.getString(nameIndex)
-        val team = EquipmentTeamEnum.filterTeam(cursor.getString(teamIndex))
         val cost = cursor.getInt(costIndex)
         val reward = cursor.getInt(rewardIndex)
 
@@ -137,102 +243,6 @@ class AppHelperDB(private val helper: AppDatabase?) {
             SecondaryWeapon(name, team, numeration, cost, reward)
         else MainWeapon(name, team, numeration, cost, reward)
     }
-
-/*
-    @Throws(SQLException::class)
-    fun fetchCustomerByID(idCustomer: Int): Cursor? {
-        val cursor: Cursor? = if (idCustomer == 0) database!!.query(
-            AppDatabase.KEY_PRODUCT_TABLE, columnsProduct,
-            null, null, null, null, null
-        ) else database!!.query(
-            true,
-            AppDatabase.KEY_PRODUCT_TABLE,
-            columnsProduct,
-            AppDatabase.KEY_ID_CUSTOMER.toString() + " = " + idCustomer,
-            null,
-            null,
-            null,
-            null,
-            null
-        )
-        cursor?.moveToFirst()
-        return cursor
-    }
-
-    @Throws(SQLException::class)
-    fun fetchProductByID(idProduct: Int): Cursor? {
-        val cursor: Cursor? = if (idProduct == 0) database!!.query(
-            AppDatabase.KEY_PRODUCT_TABLE, columnsProduct,
-            null, null, null, null, null
-        ) else database!!.query(
-            true, AppDatabase.KEY_PRODUCT_TABLE, columnsProduct,
-            AppDatabase.KEY_ID_PRODUCT.toString() + " = " + idProduct, null, null, null, null, null
-        )
-        cursor?.moveToFirst()
-        return cursor
-    }
-
-    @Throws(SQLException::class)
-    fun fetchOrderByID(idOrder: Int): Cursor? {
-        val cursor: Cursor? = if (idOrder == 0) database!!.query(
-            AppDatabase.KEY_ORDER_TABLE, columnsOrder,
-            null, null, null, null, null
-        ) else database!!.query(
-            true, AppDatabase.KEY_ORDER_TABLE, columnsOrder,
-            AppDatabase.KEY_ID_ORDER.toString() + " = " + idOrder, null, null, null, null, null
-        )
-        cursor?.moveToFirst()
-        return cursor
-    }
-
-    fun fetchAllWeapons(): Cursor? {
-
-    }
-
-    fun fetchAllCustomers(): Cursor? {
-        val orderBy: String = AppDatabase.KEY_NAME_PRODUCT.toString() + " ASC"
-        val cursor: Cursor? = database!!.query(
-            AppDatabase.KEY_CUSTOMER_TABLE, columnsCustomer,
-            null, null, null, null, orderBy
-        )
-        cursor?.moveToFirst()
-        return cursor
-    }
-
-    fun fetchAllProducts(): Cursor? {
-        val orderBy: String = AppDatabase.KEY_NAME_PRODUCT.toString() + " ASC"
-        val cursor: Cursor? = database!!.query(
-            AppDatabase.KEY_PRODUCT_TABLE, columnsProduct,
-            null, null, null, null, orderBy
-        )
-        cursor?.moveToFirst()
-        return cursor
-    }
-
-    fun fetchAllOrders(): Cursor? {
-        val selectColumns = ("o." + AppDatabase.KEY_ID_ORDER.toString() + ","
-                + AppDatabase.KEY_CODE_ORDER.toString() + ","
-                + AppDatabase.KEY_DATE_ORDER.toString() + ","
-                + AppDatabase.KEY_ID_CUSTOMER_ORDER.toString() + "," + "c." + AppDatabase.KEY_NAME_CUSTOMER.toString() + " AS customer_name,"
-                + AppDatabase.KEY_ADDRESS_CUSTOMER.toString() + ","
-                + AppDatabase.KEY_ID_PRODUCT_ORDER.toString() + "," + "p." + AppDatabase.KEY_NAME_PRODUCT.toString() + " AS product_name,"
-                + AppDatabase.KEY_DESCRIPTION_PRODUCT.toString() + ","
-                + AppDatabase.KEY_PRICE_PRODUCT.toString() + ","
-                + AppDatabase.KEY_QUANTITY_ORDER)
-        val selectSQL =
-            ("SELECT " + selectColumns + " FROM " + AppDatabase.KEY_ORDER_TABLE + " AS o"
-                    + " JOIN " + AppDatabase.KEY_CUSTOMER_TABLE + " AS c"
-                    + " ON o." + AppDatabase.KEY_ID_CUSTOMER_ORDER + "=" + "c." + AppDatabase.KEY_ID_CUSTOMER
-                    + " JOIN " + AppDatabase.KEY_PRODUCT_TABLE + " AS p"
-                    + " ON o." + AppDatabase.KEY_ID_PRODUCT_ORDER + "=" + "p." + AppDatabase.KEY_ID_PRODUCT
-                    + " ORDER BY"
-                    + " c." + AppDatabase.KEY_NAME_CUSTOMER + ","
-                    + " p." + AppDatabase.KEY_NAME_PRODUCT + ","
-                    + " o." + AppDatabase.KEY_CODE_ORDER + " ASC")
-        val cursor: Cursor? = database!!.rawQuery(selectSQL, null)
-        cursor?.moveToFirst()
-        return cursor
-    }*/
 
     private fun equipmentMapper(equipment: Equipment): ContentValues {
         val initialValues = ContentValues()
@@ -263,25 +273,5 @@ class AppHelperDB(private val helper: AppDatabase?) {
         initialValues.put(AppDatabase.KEY_PLANT_BONUS_FIELD, economy.plantBonus)
         return initialValues
     }
-
-/*
-    fun updateCustomer(customer: Customer): Long {
-        val id: Int = customer.getIdCustomer()
-        val contentDB = customerMapper(customer)
-        return database!!.update(AppDatabase.KEY_CUSTOMER_TABLE, contentDB, "_id=$id", null)
-            .toLong()
-    }
-
-    fun updateProduct(product: Product): Long {
-        val id: Int = product.getIdProduct()
-        val contentDB = productMapper(product)
-        return database!!.update(AppDatabase.KEY_PRODUCT_TABLE, contentDB, "_id=$id", null).toLong()
-    }
-
-    fun updateOrder(order: Order): Long {
-        val id: Int = order.getIdOrder()
-        val contentDB = orderMapper(order)
-        return database!!.update(AppDatabase.KEY_ORDER_TABLE, contentDB, "_id=$id", null).toLong()
-    }*/
 
 }

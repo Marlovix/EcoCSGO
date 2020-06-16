@@ -1,41 +1,12 @@
 package es.ulpgc.tfm.ecocsgo.db
 
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import es.ulpgc.tfm.ecocsgo.model.EquipmentNumeration
-import java.sql.SQLException
 
-class AppDatabase(var context: Context?) :
-    SQLiteOpenHelper(
-        context,
-        DATABASE_NAME,
-        null,
-        DATABASE_VERSION
-    ) {
-    override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL(CREATE_WEAPON_TABLE)
-        db.execSQL(CREATE_UTILITY_TABLE)
-        db.execSQL(CREATE_GRENADE_TABLE)
-        db.execSQL(CREATE_ECONOMY_TABLE)
-        db.execSQL(CREATE_DEFEAT_TABLE)
-        db.execSQL(CREATE_VICTORY_TABLE)
-    }
-
-    override fun onUpgrade(
-        db: SQLiteDatabase,
-        oldVersion: Int,
-        newVersion: Int
-    ) {
-        db.execSQL("DROP TABLE IF EXISTS $KEY_WEAPON_TABLE")
-        db.execSQL("DROP TABLE IF EXISTS $KEY_UTILITY_TABLE")
-        db.execSQL("DROP TABLE IF EXISTS $KEY_GRENADE_TABLE")
-        db.execSQL("DROP TABLE IF EXISTS $KEY_ECONOMY_TABLE")
-        db.execSQL("DROP TABLE IF EXISTS $KEY_DEFEAT_TABLE")
-        db.execSQL("DROP TABLE IF EXISTS $KEY_VICTORY_TABLE")
-        onCreate(db)
-    }
+class AppDatabase(var context: Context?) : SQLiteOpenHelper(
+    context, DATABASE_NAME, null, DATABASE_VERSION
+) {
 
     companion object {
         private const val DATABASE_VERSION = 1
@@ -53,33 +24,23 @@ class AppDatabase(var context: Context?) :
         const val KEY_REWARD_FIELD = "reward"
         const val KEY_TEAM_FIELD = "team"
 
-        private const val CREATE_WEAPON_TABLE =
-            ("CREATE TABLE " + KEY_WEAPON_TABLE + " ("
-                    + KEY_ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + KEY_COST_FIELD + " INTEGER NOT NULL, "
-                    + KEY_NAME_FIELD + " VARCHAR(30) NOT NULL, "
-                    + KEY_CATEGORY_FIELD + " INTEGER NOT NULL, "
-                    + KEY_ITEM_FIELD + " INTEGER NOT NULL, "
-                    + KEY_REWARD_FIELD + " INTEGER NOT NULL, "
-                    + KEY_TEAM_FIELD + " VARCHAR(2) NOT NULL);")
+        private const val CREATE_WEAPON_TABLE = ("CREATE TABLE $KEY_WEAPON_TABLE (" +
+                "$KEY_ID_FIELD INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "$KEY_COST_FIELD INTEGER NOT NULL, $KEY_NAME_FIELD VARCHAR(30) NOT NULL, " +
+                "$KEY_CATEGORY_FIELD INTEGER NOT NULL, $KEY_ITEM_FIELD INTEGER NOT NULL, " +
+                "$KEY_REWARD_FIELD INTEGER NOT NULL, $KEY_TEAM_FIELD VARCHAR(2) NOT NULL);")
 
-        private const val CREATE_UTILITY_TABLE =
-            ("CREATE TABLE " + KEY_UTILITY_TABLE + " ("
-                    + KEY_ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + KEY_COST_FIELD + " INTEGER NOT NULL, "
-                    + KEY_NAME_FIELD + " VARCHAR(30) NOT NULL, "
-                    + KEY_CATEGORY_FIELD + " INTEGER NOT NULL, "
-                    + KEY_ITEM_FIELD + " INTEGER NOT NULL, "
-                    + KEY_TEAM_FIELD + " VARCHAR(2) NOT NULL);")
+        private const val CREATE_UTILITY_TABLE = ("CREATE TABLE $KEY_UTILITY_TABLE (" +
+                "$KEY_ID_FIELD INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "$KEY_COST_FIELD INTEGER NOT NULL, $KEY_NAME_FIELD VARCHAR(30) NOT NULL, " +
+                "$KEY_CATEGORY_FIELD INTEGER NOT NULL, $KEY_ITEM_FIELD INTEGER NOT NULL, " +
+                "$KEY_TEAM_FIELD VARCHAR(2) NOT NULL);")
 
-        private const val CREATE_GRENADE_TABLE =
-            ("CREATE TABLE " + KEY_GRENADE_TABLE + " ("
-                    + KEY_ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + KEY_COST_FIELD + " INTEGER NOT NULL, "
-                    + KEY_NAME_FIELD + " VARCHAR(30) NOT NULL, "
-                    + KEY_CATEGORY_FIELD + " INTEGER NOT NULL, "
-                    + KEY_ITEM_FIELD + " INTEGER NOT NULL, "
-                    + KEY_TEAM_FIELD + " VARCHAR(2) NOT NULL);")
+        private const val CREATE_GRENADE_TABLE = ("CREATE TABLE $KEY_GRENADE_TABLE (" +
+                "$KEY_ID_FIELD INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "$KEY_COST_FIELD INTEGER NOT NULL, $KEY_NAME_FIELD VARCHAR(30) NOT NULL, " +
+                "$KEY_CATEGORY_FIELD INTEGER NOT NULL, $KEY_ITEM_FIELD INTEGER NOT NULL, " +
+                "$KEY_TEAM_FIELD VARCHAR(2) NOT NULL);")
 
         const val KEY_ECONOMY_TABLE = "economy"
         const val KEY_BEGINNING_FIELD = "beginning"
@@ -92,18 +53,16 @@ class AppDatabase(var context: Context?) :
         const val KEY_MAX_FIELD = "max"
         const val KEY_PLANT_BONUS_FIELD = "plant_bonus"
 
-        private const val CREATE_ECONOMY_TABLE =
-            ("CREATE TABLE " + KEY_ECONOMY_TABLE + " ("
-                    + KEY_ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + KEY_BEGINNING_FIELD + " INTEGER NOT NULL, "
-                    + KEY_DEFUSE_BONUS_FIELD + " INTEGER NOT NULL, "
-                    + KEY_EXPLOSION_BONUS_FIELD + " INTEGER NOT NULL, "
-                    + KEY_GRENADE_KILL_FIELD + " INTEGER NOT NULL, "
-                    + KEY_KILL_PARTNER_PENALTY_FIELD + " INTEGER NOT NULL, "
-                    + KEY_KNIFE_KILL_FIELD + " INTEGER NOT NULL, "
-                    + KEY_LEAVING_GAME_FIELD + " INTEGER NOT NULL, "
-                    + KEY_MAX_FIELD + " INTEGER NOT NULL, "
-                    + KEY_PLANT_BONUS_FIELD + " INTEGER NOT NULL);")
+        private const val CREATE_ECONOMY_TABLE = ("CREATE TABLE $KEY_ECONOMY_TABLE (" +
+                "$KEY_ID_FIELD INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "$KEY_BEGINNING_FIELD INTEGER NOT NULL, " +
+                "$KEY_DEFUSE_BONUS_FIELD INTEGER NOT NULL, " +
+                "$KEY_EXPLOSION_BONUS_FIELD INTEGER NOT NULL, " +
+                "$KEY_GRENADE_KILL_FIELD INTEGER NOT NULL, " +
+                "$KEY_KILL_PARTNER_PENALTY_FIELD INTEGER NOT NULL, " +
+                "$KEY_KNIFE_KILL_FIELD INTEGER NOT NULL, " +
+                "$KEY_LEAVING_GAME_FIELD INTEGER NOT NULL, " +
+                "$KEY_MAX_FIELD INTEGER NOT NULL, $KEY_PLANT_BONUS_FIELD INTEGER NOT NULL);")
 
         const val KEY_VICTORY_TABLE = "victory"
         const val KEY_DEFEAT_TABLE = "defeat"
@@ -112,16 +71,43 @@ class AppDatabase(var context: Context?) :
         const val KEY_TYPE_FIELD = "type"
         const val KEY_BONUS_FIELD = "bonus"
 
-        private const val CREATE_DEFEAT_TABLE =
-            ("CREATE TABLE " + KEY_DEFEAT_TABLE + " ("
-                    + KEY_ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + KEY_ORDER_FIELD + " INTEGER NOT NULL, "
-                    + KEY_BONUS_FIELD + " INTEGER NOT NULL);")
+        private const val CREATE_DEFEAT_TABLE = ("CREATE TABLE $KEY_DEFEAT_TABLE (" +
+                "$KEY_ID_FIELD INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "$KEY_ORDER_FIELD INTEGER NOT NULL, $KEY_BONUS_FIELD INTEGER NOT NULL);")
 
-        private const val CREATE_VICTORY_TABLE =
-            ("CREATE TABLE " + KEY_VICTORY_TABLE + " ("
-                    + KEY_ID_FIELD + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + KEY_TYPE_FIELD + " VARCHAR(10) NOT NULL, "
-                    + KEY_BONUS_FIELD + " INTEGER NOT NULL);")
+        private const val CREATE_VICTORY_TABLE = ("CREATE TABLE $KEY_VICTORY_TABLE (" +
+                "$KEY_ID_FIELD INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "$KEY_TYPE_FIELD VARCHAR(10) NOT NULL, $KEY_BONUS_FIELD INTEGER NOT NULL);")
+
+        const val SELECTION_NUMERATION = "$KEY_CATEGORY_FIELD = ? AND $KEY_ITEM_FIELD = ?"
+        const val SELECTION_NAME = "$KEY_NAME_FIELD = ?"
+        const val SELECTION_TEAM = "$KEY_TEAM_FIELD = ?"
+    }
+
+    override fun onCreate(db: SQLiteDatabase) {
+        db.execSQL(CREATE_WEAPON_TABLE)
+        db.execSQL(CREATE_UTILITY_TABLE)
+        db.execSQL(CREATE_GRENADE_TABLE)
+        db.execSQL(CREATE_ECONOMY_TABLE)
+        db.execSQL(CREATE_DEFEAT_TABLE)
+        db.execSQL(CREATE_VICTORY_TABLE)
+    }
+
+    override fun onUpgrade(
+        db: SQLiteDatabase,
+        oldVersion: Int,
+        newVersion: Int
+    ) {
+        onDelete(db)
+        onCreate(db)
+    }
+
+    private fun onDelete(db: SQLiteDatabase) {
+        db.execSQL("DROP TABLE IF EXISTS $KEY_WEAPON_TABLE")
+        db.execSQL("DROP TABLE IF EXISTS $KEY_UTILITY_TABLE")
+        db.execSQL("DROP TABLE IF EXISTS $KEY_GRENADE_TABLE")
+        db.execSQL("DROP TABLE IF EXISTS $KEY_ECONOMY_TABLE")
+        db.execSQL("DROP TABLE IF EXISTS $KEY_DEFEAT_TABLE")
+        db.execSQL("DROP TABLE IF EXISTS $KEY_VICTORY_TABLE")
     }
 }

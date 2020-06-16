@@ -3,14 +3,17 @@ package es.ulpgc.tfm.ecocsgo.model
 import android.content.Context
 import es.ulpgc.tfm.ecocsgo.db.AppDatabase
 import es.ulpgc.tfm.ecocsgo.db.AppHelperDB
+import java.util.ArrayList
 
 class Game(context : Context, private val enemyTeam: EquipmentTeamEnum) {
 
-    internal val ROUNDS = 30
-    internal val ENEMIES = 5
+    companion object {
+        const val ROUNDS = 30
+        const val ENEMIES = 5
+    }
 
     var roundInGame: Int = 1
-    var rounds: Array<Round?> = arrayOfNulls(ROUNDS)
+    var players: ArrayList<Player>? = ArrayList()
     var enemyEconomy: Int = 0
 
     var economy: EconomyGame? = null
@@ -22,23 +25,21 @@ class Game(context : Context, private val enemyTeam: EquipmentTeamEnum) {
         appDatabase = AppDatabase(context)
         appHelperDB = AppHelperDB(appDatabase)
 
-        val numeration = EquipmentNumeration(1, EquipmentCategoryEnum.PISTOL)
-
-        val weapon = findGunByNumeration(numeration)
-        val weapon2 = weapon
+        for (i in 0 until ENEMIES) players?.add(Player(enemyTeam))
     }
 
     fun initRound(){
         if(roundInGame == 1 || roundInGame == (ROUNDS / 2) + 1){
-            var numeration = EquipmentNumeration(1, EquipmentCategoryEnum.PISTOL)
-            var secondaryGun = findGunByNumeration(numeration) as SecondaryWeapon
-            rounds[roundInGame-1]?.initPlayers(secondaryGun)
+            val numeration = EquipmentNumeration(1, EquipmentCategoryEnum.PISTOL)
+            val secondaryGun = findGunByNumeration(numeration, enemyTeam) as SecondaryWeapon
+            for (player in players!!) player.registerSecondaryGun(secondaryGun.copy())
         }
     }
 
-    fun findGunByNumeration(numeration: EquipmentNumeration): Weapon? {
+    fun findGunByNumeration(numeration: EquipmentNumeration,
+                            team: EquipmentTeamEnum = EquipmentTeamEnum.BOTH): Weapon? {
         appHelperDB!!.open()
-        val weapon: Weapon? = appHelperDB!!.fetchWeaponByNumeration(numeration)
+        val weapon: Weapon? = appHelperDB!!.fetchWeaponByNumeration(numeration, team)
         appHelperDB!!.close()
         return weapon
     }

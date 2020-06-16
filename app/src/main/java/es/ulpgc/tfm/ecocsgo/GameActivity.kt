@@ -78,9 +78,9 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navView.setNavigationItemSelectedListener(this)
 
-        setupRecyclerView()
-
         startGame()
+
+        setupRecyclerView()
     }
 
     override fun onBackPressed() {
@@ -136,14 +136,8 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun setupRecyclerView() {
-        val playersViewModel : PlayersViewModel by viewModels()
-        this.playersViewModel = playersViewModel
-
-        val players = MutableLiveData<ArrayList<Player>>()
-        players.value = game!!.rounds[0]?.players
-
-        playerAdapter = playersViewModel!!.getPlayers()?.value?.let {
-            PlayerRecyclerViewAdapter(this, it as ArrayList<Player>, twoPane)
+        playerAdapter = game!!.players?.let {
+            PlayerRecyclerViewAdapter(this, it, twoPane)
         }
 
         list_players.adapter = playerAdapter
@@ -151,17 +145,10 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val callback = playerAdapter?.let { PlayerCallback(it, this) }
         val touchHelper = callback?.let { ItemTouchHelper(it) }
         touchHelper?.attachToRecyclerView(list_players)
-
-        val model = ViewModelProviders.of(this)[PlayersViewModel::class.java]
-        model.getPlayers()?.observe(this, Observer<List<Player>>{ players ->
-            for (player : Player in players){
-                player.toString()
-            }
-        })
     }
 
     private fun startGame() {
-        //game?.initRound()
+        game?.initRound()
     }
 
     fun firstRound(){

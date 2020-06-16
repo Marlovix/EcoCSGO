@@ -9,7 +9,6 @@ import es.ulpgc.tfm.ecocsgo.db.AppDatabase
 import es.ulpgc.tfm.ecocsgo.db.AppHelperDB
 import es.ulpgc.tfm.ecocsgo.model.*
 
-
 class RepoEquipment(val context: Context) {
 
     private var customerHelper: AppHelperDB? = null
