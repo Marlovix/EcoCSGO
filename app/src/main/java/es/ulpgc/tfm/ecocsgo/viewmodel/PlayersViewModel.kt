@@ -8,24 +8,18 @@ import es.ulpgc.tfm.ecocsgo.model.Player
 
 class PlayersViewModel(application: Application) : AndroidViewModel(application) {
 
-    var players: MutableLiveData<List<Player>> = MutableLiveData()
+    private var playersLiveData: MutableLiveData<List<Player>> = MutableLiveData()
 
-    fun getPlayers(): LiveData<List<Player>>? {
-        return players
+    fun getPlayers() : MutableLiveData<List<Player>>{
+        return playersLiveData
     }
 
-    fun setPlayers(playersList: List<Player>){
-        players?.value = playersList
+    fun setPlayers(players: List<Player>) {
+        playersLiveData.value = players
     }
 
-    fun loadPlayers() {
-        players.value = listOf(
-            /*Player(),
-            Player(),
-            Player(),
-            Player(),
-            Player()*/
-        )
+    fun updatePlayer(player: Player) {
+        //playersLiveData.value = players
     }
 
 }

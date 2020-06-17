@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import es.ulpgc.tfm.ecocsgo.*
@@ -18,7 +19,7 @@ import java.util.*
 
 class PlayerRecyclerViewAdapter(
     private val parentActivity: GameActivity,
-    private val players: ArrayList<Player>,
+    private var players: ArrayList<Player>,
     private val twoPane: Boolean
 ) :
     RecyclerView.Adapter<PlayerRecyclerViewAdapter.ViewHolder>(),
@@ -85,6 +86,11 @@ class PlayerRecyclerViewAdapter(
         }
     }
 
+    fun setPlayers(players : List<Player>){
+        this.players = players as ArrayList<Player>
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_player, parent, false)
@@ -94,6 +100,23 @@ class PlayerRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val player = players[position]
 
+        updateView(holder, player)
+
+        with(holder.itemView) {
+            tag = player
+            setOnClickListener(onClickListener)
+        }
+
+        with(holder.togglePlayerAlive) {
+            setOnCheckedChangeListener { _, isChecked ->
+                player.alive = isChecked
+            }
+        }
+    }
+
+    override fun getItemCount() = players.size
+
+    private fun updateView(holder: ViewHolder, player: Player){
         holder.mainGun.text = if (player.mainGunInGame != null)
             player.mainGunInGame!!.name else "-"
         holder.mainDeaths.text = if (player.mainGunInGame != null)
@@ -103,13 +126,8 @@ class PlayerRecyclerViewAdapter(
         holder.secondaryDeaths.text = if (player.secondaryGunInGame != null)
             "x" + player.secondaryGunInGame!!.casualty.toString() else "x0"
 
-        with(holder.itemView) {
-            tag = player
-            setOnClickListener(onClickListener)
-        }
+        holder.togglePlayerAlive.isChecked = player.alive
     }
-
-    override fun getItemCount() = players.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardView: CardView = view.cardView_player
@@ -117,5 +135,13 @@ class PlayerRecyclerViewAdapter(
         val secondaryGun: TextView = view.textView_secondary_gun
         val mainDeaths: TextView = view.textView_secondary_deaths
         val secondaryDeaths: TextView = view.textView_main_deaths
+        val togglePlayerAlive: ToggleButton = view.toggleButton_player_alive
+        /*
+        togglePlayerAlive.setOnCheckedChangeListener( new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton toggleButton, boolean isChecked) {
+                doSomethingWith(toggleButton, isChecked) ;
+            }
+        }) ;*/
     }
 }

@@ -11,9 +11,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.setMargins
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -26,11 +23,8 @@ import es.ulpgc.tfm.ecocsgo.fragment.GunListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
 import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
 import es.ulpgc.tfm.ecocsgo.model.Game
-import es.ulpgc.tfm.ecocsgo.model.Player
 import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
-import es.ulpgc.tfm.ecocsgo.viewmodel.PlayersViewModel
 import kotlinx.android.synthetic.main.list_players.*
-import java.util.*
 
 class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     GunListFragmentDialog.OnGunListFragmentInteraction,
@@ -38,9 +32,9 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var twoPane: Boolean = false
     var game : Game? = null
+    private var enemyTeam: EquipmentTeamEnum? = null
 
     private var playerAdapter: PlayerRecyclerViewAdapter? = null
-    private var playersViewModel: PlayersViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,8 +43,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
         toolbar.title = title
 
-        val teamSelected = intent.getStringExtra(ARG_TEAM)
-        if(teamSelected != null) game = Game(this, EquipmentTeamEnum.valueOf(teamSelected))
+        enemyTeam = EquipmentTeamEnum.valueOf(intent.getStringExtra(ARG_TEAM)!!)
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
@@ -77,8 +70,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
-
-        startGame()
 
         setupRecyclerView()
     }
@@ -136,6 +127,9 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun setupRecyclerView() {
+        val gameViewModel: GameActivityViewModel by viewModels()
+        game = enemyTeam?.let { gameViewModel.getGame(it).value }
+
         playerAdapter = game!!.players?.let {
             PlayerRecyclerViewAdapter(this, it, twoPane)
         }
@@ -145,18 +139,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val callback = playerAdapter?.let { PlayerCallback(it, this) }
         val touchHelper = callback?.let { ItemTouchHelper(it) }
         touchHelper?.attachToRecyclerView(list_players)
-    }
-
-    private fun startGame() {
-        game?.initRound()
-    }
-
-    fun firstRound(){
-        //game?.startRound(0)
-    }
-
-    fun updateGame(){
-
     }
 
     override fun prueba() {

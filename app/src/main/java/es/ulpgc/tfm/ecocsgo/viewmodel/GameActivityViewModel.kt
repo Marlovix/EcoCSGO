@@ -3,20 +3,21 @@ package es.ulpgc.tfm.ecocsgo.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import es.ulpgc.tfm.ecocsgo.model.Player
+import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
+import es.ulpgc.tfm.ecocsgo.model.Game
 
 class GameActivityViewModel(application: Application) : AndroidViewModel(application) {
 
-    var players: MutableLiveData<List<Player>> = MutableLiveData()
+    //var gameLiveData: MutableLiveData<Game> = MutableLiveData()
+    private var gameLiveData: MutableLiveData<Game>? = null
 
-    fun loadPlayers() {
-        players.value = listOf(
-            /*Player(),
-            Player(),
-            Player(),
-            Player(),
-            Player()*/
-        )
+    fun getGame(team: EquipmentTeamEnum) : MutableLiveData<Game>{
+        if (gameLiveData == null) {
+            gameLiveData = MutableLiveData<Game>()
+            gameLiveData?.value = Game(getApplication(), team)
+            gameLiveData?.value?.initRound()
+        }
+        return gameLiveData as MutableLiveData<Game>
     }
 
 }

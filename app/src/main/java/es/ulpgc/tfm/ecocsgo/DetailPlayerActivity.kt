@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.activity_detail_player.*
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.content_detail_player.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     DialogInterface.OnDismissListener,
@@ -196,6 +195,11 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         mainGuns[EquipmentCategoryEnum.HEAVY] = heavyGuns
         mainGuns[EquipmentCategoryEnum.SMG] = smgGuns
         mainGuns[EquipmentCategoryEnum.RIFLE] = rifleGuns
+
+        val bundle = Bundle()
+        bundle.putParcelable(DetailPlayerFragment.ARG_PLAYER, player)
+        val detailPlayerFragment = DetailPlayerFragment()
+        detailPlayerFragment.arguments = bundle
     }
 
     private fun initViews() {

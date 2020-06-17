@@ -105,6 +105,8 @@ class DetailPlayerFragment : Fragment(), GunListFragmentDialog.OnGunListFragment
     ): View? {
         val rootView = inflater.inflate(R.layout.content_detail_player, container, false)
 
+        player = arguments?.getParcelable(ARG_PLAYER)
+
         prepareScreen(rootView)
 
         button = rootView.findViewById(R.id.button) as Button

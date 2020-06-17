@@ -9,14 +9,4 @@ enum class EquipmentTeamEnum(var team: String) : Parcelable {
     CT("CT"),
     T("T"),
     BOTH("BOTH");
-
-    companion object {
-        fun filterTeam(team: String): EquipmentTeamEnum{
-            for (value in values())
-                if (value.name.toLowerCase(Locale.getDefault()) ==
-                    team.toLowerCase(Locale.getDefault()))
-                    return value
-            return BOTH
-        }
-    }
 }
