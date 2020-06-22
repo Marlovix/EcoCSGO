@@ -7,17 +7,17 @@ import es.ulpgc.tfm.ecocsgo.model.Weapon
 import es.ulpgc.tfm.ecocsgo.model.Player
 
 class PlayerViewModel : ViewModel()  {
-    var player: MutableLiveData<Player>? = null
-
-    fun init(player: MutableLiveData<Player>) {
-        this.player = player
-    }
+    var playerLiveData: MutableLiveData<Player>? = null
 
     fun getPlayer(): LiveData<Player>? {
-        return player
+        return playerLiveData
     }
 
-    fun addGun(weapon: Weapon){
+    fun setPlayer(player: Player){
+        if(playerLiveData == null){
+            playerLiveData = MutableLiveData()
+        }
 
+        playerLiveData?.value = player
     }
 }

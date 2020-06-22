@@ -5,7 +5,7 @@ import es.ulpgc.tfm.ecocsgo.db.AppDatabase
 import es.ulpgc.tfm.ecocsgo.db.AppHelperDB
 import java.util.ArrayList
 
-class Game(context : Context, private val enemyTeam: EquipmentTeamEnum) {
+class Game(context : Context) {
 
     companion object {
         const val ROUNDS = 30
@@ -15,6 +15,7 @@ class Game(context : Context, private val enemyTeam: EquipmentTeamEnum) {
     var roundInGame: Int = 1
     var players: ArrayList<Player>? = ArrayList()
     var enemyEconomy: Int = 0
+    var enemyTeam: EquipmentTeamEnum? = null
 
     var economy: EconomyGame? = null
 
@@ -24,14 +25,17 @@ class Game(context : Context, private val enemyTeam: EquipmentTeamEnum) {
     init {
         appDatabase = AppDatabase(context)
         appHelperDB = AppHelperDB(appDatabase)
+    }
 
-        for (i in 0 until ENEMIES) players?.add(Player(enemyTeam))
+    fun createPlayers(enemyTeamEnum: EquipmentTeamEnum){
+        enemyTeam = enemyTeamEnum
+        for (i in 0 until ENEMIES) players?.add(Player(enemyTeam!!))
     }
 
     fun initRound(){
         if(roundInGame == 1 || roundInGame == (ROUNDS / 2) + 1){
             val numeration = EquipmentNumeration(1, EquipmentCategoryEnum.PISTOL)
-            val secondaryGun = findGunByNumeration(numeration, enemyTeam) as SecondaryWeapon
+            val secondaryGun = findGunByNumeration(numeration, enemyTeam!!) as SecondaryWeapon
             for (player in players!!) player.registerSecondaryGun(secondaryGun.copy())
         }
     }

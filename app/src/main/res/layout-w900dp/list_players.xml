@@ -17,7 +17,7 @@
     master/detail flow.
     -->
 
-	<androidx.recyclerview.widget.RecyclerView
+	<!--<androidx.recyclerview.widget.RecyclerView
 			android:id="@+id/list_players"
 			android:name="es.ulpgc.tfm.ecocsgo.ItemListFragment"
 			android:layout_width="@dimen/item_width"
@@ -26,31 +26,16 @@
 			android:layout_marginRight="16dp"
 			app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 			tools:context="es.ulpgc.tfm.ecocsgo.GameActivity"
-			tools:listitem="@layout/item_player"/>
+			tools:listitem="@layout/item_player"/>-->
 
 	<androidx.fragment.app.FragmentContainerView
-			android:id="@+id/item_detail_container"
-			android:layout_width="match_parent"
+			android:id="@+id/fragment_list_players"
+			android:layout_width="@dimen/item_width"
 			android:layout_height="match_parent"/>
 
-	<!--
-
-<FrameLayout
-        android:id="@+id/contenedor_lista"
-        android:layout_width="@dimen/ancho_panel_lista"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:background="@android:color/white" />
-
-    <FrameLayout
-        android:id="@+id/contenedor_detalle_articulo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/ancho_panel_lista"
-        android:layout_toRightOf="@+id/contenedor_lista"
-        android:background="@android:color/white"
-        android:elevation="8dp" />
-
-	-->
+	<androidx.fragment.app.FragmentContainerView
+			android:id="@+id/fragment_detail_player"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"/>
 
 </LinearLayout>

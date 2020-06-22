@@ -8,14 +8,12 @@ import es.ulpgc.tfm.ecocsgo.model.Game
 
 class GameActivityViewModel(application: Application) : AndroidViewModel(application) {
 
-    //var gameLiveData: MutableLiveData<Game> = MutableLiveData()
     private var gameLiveData: MutableLiveData<Game>? = null
 
-    fun getGame(team: EquipmentTeamEnum) : MutableLiveData<Game>{
+    fun getGame() : MutableLiveData<Game>{
         if (gameLiveData == null) {
-            gameLiveData = MutableLiveData<Game>()
-            gameLiveData?.value = Game(getApplication(), team)
-            gameLiveData?.value?.initRound()
+            gameLiveData = MutableLiveData()
+            gameLiveData?.value = Game(getApplication())
         }
         return gameLiveData as MutableLiveData<Game>
     }

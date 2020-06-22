@@ -22,12 +22,9 @@
 
 	</com.google.android.material.appbar.AppBarLayout>
 
-	<fragment
-			android:id="@+id/prueba_fragment"
-			android:name="es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment"
+	<androidx.fragment.app.FragmentContainerView
+			android:id="@+id/fragment_detail_player"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			app:layout_behavior="@string/appbar_scrolling_view_behavior"
-			tools:layout="@layout/content_detail_player"/>
+			android:layout_height="match_parent"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

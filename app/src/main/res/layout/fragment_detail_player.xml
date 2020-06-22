@@ -291,14 +291,4 @@
 			app:layout_constraintHorizontal_bias="1.0"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/switch_helmet" />
-
-	<Button
-			android:id="@+id/button"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="Button"
-			app:layout_constraintBottom_toTopOf="@+id/switch_vest"
-			app:layout_constraintEnd_toEndOf="@+id/imageButton_delete_secondary_gun"
-			app:layout_constraintStart_toEndOf="@+id/imageButton_add_secondary_casualty"
-			app:layout_constraintTop_toBottomOf="@+id/imageButton_add_secondary_gun" />
 </androidx.constraintlayout.widget.ConstraintLayout>

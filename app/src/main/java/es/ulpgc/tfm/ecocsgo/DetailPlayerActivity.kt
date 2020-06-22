@@ -5,15 +5,18 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.navigation.NavigationView
 import es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment
 import es.ulpgc.tfm.ecocsgo.fragment.GunListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.model.*
+import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
 import kotlinx.android.synthetic.main.activity_detail_player.*
 import kotlinx.android.synthetic.main.activity_game.*
-import kotlinx.android.synthetic.main.content_detail_player.*
+import kotlinx.android.synthetic.main.fragment_detail_player.*
 import java.util.*
 
 class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
@@ -60,6 +63,8 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     private var secondaryGuns: MutableMap<EquipmentCategoryEnum, ArrayList<SecondaryWeapon>?> =
         EnumMap(EquipmentCategoryEnum::class.java)
 
+    private val playerViewModel: PlayerViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_player)
@@ -69,8 +74,15 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
 
-        getData()
-        prepareScreen()
+        player = intent.getParcelableExtra(DetailPlayerFragment.ARG_PLAYER)
+        playerViewModel.setPlayer(player!!)
+
+        val fragment = DetailPlayerFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_detail_player, fragment).commit()
+
+        //getData()
+        //prepareScreen()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -298,7 +310,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     }
 
     override fun prueba() {
-        Toast.makeText(this, "DetailPlayerActivity", Toast.LENGTH_LONG).show()
+        //Toast.makeText(this, "DetailPlayerActivity", Toast.LENGTH_LONG).show()
     }
 
 }

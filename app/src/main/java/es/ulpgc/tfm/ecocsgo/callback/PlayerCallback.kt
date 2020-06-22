@@ -4,7 +4,7 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import es.ulpgc.tfm.ecocsgo.adapter.PlayerRecyclerViewAdapter
+import es.ulpgc.tfm.ecocsgo.adapter.PlayersRecyclerViewAdapter
 
 class PlayerCallback(private val mAdapter: ItemTouchHelperContract, val activity: Activity) : ItemTouchHelper.Callback() {
 
@@ -43,8 +43,8 @@ class PlayerCallback(private val mAdapter: ItemTouchHelperContract, val activity
         actionState: Int
     ) {
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            if (viewHolder is PlayerRecyclerViewAdapter.ViewHolder) {
-                val myViewHolder = viewHolder as PlayerRecyclerViewAdapter.ViewHolder?
+            if (viewHolder is PlayersRecyclerViewAdapter.ViewHolder) {
+                val myViewHolder = viewHolder as PlayersRecyclerViewAdapter.ViewHolder?
                 if (myViewHolder != null) {
                     mAdapter.onRowSelected(myViewHolder)
                 }
@@ -60,15 +60,15 @@ class PlayerCallback(private val mAdapter: ItemTouchHelperContract, val activity
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ) {
-        if (viewHolder is PlayerRecyclerViewAdapter.ViewHolder)
+        if (viewHolder is PlayersRecyclerViewAdapter.ViewHolder)
             mAdapter.onRowClear(viewHolder)
         super.clearView(recyclerView, viewHolder)
     }
 
     interface ItemTouchHelperContract {
         fun onRowMoved(fromPosition: Int, toPosition: Int)
-        fun onRowSelected(myViewHolder: PlayerRecyclerViewAdapter.ViewHolder)
-        fun onRowClear(myViewHolder: PlayerRecyclerViewAdapter.ViewHolder)
+        fun onRowSelected(myViewHolder: PlayersRecyclerViewAdapter.ViewHolder)
+        fun onRowClear(myViewHolder: PlayersRecyclerViewAdapter.ViewHolder)
     }
 
 }

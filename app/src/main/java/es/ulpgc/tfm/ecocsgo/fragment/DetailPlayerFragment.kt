@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.activityViewModels
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.model.*
-import kotlinx.android.synthetic.main.content_detail_player.*
+import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
+import kotlinx.android.synthetic.main.fragment_detail_player.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -65,6 +66,8 @@ class DetailPlayerFragment : Fragment(), GunListFragmentDialog.OnGunListFragment
     private var secondaryGuns: MutableMap<EquipmentCategoryEnum, ArrayList<SecondaryWeapon>?> =
         EnumMap(EquipmentCategoryEnum::class.java)
 
+    private val playerViewModel: PlayerViewModel by activityViewModels()
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         interaction = try {
@@ -76,85 +79,44 @@ class DetailPlayerFragment : Fragment(), GunListFragmentDialog.OnGunListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val s: LinearLayoutManager
-        arguments?.let {
-            if (it.containsKey(ARG_PLAYER)) {
-                // Load the dummy content specified by the fragment
-                // arguments. In a real-world scenario, use a Loader
-                // to load content from a content provider.
-                player = it.getParcelable(ARG_PLAYER)
-                pistolGuns = it.getParcelableArrayList(ARG_PISTOL)
-                heavyGuns = it.getParcelableArrayList(ARG_HEAVY)
-                smgGuns = it.getParcelableArrayList(ARG_SMG)
-                rifleGuns = it.getParcelableArrayList(ARG_RIFLE)
-                defuseKit = it.getParcelable(ARG_DEFUSE_KIT)
-                helmet = it.getParcelable(ARG_HELMET)
-                vest = it.getParcelable(ARG_VEST)
-
-                secondaryGuns[EquipmentCategoryEnum.PISTOL] = pistolGuns
-                mainGuns[EquipmentCategoryEnum.HEAVY] = heavyGuns
-                mainGuns[EquipmentCategoryEnum.SMG] = smgGuns
-                mainGuns[EquipmentCategoryEnum.RIFLE] = rifleGuns
-            }
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.content_detail_player, container, false)
-
-        player = arguments?.getParcelable(ARG_PLAYER)
-
-        prepareScreen(rootView)
-
-        button = rootView.findViewById(R.id.button) as Button
-        button?.setOnClickListener {
-            if (interaction != null) interaction?.prueba()
-        }
-        //button.setOnClickListener()
-
-        // Show the dummy content as text in a TextView.
-
-        return rootView
+        return inflater.inflate(R.layout.fragment_detail_player, container, false)
     }
 
-    private fun prepareScreen(view: View) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        initViews(view)
+        prepareScreen()
 
-        updateView(view)
+        updatePlayerView()
+        // observe de viewmodel???
+    }
 
+    fun updatePlayerView(){
+        player = playerViewModel.getPlayer()?.value
+        if (player != null){
+            editText_secondary_casualties.setText(player!!.secondaryGunInGame?.casualty.toString())
+        }
+    }
+
+    private fun prepareScreen() {
+
+        initViews()
+
+        //updateView(view)
+/*
         textViewVest?.text = defuseKit?.name
         textViewHelmet?.text = helmet?.name
-        textViewDefuseKit?.text = vest?.name
+        textViewDefuseKit?.text = vest?.name*/
     }
 
-    private fun initViews(view: View) {
-        textViewVest = view.findViewById(R.id.textView_vest)
-        textViewHelmet = view.findViewById(R.id.textView_helmet)
-        textViewDefuseKit = view.findViewById(R.id.textView_defuse_kit)
-
-        editTextMainCasualties = view.findViewById(R.id.editText_main_casualties)
-        editTextSecondaryCasualties = view.findViewById(R.id.editText_secondary_casualties)
-
-        buttonMainGuns = view.findViewById(R.id.imageButton_add_main_gun)
-        buttonSecondaryGuns = view.findViewById(R.id.imageButton_add_secondary_gun)
-
-        buttonDeleteMainGun = view.findViewById(R.id.imageButton_delete_main_gun)
-        buttonDeleteSecondaryGun = view.findViewById(R.id.imageButton_delete_secondary_gun)
-
-        buttonAddMainCasualty = view.findViewById(R.id.imageButton_add_main_casualty)
-        buttonAddSecondaryCasualty = view.findViewById(R.id.imageButton_add_secondary_casualty)
-
-        buttonRemoveMainCasualty = view.findViewById(R.id.imageButton_remove_main_casualty)
-        buttonRemoveSecondaryCasualty = view.findViewById(R.id.imageButton_remove_secondary_casualty)
-
-        initButtons(view)
-
-        spinnerMainGuns = view.findViewById(R.id.spinner_main_guns)
-        spinnerSecondaryGuns = view.findViewById(R.id.spinner_secondary_guns)
+    private fun initViews() {
+        initButtons()
     }
 
     private fun updateView(view: View){
@@ -194,7 +156,7 @@ class DetailPlayerFragment : Fragment(), GunListFragmentDialog.OnGunListFragment
         )
     }
 
-    private fun initButtons(view: View) {
+    private fun initButtons() {
         buttonMainGuns?.setOnClickListener {
             val bundle = Bundle()
             bundle.putSerializable(
@@ -202,7 +164,7 @@ class DetailPlayerFragment : Fragment(), GunListFragmentDialog.OnGunListFragment
                 mainGuns as EnumMap<*, *>
             )
             mainDialog = true
-            openGunDialog(view, bundle)
+            openGunDialog(it, bundle)
         }
 
         buttonSecondaryGuns?.setOnClickListener {
@@ -212,7 +174,7 @@ class DetailPlayerFragment : Fragment(), GunListFragmentDialog.OnGunListFragment
                 secondaryGuns as EnumMap<*, *>
             )
             secondaryDialog = true
-            openGunDialog(view, bundle)
+            openGunDialog(it, bundle)
         }
 
         buttonAddMainCasualty?.setOnClickListener {

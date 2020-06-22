@@ -17,12 +17,10 @@ import es.ulpgc.tfm.ecocsgo.model.Player
 import kotlinx.android.synthetic.main.item_player.view.*
 import java.util.*
 
-class PlayerRecyclerViewAdapter(
-    private val parentActivity: GameActivity,
-    private var players: ArrayList<Player>,
-    private val twoPane: Boolean
+class PlayersRecyclerViewAdapter(
+    private var players: ArrayList<Player>, private val listener : View.OnClickListener
 ) :
-    RecyclerView.Adapter<PlayerRecyclerViewAdapter.ViewHolder>(),
+    RecyclerView.Adapter<PlayersRecyclerViewAdapter.ViewHolder>(),
     PlayerCallback.ItemTouchHelperContract {
 
     override fun onRowMoved(fromPosition: Int, toPosition: Int) {
@@ -45,12 +43,10 @@ class PlayerRecyclerViewAdapter(
     override fun onRowClear(myViewHolder: ViewHolder) {
         myViewHolder.cardView.setBackgroundColor(Color.WHITE)
     }
-
-    private val onClickListener: View.OnClickListener
-
+/*
     init {
 
-        onClickListener = View.OnClickListener { v ->
+        listener = View.OnClickListener { v ->
             val player = v.tag as Player
             if (twoPane) {
                 val fragment = DetailPlayerFragment()
@@ -68,7 +64,7 @@ class PlayerRecyclerViewAdapter(
                 }
                 parentActivity.supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.item_detail_container, fragment)
+                    .replace(R.id.fragment_detail_player, fragment)
                     .commit()
             } else {
                 val intent = Intent(v.context, DetailPlayerActivity::class.java).apply {
@@ -84,7 +80,7 @@ class PlayerRecyclerViewAdapter(
                 v.context.startActivity(intent)
             }
         }
-    }
+    }*/
 
     fun setPlayers(players : List<Player>){
         this.players = players as ArrayList<Player>
@@ -104,7 +100,7 @@ class PlayerRecyclerViewAdapter(
 
         with(holder.itemView) {
             tag = player
-            setOnClickListener(onClickListener)
+            setOnClickListener(listener)
         }
 
         with(holder.togglePlayerAlive) {
