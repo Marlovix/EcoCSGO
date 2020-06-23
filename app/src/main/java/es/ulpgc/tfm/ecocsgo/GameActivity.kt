@@ -12,15 +12,12 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.setMargins
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import es.ulpgc.tfm.ecocsgo.MainActivity.Companion.ARG_TEAM
-import es.ulpgc.tfm.ecocsgo.adapter.PlayersRecyclerViewAdapter
-import es.ulpgc.tfm.ecocsgo.callback.PlayerCallback
 import es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment
-import es.ulpgc.tfm.ecocsgo.fragment.GunListFragmentDialog
+import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.fragment.GameListPlayersFragment
 import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
 import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
@@ -32,7 +29,7 @@ import kotlinx.android.synthetic.main.list_players.*
 
 class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     GameListPlayersFragment.OnListPlayersFragmentInteraction,
-    GunListFragmentDialog.OnGunListFragmentInteraction,
+    WeaponListFragmentDialog.OnWeaponListFragmentInteraction,
     DetailPlayerFragment.OnDetailPlayerFragmentInteraction {
 
     private var twoPane: Boolean = false
@@ -40,8 +37,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var gameListPlayersFragment: GameListPlayersFragment? = null
     private var detailPlayerFragment: DetailPlayerFragment? = null
-
-    private var playersAdapter: PlayersRecyclerViewAdapter? = null
 
     private val gameViewModel: GameActivityViewModel by viewModels()
     private val playerViewModel: PlayerViewModel by viewModels()
@@ -149,7 +144,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun setupRecyclerView() {
         return
-        val gameViewModel: GameActivityViewModel by viewModels()
+        //val gameViewModel: GameActivityViewModel by viewModels()
         //game = enemyTeam?.let { gameViewModel.getGame(it).value }
 
         /*playersAdapter = game!!.players?.let {
@@ -158,8 +153,8 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //list_players.adapter = playerAdapter
 
-        val callback = playersAdapter?.let { PlayerCallback(it, this) }
-        val touchHelper = callback?.let { ItemTouchHelper(it) }
+        //val callback = playersAdapter?.let { PlayerCallback(it, this) }
+        //val touchHelper = callback?.let { ItemTouchHelper(it) }
         //touchHelper?.attachToRecyclerView(list_players)
     }
 
@@ -167,7 +162,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Toast.makeText(this, "GameActivity", Toast.LENGTH_LONG).show()
     }
 
-    override fun selectGun(view: View, category: EquipmentCategoryEnum, position: Int) {
+    override fun selectWeapon(view: View, category: EquipmentCategoryEnum, position: Int) {
         TODO("Not yet implemented")
     }
 

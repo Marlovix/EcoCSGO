@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import es.ulpgc.tfm.ecocsgo.db.RepoEquipment
 import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*

@@ -15,18 +15,19 @@ import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
 import es.ulpgc.tfm.ecocsgo.model.Weapon
 import java.util.*
 
-class GunListFragmentDialog(
-    private var interaction: OnGunListFragmentInteraction?
+class WeaponListFragmentDialog(
+    private var interaction: OnWeaponListFragmentInteraction?
 ) : DialogFragment() {
 
-    private var guns : Map<EquipmentCategoryEnum, List<Equipment>> = EnumMap(EquipmentCategoryEnum::class.java)
+    private var weapon : Map<EquipmentCategoryEnum, List<Equipment>> =
+        EnumMap(EquipmentCategoryEnum::class.java)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnGunListFragmentInteraction) {
+        if (context is OnWeaponListFragmentInteraction) {
             interaction = context
         } else {
-            throw RuntimeException("$context must implement OnGunListFragmentInteraction")
+            throw RuntimeException("$context must implement OnWeaponListFragmentInteraction")
         }
     }
 
@@ -35,14 +36,14 @@ class GunListFragmentDialog(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.list_category_gun, container, false)
+        val rootView = inflater.inflate(R.layout.list_category_weapon, container, false)
 
-        val recyclerView = rootView.findViewById(R.id.list_category_gun) as RecyclerView
+        val recyclerView = rootView.findViewById(R.id.list_category_weapon) as RecyclerView
 
         val bundle = arguments
-        guns = bundle?.getSerializable(DetailPlayerFragment.ARG_GUNS) as Map<EquipmentCategoryEnum, ArrayList<Weapon>>
+        weapon = bundle?.getSerializable(DetailPlayerFragment.ARG_WEAPONS) as Map<EquipmentCategoryEnum, ArrayList<Weapon>>
 
-        if (rootView is RecyclerView) recyclerView.adapter = EquipmentCategoryRecyclerViewAdapter(guns, interaction)
+        if (rootView is RecyclerView) recyclerView.adapter = EquipmentCategoryRecyclerViewAdapter(weapon, interaction)
 
         return rootView
     }
@@ -70,8 +71,8 @@ class GunListFragmentDialog(
         super.onDetach()
     }
 
-    interface OnGunListFragmentInteraction{
-        fun selectGun(view: View, category: EquipmentCategoryEnum, position: Int)
+    interface OnWeaponListFragmentInteraction{
+        fun selectWeapon(view: View, category: EquipmentCategoryEnum, position: Int)
     }
 
 }

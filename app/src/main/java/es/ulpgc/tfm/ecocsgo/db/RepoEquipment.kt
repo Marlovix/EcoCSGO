@@ -1,12 +1,12 @@
-package es.ulpgc.tfm.ecocsgo
+package es.ulpgc.tfm.ecocsgo.db
 
 import android.content.Context
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import es.ulpgc.tfm.ecocsgo.db.AppDatabase
-import es.ulpgc.tfm.ecocsgo.db.AppHelperDB
+import es.ulpgc.tfm.ecocsgo.MainActivity
+import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.model.*
 
 class RepoEquipment(val context: Context) {
@@ -69,13 +69,13 @@ class RepoEquipment(val context: Context) {
 
         return when(category){
             EquipmentCategoryEnum.PISTOL ->
-                loadGun(snapshot, name, equipmentTeam, numeration, cost)
+                loadWeapon(snapshot, name, equipmentTeam, numeration, cost)
             EquipmentCategoryEnum.HEAVY ->
-                loadGun(snapshot, name, equipmentTeam, numeration, cost)
+                loadWeapon(snapshot, name, equipmentTeam, numeration, cost)
             EquipmentCategoryEnum.SMG ->
-                loadGun(snapshot, name, equipmentTeam, numeration, cost)
+                loadWeapon(snapshot, name, equipmentTeam, numeration, cost)
             EquipmentCategoryEnum.RIFLE ->
-                loadGun(snapshot, name, equipmentTeam, numeration, cost)
+                loadWeapon(snapshot, name, equipmentTeam, numeration, cost)
             EquipmentCategoryEnum.GEAR ->
                 loadUtility(name, equipmentTeam, numeration, cost)
             EquipmentCategoryEnum.GRENADE ->
@@ -197,9 +197,9 @@ class RepoEquipment(val context: Context) {
         })
     }
 
-    private fun loadGun(dataSnapshot: DataSnapshot, name: String, team: EquipmentTeamEnum,
-                        numeration: EquipmentNumeration,
-                        cost: Int) : Weapon? {
+    private fun loadWeapon(dataSnapshot: DataSnapshot, name: String, team: EquipmentTeamEnum,
+                           numeration: EquipmentNumeration,
+                           cost: Int) : Weapon? {
         val reward = dataSnapshot.child("reward").getValue(Int::class.java)!!
         return if(numeration.category == EquipmentCategoryEnum.PISTOL)
             SecondaryWeapon(

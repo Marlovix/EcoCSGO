@@ -1,44 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
-		android:id="@+id/cardView_player"
 		xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" style="@style/CardView.Light"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:id="@+id/cardView_player" style="@style/CardView.Light"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
 		android:layout_marginStart="8dp"
+		android:layout_marginTop="8dp"
 		android:layout_marginEnd="8dp">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
-			android:layout_height="match_parent" app:layout_constraintBottom_toBottomOf="@+id/textView_main_gun"
-			app:layout_constraintTop_toBottomOf="@+id/textView_main_gun">
+			android:layout_height="match_parent"
+			app:layout_constraintBottom_toBottomOf="@+id/textView_main_weapon"
+			app:layout_constraintTop_toBottomOf="@+id/textView_main_weapon">
 
 		<TextView
-				android:id="@+id/textView_main_gun"
+				android:id="@+id/textView_main_weapon"
 				android:layout_width="123dp"
 				android:layout_height="18dp"
-				android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-				android:textColor="#8A000000"
-				android:text="AK47"
-				app:layout_constraintBottom_toTopOf="@+id/textView_secondary_gun" android:layout_marginEnd="8dp"
-				app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
-				app:layout_constraintStart_toStartOf="parent" android:layout_marginRight="8dp"
-				app:layout_constraintHorizontal_bias="0.0" android:layout_marginLeft="16dp"
-				android:layout_marginStart="16dp"/>
-		<TextView
-				android:id="@+id/textView_secondary_gun"
-				android:layout_width="123dp"
-				android:layout_height="18dp"
-				android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-				android:textColor="#8A000000"
-				android:text="P250"
-				android:layout_marginStart="16dp" app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/textView_main_gun"
-				app:layout_constraintStart_toStartOf="parent"
-				android:layout_marginLeft="16dp" app:layout_constraintEnd_toEndOf="parent"
+				android:layout_marginStart="16dp"
+				android:layout_marginLeft="16dp"
 				android:layout_marginEnd="8dp"
-				android:layout_marginRight="8dp" app:layout_constraintHorizontal_bias="0.0"/>
+				android:layout_marginRight="8dp"
+				android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+				android:textColor="#8A000000"
+				app:layout_constraintBottom_toTopOf="@+id/textView_secondary_weapon"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.0"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent" />
+
+		<TextView
+				android:id="@+id/textView_secondary_weapon"
+				android:layout_width="123dp"
+				android:layout_height="18dp"
+				android:layout_marginStart="16dp"
+				android:layout_marginLeft="16dp"
+				android:layout_marginEnd="8dp"
+				android:layout_marginRight="8dp"
+				android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+				android:textColor="#8A000000"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.0"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/textView_main_weapon" />
 
 		<ImageView
 				android:id="@+id/imageView_main_death"
@@ -70,7 +78,6 @@
 				android:layout_marginLeft="4dp"
 				android:layout_marginEnd="8dp"
 				android:layout_marginRight="8dp"
-				android:text="x0"
 				app:layout_constraintBottom_toTopOf="@+id/textView_secondary_deaths"
 				app:layout_constraintEnd_toStartOf="@+id/toggleButton_player_alive"
 				app:layout_constraintHorizontal_bias="0.0"
@@ -85,7 +92,6 @@
 				android:layout_marginLeft="4dp"
 				android:layout_marginEnd="8dp"
 				android:layout_marginRight="8dp"
-				android:text="x0"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toStartOf="@+id/toggleButton_player_alive"
 				app:layout_constraintHorizontal_bias="0.0"
@@ -93,15 +99,24 @@
 				app:layout_constraintTop_toBottomOf="@+id/textView_main_deaths" />
 
 		<ToggleButton
+				android:id="@+id/toggleButton_player_alive"
 				android:layout_width="100dp"
 				android:layout_height="41dp"
-				android:id="@+id/toggleButton_player_alive" android:checked="true"
-				android:textOff="@string/label_eliminated" android:textOn="@string/label_in_game"
-				app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
-				android:layout_marginRight="16dp" android:layout_marginStart="8dp"
-				app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
-				app:layout_constraintHorizontal_bias="1.0" android:layout_marginBottom="8dp"
-				app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
+				android:layout_marginStart="8dp"
+				android:layout_marginLeft="8dp"
+				android:layout_marginTop="8dp"
+				android:layout_marginEnd="16dp"
+				android:layout_marginRight="16dp"
+				android:layout_marginBottom="8dp"
+				android:checked="true"
+				android:textOff="@string/label_eliminated"
+				android:textOn="@string/label_in_game"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="1.0"
+				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toTopOf="parent"/>
+
 	</androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.cardview.widget.CardView>

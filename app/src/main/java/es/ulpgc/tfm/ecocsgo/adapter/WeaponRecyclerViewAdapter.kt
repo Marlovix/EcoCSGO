@@ -6,34 +6,34 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import es.ulpgc.tfm.ecocsgo.fragment.GunListFragmentDialog
+import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.model.Equipment
 import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
-import kotlinx.android.synthetic.main.item_gun.view.*
+import kotlinx.android.synthetic.main.item_weapon.view.*
 
-class GunRecyclerViewAdapter(
+class WeaponRecyclerViewAdapter(
     private val values: List<Equipment>,
     private val category: EquipmentCategoryEnum,
-    private val interaction: GunListFragmentDialog.OnGunListFragmentInteraction?
+    private val interaction: WeaponListFragmentDialog.OnWeaponListFragmentInteraction?
 ) :
-    RecyclerView.Adapter<GunRecyclerViewAdapter.ViewHolder>() {
+    RecyclerView.Adapter<WeaponRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_gun, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_weapon, parent, false)
         val viewHolder = ViewHolder(view)
         view.setOnClickListener(viewHolder)
         return viewHolder
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.nameGunTextView.text = values[position].name
+        holder.nameWeaponTextView.text = values[position].name
         val cost = values[position].cost.toString() + "$"
-        holder.costGun.text = cost
+        holder.costWeapon.text = cost
         if(false)
-            holder.selectedGun.visibility = View.VISIBLE
+            holder.selectedWeapon.visibility = View.VISIBLE
         else
-            holder.selectedGun.visibility = View.INVISIBLE
+            holder.selectedWeapon.visibility = View.INVISIBLE
     }
 
     override fun getItemCount(): Int {
@@ -41,12 +41,12 @@ class GunRecyclerViewAdapter(
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
-        val nameGunTextView: TextView = view.textView_name
-        val costGun: TextView = view.textView_cost
-        val selectedGun: ImageView = view.imageView_selected
+        val nameWeaponTextView: TextView = view.textView_name
+        val costWeapon: TextView = view.textView_cost
+        val selectedWeapon: ImageView = view.imageView_selected
 
         override fun onClick(v: View?) {
-            interaction?.selectGun(v!!, category, adapterPosition)
+            interaction?.selectWeapon(v!!, category, adapterPosition)
         }
     }
 }

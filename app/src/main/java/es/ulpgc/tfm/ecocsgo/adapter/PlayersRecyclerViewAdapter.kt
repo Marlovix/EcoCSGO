@@ -1,8 +1,6 @@
 package es.ulpgc.tfm.ecocsgo.adapter
 
-import android.content.Intent
 import android.graphics.Color
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +10,6 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import es.ulpgc.tfm.ecocsgo.*
 import es.ulpgc.tfm.ecocsgo.callback.PlayerCallback
-import es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment
 import es.ulpgc.tfm.ecocsgo.model.Player
 import kotlinx.android.synthetic.main.item_player.view.*
 import java.util.*
@@ -82,10 +79,12 @@ class PlayersRecyclerViewAdapter(
         }
     }*/
 
+    /*
     fun setPlayers(players : List<Player>){
         this.players = players as ArrayList<Player>
         notifyDataSetChanged()
     }
+     */
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -113,22 +112,22 @@ class PlayersRecyclerViewAdapter(
     override fun getItemCount() = players.size
 
     private fun updateView(holder: ViewHolder, player: Player){
-        holder.mainGun.text = if (player.mainGunInGame != null)
-            player.mainGunInGame!!.name else "-"
-        holder.mainDeaths.text = if (player.mainGunInGame != null)
-            "x" + player.mainGunInGame!!.name else "x0"
-        holder.secondaryGun.text = if (player.secondaryGunInGame != null)
-            player.secondaryGunInGame!!.name else "-"
-        holder.secondaryDeaths.text = if (player.secondaryGunInGame != null)
-            "x" + player.secondaryGunInGame!!.casualty.toString() else "x0"
+        holder.mainWeapon.text = if (player.mainWeaponInGame != null)
+            player.mainWeaponInGame!!.name else "-"
+        holder.mainDeaths.text = if (player.mainWeaponInGame != null)
+            "x" + player.mainWeaponInGame!!.name else "x0"
+        holder.secondaryWeapon.text = if (player.secondaryWeaponInGame != null)
+            player.secondaryWeaponInGame!!.name else "-"
+        holder.secondaryDeaths.text = if (player.secondaryWeaponInGame != null)
+            "x" + player.secondaryWeaponInGame!!.casualty.toString() else "x0"
 
         holder.togglePlayerAlive.isChecked = player.alive
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardView: CardView = view.cardView_player
-        val mainGun: TextView = view.textView_main_gun
-        val secondaryGun: TextView = view.textView_secondary_gun
+        val mainWeapon: TextView = view.textView_main_weapon
+        val secondaryWeapon: TextView = view.textView_secondary_weapon
         val mainDeaths: TextView = view.textView_secondary_deaths
         val secondaryDeaths: TextView = view.textView_main_deaths
         val togglePlayerAlive: ToggleButton = view.toggleButton_player_alive

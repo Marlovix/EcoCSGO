@@ -6,17 +6,17 @@ import kotlin.collections.ArrayList
 
 @Parcelize
 data class Player(val equipmentTeam: EquipmentTeamEnum,
-                  var secondaryGunInGame: SecondaryWeapon? = null,
-                  var mainGunInGame: MainWeapon? = null,
-                  var mainGuns: ArrayList<MainWeapon>? = ArrayList(),
-                  var secondaryGuns: ArrayList<SecondaryWeapon>? = ArrayList(),
+                  var secondaryWeaponInGame: SecondaryWeapon? = null,
+                  var mainWeaponInGame: MainWeapon? = null,
+                  var mainWeapons: ArrayList<MainWeapon>? = ArrayList(),
+                  var secondaryWeapons: ArrayList<SecondaryWeapon>? = ArrayList(),
                   var vest: Vest? = null,
                   var helmet: Helmet? = null,
                   var defuseKit: DefuseKit? = null,
                   var alive: Boolean = true) : Parcelable {
 
-    fun registerSecondaryGun(secondaryGun: SecondaryWeapon){
-        secondaryGuns?.add(secondaryGun)
-        secondaryGunInGame = secondaryGun
+    fun registerSecondaryWeapon(secondaryWeapon: SecondaryWeapon){
+        secondaryWeapons?.add(secondaryWeapon)
+        secondaryWeaponInGame = secondaryWeapon
     }
 }
