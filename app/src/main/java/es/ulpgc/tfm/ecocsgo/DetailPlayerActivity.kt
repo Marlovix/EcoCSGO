@@ -4,22 +4,31 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment
+import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.model.*
 import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
 import kotlinx.android.synthetic.main.activity_detail_player.*
 import kotlinx.android.synthetic.main.activity_game.*
 
 class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    DialogInterface.OnDismissListener,
-    DetailPlayerFragment.OnDetailPlayerFragmentInteraction{
+    DetailPlayerFragment.OnDetailPlayerFragmentInteraction, DialogInterface.OnDismissListener,
+    WeaponListFragmentDialog.OnWeaponListFragmentInteraction{
+
+    private var dialog : WeaponListFragmentDialog? = null
+    private var mainDialog = false
+    private var secondaryDialog = false
 
     private var player: Player? = null
     private val playerViewModel: PlayerViewModel by viewModels()
+
+    private var detailPlayerFragment: DetailPlayerFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,12 +39,12 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
 
-        player = intent.getParcelableExtra(DetailPlayerFragment.ARG_PLAYER)
+        player = intent.getParcelableExtra(ARG_PLAYER)
         playerViewModel.setPlayer(player!!)
 
-        val fragment = DetailPlayerFragment()
+        detailPlayerFragment = DetailPlayerFragment()
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_detail_player, fragment).commit()
+            .replace(R.id.fragment_detail_player, detailPlayerFragment!!).commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -78,10 +87,61 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     }
 
     override fun onDismiss(dialog: DialogInterface?) {
+        mainDialog = false
+        secondaryDialog = false
     }
 
-    override fun prueba() {
-        //Toast.makeText(this, "DetailPlayerActivity", Toast.LENGTH_LONG).show()
+    override fun openMainWeaponsDialog() {
+        mainDialog = true
+        val mainWeapons = detailPlayerFragment!!.retrieveMainWeapons()
+
+        val bundle = Bundle()
+        bundle.putSerializable(ARG_WEAPONS, mainWeapons)
+        openGunDialog(bundle)
+    }
+
+    override fun openSecondaryWeaponsDialog() {
+        secondaryDialog = true
+        val secondaryWeapons = detailPlayerFragment!!.retrieveSecondaryWeapons()
+
+        val bundle = Bundle()
+        bundle.putSerializable(ARG_WEAPONS, secondaryWeapons)
+        openGunDialog(bundle)
+    }
+
+    override fun selectWeapon(view: View, category: EquipmentCategoryEnum, weapon: Weapon) {
+        when(category){
+            EquipmentCategoryEnum.PISTOL -> {
+                if(secondaryDialog)
+                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
+            }
+            EquipmentCategoryEnum.HEAVY -> {
+                if (mainDialog)
+                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
+
+            }
+            EquipmentCategoryEnum.SMG -> {
+                if (mainDialog)
+                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
+            }
+            EquipmentCategoryEnum.RIFLE -> {
+                if (mainDialog)
+                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
+            }
+            else -> Toast.makeText(this, "", Toast.LENGTH_SHORT).show()
+        }
+        dialog?.dismiss()
+    }
+
+    private fun openGunDialog(bundle: Bundle) {
+        dialog = WeaponListFragmentDialog(this)
+        dialog!!.arguments = bundle
+        dialog!!.show(supportFragmentManager, null)
+    }
+
+    companion object {
+        const val ARG_WEAPONS = "weapons"
+        const val ARG_PLAYER = "ARG_PLAYER"
     }
 
 }

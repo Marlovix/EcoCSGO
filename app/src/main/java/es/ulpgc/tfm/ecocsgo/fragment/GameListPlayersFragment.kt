@@ -7,14 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.adapter.PlayersRecyclerViewAdapter
-import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
-import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
 import es.ulpgc.tfm.ecocsgo.model.Game
 import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
-import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
 import kotlinx.android.synthetic.main.fragment_list_players.*
 
 class GameListPlayersFragment() : Fragment(){
@@ -48,11 +44,6 @@ class GameListPlayersFragment() : Fragment(){
         }
     }
 
-    override fun onDetach() {
-        interaction = null
-        super.onDetach()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,6 +57,11 @@ class GameListPlayersFragment() : Fragment(){
         list_players.adapter = playersAdapter
 
         // observe de viewmodel???
+    }
+
+    override fun onDetach() {
+        interaction = null
+        super.onDetach()
     }
 
     interface OnListPlayersFragmentInteraction{

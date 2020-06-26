@@ -10,6 +10,7 @@ import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.model.Equipment
 import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
+import es.ulpgc.tfm.ecocsgo.model.Weapon
 import kotlinx.android.synthetic.main.item_weapon.view.*
 
 class WeaponRecyclerViewAdapter(
@@ -46,7 +47,8 @@ class WeaponRecyclerViewAdapter(
         val selectedWeapon: ImageView = view.imageView_selected
 
         override fun onClick(v: View?) {
-            interaction?.selectWeapon(v!!, category, adapterPosition)
+            val weaponSelected = values[adapterPosition] as Weapon
+            interaction?.selectWeapon(v!!, category, weaponSelected)
         }
     }
 }

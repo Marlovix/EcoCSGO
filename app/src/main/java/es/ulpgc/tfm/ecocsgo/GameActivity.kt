@@ -1,5 +1,6 @@
 package es.ulpgc.tfm.ecocsgo
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -19,20 +20,21 @@ import es.ulpgc.tfm.ecocsgo.MainActivity.Companion.ARG_TEAM
 import es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment
 import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.fragment.GameListPlayersFragment
-import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
-import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
-import es.ulpgc.tfm.ecocsgo.model.Game
-import es.ulpgc.tfm.ecocsgo.model.Player
+import es.ulpgc.tfm.ecocsgo.model.*
 import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
 import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
 import kotlinx.android.synthetic.main.list_players.*
 
 class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    GameListPlayersFragment.OnListPlayersFragmentInteraction,
-    WeaponListFragmentDialog.OnWeaponListFragmentInteraction,
-    DetailPlayerFragment.OnDetailPlayerFragmentInteraction {
+    GameListPlayersFragment.OnListPlayersFragmentInteraction, DialogInterface.OnDismissListener,
+    DetailPlayerFragment.OnDetailPlayerFragmentInteraction,
+    WeaponListFragmentDialog.OnWeaponListFragmentInteraction {
 
-    private var twoPane: Boolean = false
+    private var dialog : WeaponListFragmentDialog? = null
+    private var mainDialog = false
+    private var secondaryDialog = false
+
+    var twoPane: Boolean = false
     private var game: Game? = null
 
     private var gameListPlayersFragment: GameListPlayersFragment? = null
@@ -87,7 +89,14 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navView.setNavigationItemSelectedListener(this)
 
-        setupRecyclerView()
+        //val callback = playersAdapter?.let { PlayerCallback(it, this) }
+        //val touchHelper = callback?.let { ItemTouchHelper(it) }
+        //touchHelper?.attachToRecyclerView(list_players)
+    }
+
+    override fun onDismiss(dialog: DialogInterface?) {
+        mainDialog = false
+        secondaryDialog = false
     }
 
     override fun onBackPressed() {
@@ -142,28 +151,27 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    private fun setupRecyclerView() {
-        return
-        //val gameViewModel: GameActivityViewModel by viewModels()
-        //game = enemyTeam?.let { gameViewModel.getGame(it).value }
-
-        /*playersAdapter = game!!.players?.let {
-            PlayersRecyclerViewAdapter(this, it, twoPane)
-        }*/
-
-        //list_players.adapter = playerAdapter
-
-        //val callback = playersAdapter?.let { PlayerCallback(it, this) }
-        //val touchHelper = callback?.let { ItemTouchHelper(it) }
-        //touchHelper?.attachToRecyclerView(list_players)
-    }
-
-    override fun prueba() {
-        Toast.makeText(this, "GameActivity", Toast.LENGTH_LONG).show()
-    }
-
-    override fun selectWeapon(view: View, category: EquipmentCategoryEnum, position: Int) {
-        TODO("Not yet implemented")
+    override fun selectWeapon(view: View, category: EquipmentCategoryEnum, weapon: Weapon) {
+        when(category){
+            EquipmentCategoryEnum.PISTOL -> {
+                if(secondaryDialog)
+                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
+            }
+            EquipmentCategoryEnum.HEAVY -> {
+                if (mainDialog)
+                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
+            }
+            EquipmentCategoryEnum.SMG -> {
+                if (mainDialog)
+                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
+            }
+            EquipmentCategoryEnum.RIFLE -> {
+                if (mainDialog)
+                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
+            }
+            else -> Toast.makeText(this, "", Toast.LENGTH_SHORT).show()
+        }
+        dialog?.dismiss()
     }
 
     override fun selectPlayer(view: View) {
@@ -174,9 +182,33 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             detailPlayerFragment?.updatePlayerView()
         }else{
             val intent = Intent(this, DetailPlayerActivity::class.java)
-            intent.putExtra(DetailPlayerFragment.ARG_PLAYER, player)
+            intent.putExtra(DetailPlayerActivity.ARG_PLAYER, player)
             startActivity(intent)
         }
+    }
+
+    override fun openMainWeaponsDialog() {
+        mainDialog = true
+        val mainWeapons = detailPlayerFragment!!.retrieveMainWeapons()
+
+        val bundle = Bundle()
+        bundle.putSerializable(DetailPlayerActivity.ARG_WEAPONS, mainWeapons)
+        openGunDialog(bundle)
+    }
+
+    override fun openSecondaryWeaponsDialog() {
+        secondaryDialog = true
+        val secondaryWeapons = detailPlayerFragment!!.retrieveSecondaryWeapons()
+
+        val bundle = Bundle()
+        bundle.putSerializable(DetailPlayerActivity.ARG_WEAPONS, secondaryWeapons)
+        openGunDialog(bundle)
+    }
+
+    private fun openGunDialog(bundle: Bundle) {
+        dialog = WeaponListFragmentDialog(this)
+        dialog!!.arguments = bundle
+        dialog!!.show(supportFragmentManager, null)
     }
 
 }

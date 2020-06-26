@@ -3,7 +3,8 @@ package es.ulpgc.tfm.ecocsgo.db
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import es.ulpgc.tfm.ecocsgo.model.*
-import java.sql.SQLException
+import java.util.*
+import kotlin.collections.ArrayList
 
 class AppHelperDB(private val helper: AppDatabase?) {
     private var database: SQLiteDatabase? = null
@@ -55,10 +56,6 @@ class AppHelperDB(private val helper: AppDatabase?) {
         AppDatabase.KEY_TYPE_FIELD,
         AppDatabase.KEY_BONUS_FIELD
     )
-
-    private fun existData(numeration: EquipmentNumeration) : Boolean {
-        return false
-    }
 
     fun open(): AppHelperDB {
         database = helper?.writableDatabase
@@ -146,7 +143,6 @@ class AppHelperDB(private val helper: AppDatabase?) {
         return database!!.insert(AppDatabase.KEY_VICTORY_TABLE, null, contentDB)
     }
 
-    @Throws(SQLException::class)
     fun equipmentAlreadyExists(numeration: EquipmentNumeration): Boolean {
         val table = when(numeration.category){
             EquipmentCategoryEnum.PISTOL,
@@ -216,7 +212,6 @@ class AppHelperDB(private val helper: AppDatabase?) {
         return equipmentAlreadyExists
     }
 
-    @Throws(SQLException::class)
     fun fetchWeaponByNumeration(numeration: EquipmentNumeration,
                                 team : EquipmentTeamEnum = EquipmentTeamEnum.BOTH): Weapon? {
         val selectionArgs = arrayOf(
@@ -229,19 +224,137 @@ class AppHelperDB(private val helper: AppDatabase?) {
 
         cursor?.moveToFirst()
 
-        val nameIndex = cursor.getColumnIndex(AppDatabase.KEY_NAME_FIELD)
-        val costIndex = cursor.getColumnIndex(AppDatabase.KEY_COST_FIELD)
-        val rewardIndex = cursor.getColumnIndex(AppDatabase.KEY_REWARD_FIELD)
-
-        val name = cursor.getString(nameIndex)
-        val cost = cursor.getInt(costIndex)
-        val reward = cursor.getInt(rewardIndex)
+        val name = cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_NAME_FIELD))
+        val cost = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_COST_FIELD))
+        val reward = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_REWARD_FIELD))
 
         cursor.close()
 
         return if(numeration.category == EquipmentCategoryEnum.PISTOL)
             SecondaryWeapon(name, team, numeration, cost, reward)
         else MainWeapon(name, team, numeration, cost, reward)
+    }
+
+    fun fetchUtilityEquipment() : List<Equipment>{
+        val cursor = database!!.query(AppDatabase.KEY_UTILITY_TABLE,
+            columnsUtility, null, null,
+            null, null, null, null)
+
+        val results = ArrayList<Equipment>()
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast) {
+                val name = cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_NAME_FIELD))
+                val cost = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_COST_FIELD))
+                val item = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_ITEM_FIELD))
+                val numeration = EquipmentNumeration(item, EquipmentCategoryEnum.GEAR)
+                val team = EquipmentTeamEnum.valueOf(
+                    cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_TEAM_FIELD)))
+
+                when(item){
+                    1 -> results.add(Vest(name, team, numeration, cost))
+                    2 -> results.add(Helmet(name, team, numeration, cost))
+                    3 -> results.add(Zeus(name, team, numeration, cost))
+                    else -> results.add(DefuseKit(name, team, numeration, cost))
+                }
+
+                cursor.moveToNext()
+            }
+        }
+
+        cursor.close()
+
+        return results
+    }
+
+    fun fetchMainWeapons() : EnumMap<EquipmentCategoryEnum, List<MainWeapon>> {
+        val selectionArgs = arrayOf("2","3","4")
+
+        val cursor = database!!.query(AppDatabase.KEY_WEAPON_TABLE,
+            columnsWeapon, AppDatabase.SELECTION_CATEGORY + " OR " +
+                    AppDatabase.SELECTION_CATEGORY  + " OR " +
+                    AppDatabase.SELECTION_CATEGORY, selectionArgs,
+            null, null, null, null)
+
+        val heavy : ArrayList<MainWeapon> = ArrayList()
+        val smg : ArrayList<MainWeapon> = ArrayList()
+        val rifle : ArrayList<MainWeapon> = ArrayList()
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast) {
+                val name = cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_NAME_FIELD))
+                val cost = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_COST_FIELD))
+                val reward = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_REWARD_FIELD))
+                val item = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_ITEM_FIELD))
+                val category = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_CATEGORY_FIELD))
+                val team = EquipmentTeamEnum.valueOf(
+                    cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_TEAM_FIELD)))
+
+                val numeration : EquipmentNumeration
+                when(category){
+                    2 -> {
+                        numeration = EquipmentNumeration(item, EquipmentCategoryEnum.HEAVY)
+                        heavy.add(MainWeapon(name, team, numeration, cost, reward))
+                    }
+                    3 -> {
+                        numeration = EquipmentNumeration(item, EquipmentCategoryEnum.SMG)
+                        smg.add(MainWeapon(name, team, numeration, cost, reward))
+                    }
+                    4 -> {
+                        numeration = EquipmentNumeration(item, EquipmentCategoryEnum.RIFLE)
+                        rifle.add(MainWeapon(name, team, numeration, cost, reward))
+                    }
+                    else -> println("\nError load main weapon\n")
+                }
+
+                cursor.moveToNext()
+            }
+        }
+
+        cursor.close()
+
+        val results: EnumMap<EquipmentCategoryEnum, List<MainWeapon>> =
+            EnumMap(EquipmentCategoryEnum::class.java)
+
+        results[EquipmentCategoryEnum.HEAVY] = heavy
+        results[EquipmentCategoryEnum.SMG] = smg
+        results[EquipmentCategoryEnum.RIFLE] = rifle
+
+        return results
+    }
+
+    fun fetchSecondaryWeapons() : EnumMap<EquipmentCategoryEnum, List<SecondaryWeapon>>{
+        val selectionArgs = arrayOf("1")
+
+        val cursor = database!!.query(AppDatabase.KEY_WEAPON_TABLE,
+            columnsWeapon, AppDatabase.SELECTION_CATEGORY, selectionArgs,
+            null, null, null, null)
+
+        val pistol : ArrayList<SecondaryWeapon> = ArrayList()
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast) {
+                val name = cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_NAME_FIELD))
+                val cost = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_COST_FIELD))
+                val reward = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_REWARD_FIELD))
+                val item = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_ITEM_FIELD))
+                val numeration = EquipmentNumeration(item, EquipmentCategoryEnum.GEAR)
+                val team = EquipmentTeamEnum.valueOf(
+                    cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_TEAM_FIELD)))
+
+                pistol.add(SecondaryWeapon(name, team, numeration, cost, reward))
+
+                cursor.moveToNext()
+            }
+        }
+
+        cursor.close()
+
+        val results: EnumMap<EquipmentCategoryEnum, List<SecondaryWeapon>> =
+            EnumMap(EquipmentCategoryEnum::class.java)
+
+        results[EquipmentCategoryEnum.PISTOL] = pistol
+
+        return results
     }
 
     private fun equipmentMapper(equipment: Equipment): ContentValues {
@@ -251,6 +364,7 @@ class AppHelperDB(private val helper: AppDatabase?) {
         initialValues.put(AppDatabase.KEY_CATEGORY_FIELD, equipment.numeration.category.id)
         initialValues.put(AppDatabase.KEY_ITEM_FIELD, equipment.numeration.item)
         initialValues.put(AppDatabase.KEY_TEAM_FIELD, equipment.team.name)
+
         return initialValues
     }
 

@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
+import es.ulpgc.tfm.ecocsgo.DetailPlayerActivity
+import es.ulpgc.tfm.ecocsgo.GameActivity
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.adapter.EquipmentCategoryRecyclerViewAdapter
 import es.ulpgc.tfm.ecocsgo.model.Equipment
@@ -19,7 +21,7 @@ class WeaponListFragmentDialog(
     private var interaction: OnWeaponListFragmentInteraction?
 ) : DialogFragment() {
 
-    private var weapon : Map<EquipmentCategoryEnum, List<Equipment>> =
+    private var weapons : Map<EquipmentCategoryEnum, List<Equipment>> =
         EnumMap(EquipmentCategoryEnum::class.java)
 
     override fun onAttach(context: Context) {
@@ -36,14 +38,17 @@ class WeaponListFragmentDialog(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.list_category_weapon, container, false)
+        val rootView =
+            inflater.inflate(R.layout.list_category_weapon, container, false)
 
         val recyclerView = rootView.findViewById(R.id.list_category_weapon) as RecyclerView
 
         val bundle = arguments
-        weapon = bundle?.getSerializable(DetailPlayerFragment.ARG_WEAPONS) as Map<EquipmentCategoryEnum, ArrayList<Weapon>>
+        weapons = bundle?.getSerializable(DetailPlayerActivity.ARG_WEAPONS)
+                as Map<EquipmentCategoryEnum, ArrayList<Weapon>>
 
-        if (rootView is RecyclerView) recyclerView.adapter = EquipmentCategoryRecyclerViewAdapter(weapon, interaction)
+        if (rootView is RecyclerView) recyclerView.adapter =
+            EquipmentCategoryRecyclerViewAdapter(weapons, interaction)
 
         return rootView
     }
@@ -52,8 +57,20 @@ class WeaponListFragmentDialog(
         super.onStart()
         val dialog = dialog
         if (dialog != null) {
-            val width = ViewGroup.LayoutParams.MATCH_PARENT
-            val height = ViewGroup.LayoutParams.MATCH_PARENT
+
+            var twoPane = false
+            if(activity is GameActivity){
+                val gameActivity = activity as GameActivity
+                twoPane = gameActivity.twoPane
+            }
+
+            val width : Int =
+                if (twoPane) resources.getDimension(R.dimen.width_weapon_dialog).toInt()
+                else ViewGroup.LayoutParams.MATCH_PARENT
+            val height : Int =
+                if (twoPane) resources.getDimension(R.dimen.width_weapon_dialog).toInt()
+                else ViewGroup.LayoutParams.MATCH_PARENT
+
             dialog.window?.setLayout(width, height)
         }
     }
@@ -72,7 +89,7 @@ class WeaponListFragmentDialog(
     }
 
     interface OnWeaponListFragmentInteraction{
-        fun selectWeapon(view: View, category: EquipmentCategoryEnum, position: Int)
+        fun selectWeapon(view: View, category: EquipmentCategoryEnum, weapon: Weapon)
     }
 
 }

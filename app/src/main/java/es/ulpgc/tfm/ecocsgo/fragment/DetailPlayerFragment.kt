@@ -5,21 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import es.ulpgc.tfm.ecocsgo.R
+import es.ulpgc.tfm.ecocsgo.db.AppDatabase
+import es.ulpgc.tfm.ecocsgo.db.AppHelperDB
 import es.ulpgc.tfm.ecocsgo.model.*
 import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
 import kotlinx.android.synthetic.main.fragment_detail_player.*
+import java.util.*
 
-class DetailPlayerFragment : Fragment(), WeaponListFragmentDialog.OnWeaponListFragmentInteraction {
+class DetailPlayerFragment : Fragment(){
 
     private var interaction: OnDetailPlayerFragmentInteraction? = null
-
-    private var dialog : WeaponListFragmentDialog? = null
-    private var mainDialog = false
-    private var secondaryDialog = false
 
     private var player: Player? = null
     private val playerViewModel: PlayerViewModel by activityViewModels()
@@ -45,68 +44,32 @@ class DetailPlayerFragment : Fragment(), WeaponListFragmentDialog.OnWeaponListFr
 
         initButtons()
 
+        setUtilityLabelNames()
+
         updatePlayerView()
-        // observe de viewmodel???
+        // observe de viewModel???
     }
 
-    /*
-    *
-    * private fun updateView(){
-        val adapterMainWeapons =
-            ArrayAdapter(this, android.R.layout.simple_spinner_item, player!!.mainWeapons!!)
-        val adapterSecondaryWeapons =
-            ArrayAdapter(this, android.R.layout.simple_spinner_item, player!!.secondaryWeapons!!)
-
-        adapterMainWeapons.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        adapterSecondaryWeapons.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        spinnerMainWeapons!!.adapter = adapterMainWeapons
-        spinnerSecondaryWeapons!!.adapter = adapterSecondaryWeapons
-
-        for (i in 0 .. player!!.mainWeapons!!.size) {
-            if(player?.mainWeapons!!.isNotEmpty() &&
-                player!!.mainWeapons!![i] == player!!.mainWeaponInGame) {
-                spinnerMainWeapons!!.setSelection(i)
-                break
-            }
-        }
-
-        for (i in 0 .. player!!.secondaryWeapons!!.size) {
-            if(player?.secondaryWeapons!!.isNotEmpty() &&
-                player!!.secondaryWeapons!![i] == player!!.secondaryWeaponInGame){
-                spinnerSecondaryWeapons!!.setSelection(i)
-                break
-            }
-        }
-
-        editTextMainCasualties!!.setText(
-            if (player!!.mainWeaponInGame == null) "0" else player!!.mainWeaponInGame?.casualty.toString()
-        )
-        editTextSecondaryCasualties!!.setText(
-            if (player!!.secondaryWeaponInGame == null) "0"
-            else player!!.secondaryWeaponInGame?.casualty.toString()
-        )
+    override fun onDetach() {
+        interaction = null
+        super.onDetach()
     }
-    *
-    * */
 
     fun updatePlayerView(){
         player = playerViewModel.getPlayer()?.value
         if (player != null){
-            val mainWeaponsAdapters = activity?.let {
+            val mainAdapter = activity?.let {
                 ArrayAdapter(it, android.R.layout.simple_spinner_item, player!!.mainWeapons!!)
             }
-            val secondaryWeaponsAdapters = activity?.let {
+            val secondaryAdapter = activity?.let {
                 ArrayAdapter(it, android.R.layout.simple_spinner_item, player!!.secondaryWeapons!!)
             }
 
-            mainWeaponsAdapters?.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item)
-            secondaryWeaponsAdapters?.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item)
+            mainAdapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            secondaryAdapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-            spinner_main_weapons!!.adapter = mainWeaponsAdapters
-            spinner_secondary_weapons!!.adapter = secondaryWeaponsAdapters
+            spinner_main_weapons!!.adapter = mainAdapter
+            spinner_secondary_weapons!!.adapter = secondaryAdapter
 
             for (i in 0 .. player!!.mainWeapons!!.size) {
                 if(player?.mainWeapons!!.isNotEmpty() &&
@@ -139,24 +102,39 @@ class DetailPlayerFragment : Fragment(), WeaponListFragmentDialog.OnWeaponListFr
         }
     }
 
+    fun retrieveMainWeapons() : EnumMap<EquipmentCategoryEnum, List<MainWeapon>> {
+        val appDatabase = AppDatabase(activity)
+        val appHelperDB = AppHelperDB(appDatabase)
+
+        val mainWeapons: EnumMap<EquipmentCategoryEnum, List<MainWeapon>>
+
+        appHelperDB.open()
+        mainWeapons = appHelperDB.fetchMainWeapons()
+        appHelperDB.close()
+
+        return mainWeapons
+    }
+
+    fun retrieveSecondaryWeapons() : EnumMap<EquipmentCategoryEnum, List<SecondaryWeapon>> {
+        val appDatabase = AppDatabase(activity)
+        val appHelperDB = AppHelperDB(appDatabase)
+
+        val secondaryWeapons: EnumMap<EquipmentCategoryEnum, List<SecondaryWeapon>>
+
+        appHelperDB.open()
+        secondaryWeapons = appHelperDB.fetchSecondaryWeapons()
+        appHelperDB.close()
+
+        return secondaryWeapons
+    }
+
     private fun initButtons() {
-        imageButton_add_main_casualty?.setOnClickListener {
-            val bundle = Bundle()
-            /*bundle.putSerializable(
-                ARG_WEAPONS, mainWeapons as EnumMap<*, *>
-            )*/
-            mainDialog = true
-            openWeaponDialog(bundle)
+        imageButton_add_main_weapon?.setOnClickListener {
+            interaction?.openMainWeaponsDialog()
         }
 
         imageButton_add_secondary_weapon?.setOnClickListener {
-            val bundle = Bundle()
-            /*bundle.putSerializable(
-                ARG_WEAPONS,
-                secondaryWeapons as EnumMap<*, *>
-            )*/
-            secondaryDialog = true
-            openWeaponDialog(bundle)
+            interaction?.openSecondaryWeaponsDialog()
         }
 
         imageButton_add_main_casualty?.setOnClickListener {
@@ -174,38 +152,52 @@ class DetailPlayerFragment : Fragment(), WeaponListFragmentDialog.OnWeaponListFr
         }
 
         imageButton_add_secondary_casualty?.setOnClickListener {
-            if(player?.secondaryWeaponInGame != null && player?.secondaryWeaponInGame?.casualty!! < 5){
-                player?.secondaryWeaponInGame?.casualty = player?.secondaryWeaponInGame?.casualty!!.inc()
-                editText_secondary_casualties.setText(
-                    player?.secondaryWeaponInGame?.casualty.toString())
+            val weapon = player?.secondaryWeaponInGame
+            if(weapon != null && weapon.casualty < 5){
+                weapon.casualty = weapon.casualty.inc()
+                editText_secondary_casualties.setText(weapon.casualty.toString())
             }
         }
 
         imageButton_delete_secondary_weapon?.setOnClickListener {
-            if(player?.secondaryWeaponInGame != null && player?.secondaryWeaponInGame?.casualty!! > 0){
-                player?.secondaryWeaponInGame?.casualty = player?.secondaryWeaponInGame?.casualty!!.dec()
-                editText_secondary_casualties.setText(
-                    player?.secondaryWeaponInGame?.casualty.toString())
+            val weapon = player?.secondaryWeaponInGame
+            if(weapon != null && weapon.casualty > 0){
+                weapon.casualty = weapon.casualty.dec()
+                editText_secondary_casualties.setText(weapon.casualty.toString())
             }
         }
     }
 
-    private fun openWeaponDialog(bundle: Bundle) {
-        dialog = WeaponListFragmentDialog(this)
-        dialog!!.arguments = bundle
-        dialog!!.show(requireActivity().supportFragmentManager, null)
-    }
+    private fun setUtilityLabelNames(){
+        val appDatabase = AppDatabase(context)
+        val appHelperDB = AppHelperDB(appDatabase)
 
-    companion object {
-        const val ARG_WEAPONS = "weapons"
-        const val ARG_PLAYER = "ARG_PLAYER"
+        val utilities: List<Equipment>
+
+        appHelperDB.open()
+        utilities = appHelperDB.fetchUtilityEquipment()
+        appHelperDB.close()
+
+        var vest: Vest? = null
+        var helmet: Helmet? = null
+        var defuseKit: DefuseKit? = null
+
+        for (utility in utilities){
+            when(utility.numeration.item){
+                1 -> vest = utility as Vest
+                2 -> helmet = utility as Helmet
+                4 -> defuseKit = utility as DefuseKit
+            }
+        }
+
+        textView_vest.text = vest?.name
+        textView_helmet.text = helmet?.name
+        textView_defuse_kit.text = defuseKit?.name
     }
 
     interface OnDetailPlayerFragmentInteraction {
-        fun prueba()
+        fun openMainWeaponsDialog()
+        fun openSecondaryWeaponsDialog()
     }
 
-    override fun selectWeapon(view: View, category: EquipmentCategoryEnum, position: Int) {
-        TODO("Not yet implemented")
-    }
 }

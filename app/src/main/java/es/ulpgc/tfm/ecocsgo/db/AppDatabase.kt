@@ -80,6 +80,7 @@ class AppDatabase(var context: Context?) : SQLiteOpenHelper(
                 "$KEY_TYPE_FIELD VARCHAR(10) NOT NULL, $KEY_BONUS_FIELD INTEGER NOT NULL);")
 
         const val SELECTION_NUMERATION = "$KEY_CATEGORY_FIELD = ? AND $KEY_ITEM_FIELD = ?"
+        const val SELECTION_CATEGORY = "$KEY_CATEGORY_FIELD = ?"
         const val SELECTION_NAME = "$KEY_NAME_FIELD = ?"
         const val SELECTION_TEAM = "$KEY_TEAM_FIELD = ?"
     }
