@@ -48,7 +48,7 @@ class WeaponRecyclerViewAdapter(
 
         override fun onClick(v: View?) {
             val weaponSelected = values[adapterPosition] as Weapon
-            interaction?.selectWeapon(v!!, category, weaponSelected)
+            interaction?.selectWeapon(weaponSelected)
         }
     }
 }

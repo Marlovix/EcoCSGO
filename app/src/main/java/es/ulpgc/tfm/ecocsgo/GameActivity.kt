@@ -151,26 +151,14 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun selectWeapon(view: View, category: EquipmentCategoryEnum, weapon: Weapon) {
-        when(category){
-            EquipmentCategoryEnum.PISTOL -> {
-                if(secondaryDialog)
-                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
-            }
-            EquipmentCategoryEnum.HEAVY -> {
-                if (mainDialog)
-                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
-            }
-            EquipmentCategoryEnum.SMG -> {
-                if (mainDialog)
-                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
-            }
-            EquipmentCategoryEnum.RIFLE -> {
-                if (mainDialog)
-                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
-            }
-            else -> Toast.makeText(this, "", Toast.LENGTH_SHORT).show()
-        }
+    override fun selectWeapon(weapon: Weapon) {
+        if(weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
+            detailPlayerFragment?.addSecondaryWeapon(weapon as SecondaryWeapon)
+        else
+            detailPlayerFragment?.addMainWeapon(weapon as MainWeapon)
+
+        detailPlayerFragment?.updatePlayerView()
+
         dialog?.dismiss()
     }
 

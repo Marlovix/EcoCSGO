@@ -89,7 +89,7 @@ class WeaponListFragmentDialog(
     }
 
     interface OnWeaponListFragmentInteraction{
-        fun selectWeapon(view: View, category: EquipmentCategoryEnum, weapon: Weapon)
+        fun selectWeapon(weapon: Weapon)
     }
 
 }

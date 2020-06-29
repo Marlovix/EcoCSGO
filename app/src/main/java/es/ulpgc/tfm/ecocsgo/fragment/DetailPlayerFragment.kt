@@ -5,9 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.observe
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.db.AppDatabase
 import es.ulpgc.tfm.ecocsgo.db.AppHelperDB
@@ -15,6 +19,8 @@ import es.ulpgc.tfm.ecocsgo.model.*
 import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
 import kotlinx.android.synthetic.main.fragment_detail_player.*
 import java.util.*
+import kotlin.collections.ArrayList
+
 
 class DetailPlayerFragment : Fragment(){
 
@@ -46,13 +52,20 @@ class DetailPlayerFragment : Fragment(){
 
         setUtilityLabelNames()
 
+        createObservers()
+
         updatePlayerView()
-        // observe de viewModel???
     }
 
     override fun onDetach() {
         interaction = null
         super.onDetach()
+    }
+
+    private fun createObservers(){
+        playerViewModel.getPlayer()?.observe(viewLifecycleOwner) { item ->
+            Toast.makeText(activity, item.toString(), Toast.LENGTH_LONG).show()
+        }
     }
 
     fun updatePlayerView(){
@@ -71,21 +84,7 @@ class DetailPlayerFragment : Fragment(){
             spinner_main_weapons!!.adapter = mainAdapter
             spinner_secondary_weapons!!.adapter = secondaryAdapter
 
-            for (i in 0 .. player!!.mainWeapons!!.size) {
-                if(player?.mainWeapons!!.isNotEmpty() &&
-                    player!!.mainWeapons!![i] == player!!.mainWeaponInGame) {
-                    spinner_main_weapons!!.setSelection(i)
-                    break
-                }
-            }
-
-            for (i in 0 .. player!!.secondaryWeapons!!.size) {
-                if(player?.secondaryWeapons!!.isNotEmpty() &&
-                    player!!.secondaryWeapons!![i] == player!!.secondaryWeaponInGame){
-                    spinner_secondary_weapons!!.setSelection(i)
-                    break
-                }
-            }
+            updateWeaponSpinners()
 
             editText_main_casualties!!.setText(
                 if (player!!.mainWeaponInGame == null) ""
@@ -100,6 +99,16 @@ class DetailPlayerFragment : Fragment(){
             switch_helmet.isChecked = player!!.helmet != null
             switch_defuse_kit.isChecked = player!!.defuseKit != null
         }
+    }
+
+    fun addMainWeapon(weapon: MainWeapon){
+        player?.mainWeapons?.add(weapon)
+        player?.mainWeaponInGame = weapon
+    }
+
+    fun addSecondaryWeapon(weapon: SecondaryWeapon){
+        player?.secondaryWeapons?.add(weapon)
+        player?.secondaryWeaponInGame = weapon
     }
 
     fun retrieveMainWeapons() : EnumMap<EquipmentCategoryEnum, List<MainWeapon>> {
@@ -128,6 +137,24 @@ class DetailPlayerFragment : Fragment(){
         return secondaryWeapons
     }
 
+    private fun updateWeaponSpinners(){
+        for (i in 0 .. player!!.mainWeapons!!.size) {
+            if(player?.mainWeapons!!.isNotEmpty() &&
+                player!!.mainWeapons!![i] == player!!.mainWeaponInGame) {
+                spinner_main_weapons!!.setSelection(i)
+                break
+            }
+        }
+
+        for (i in 0 .. player!!.secondaryWeapons!!.size) {
+            if(player?.secondaryWeapons!!.isNotEmpty() &&
+                player!!.secondaryWeapons!![i] == player!!.secondaryWeaponInGame){
+                spinner_secondary_weapons!!.setSelection(i)
+                break
+            }
+        }
+    }
+
     private fun initButtons() {
         imageButton_add_main_weapon?.setOnClickListener {
             interaction?.openMainWeaponsDialog()
@@ -137,6 +164,34 @@ class DetailPlayerFragment : Fragment(){
             interaction?.openSecondaryWeaponsDialog()
         }
 
+        imageButton_delete_main_weapon?.setOnClickListener {
+            if (player?.mainWeapons!!.isEmpty()) return@setOnClickListener
+
+            deleteWeapon(player?.mainWeapons!!, player?.mainWeaponInGame!!)
+
+            player?.mainWeaponInGame = null
+
+            if (player?.mainWeapons!!.isNotEmpty()){
+                player?.mainWeaponInGame = player?.mainWeapons!!.first()
+            }
+
+            updateWeaponSpinners()
+        }
+
+        imageButton_delete_secondary_weapon?.setOnClickListener {
+            if (player?.secondaryWeapons!!.isEmpty()) return@setOnClickListener
+
+            deleteWeapon(player?.secondaryWeapons!!, player?.secondaryWeaponInGame!!)
+
+            player?.secondaryWeaponInGame = null
+
+            if (player?.secondaryWeapons!!.isNotEmpty()){
+                player?.secondaryWeaponInGame = player?.secondaryWeapons!!.first()
+            }
+
+            updateWeaponSpinners()
+        }
+
         imageButton_add_main_casualty?.setOnClickListener {
             if(player?.mainWeaponInGame != null && player?.mainWeaponInGame?.casualty!! < 5){
                 player?.mainWeaponInGame?.casualty!!.inc()
@@ -144,7 +199,7 @@ class DetailPlayerFragment : Fragment(){
             }
         }
 
-        imageButton_delete_main_weapon?.setOnClickListener {
+        imageButton_remove_main_casualty?.setOnClickListener {
             if(player?.mainWeaponInGame != null && player?.mainWeaponInGame?.casualty!! > 0){
                 player?.mainWeaponInGame?.casualty!!.dec()
                 editText_main_casualties.setText(player?.mainWeaponInGame?.casualty.toString())
@@ -159,11 +214,55 @@ class DetailPlayerFragment : Fragment(){
             }
         }
 
-        imageButton_delete_secondary_weapon?.setOnClickListener {
+        imageButton_remove_secondary_casualty?.setOnClickListener {
             val weapon = player?.secondaryWeaponInGame
             if(weapon != null && weapon.casualty > 0){
                 weapon.casualty = weapon.casualty.dec()
                 editText_secondary_casualties.setText(weapon.casualty.toString())
+            }
+        }
+
+        spinner_main_weapons.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parentView: AdapterView<*>?,
+                selectedItemView: View,
+                position: Int,
+                id: Long
+            ) {
+                val weapon : MainWeapon = player?.mainWeapons?.get(position)!!
+                player!!.mainWeaponInGame = weapon
+                editText_main_casualties.setText(player!!.mainWeaponInGame!!.casualty.toString())
+            }
+
+            override fun onNothingSelected(parentView: AdapterView<*>?) {
+
+            }
+        }
+
+        spinner_secondary_weapons.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parentView: AdapterView<*>?,
+                selectedItemView: View,
+                position: Int,
+                id: Long
+            ) {
+                val weapon : SecondaryWeapon = player?.secondaryWeapons?.get(position)!!
+                player!!.secondaryWeaponInGame = weapon
+                editText_secondary_casualties.setText(
+                    player!!.secondaryWeaponInGame!!.casualty.toString())
+            }
+
+            override fun onNothingSelected(parentView: AdapterView<*>?) {
+                // your code here
+            }
+        }
+    }
+
+    private fun deleteWeapon(weapons: List<Weapon>, weaponInGame: Weapon){
+        for (weapon in weapons as ArrayList) {
+            if (weaponInGame.name == weapon.name){
+                weapons.remove(weapon)
+                break
             }
         }
     }

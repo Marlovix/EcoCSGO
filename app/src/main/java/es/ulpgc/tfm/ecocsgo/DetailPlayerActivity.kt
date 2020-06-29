@@ -4,8 +4,6 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -109,27 +107,14 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         openGunDialog(bundle)
     }
 
-    override fun selectWeapon(view: View, category: EquipmentCategoryEnum, weapon: Weapon) {
-        when(category){
-            EquipmentCategoryEnum.PISTOL -> {
-                if(secondaryDialog)
-                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
-            }
-            EquipmentCategoryEnum.HEAVY -> {
-                if (mainDialog)
-                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
+    override fun selectWeapon(weapon: Weapon) {
+        if(weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
+            detailPlayerFragment?.addSecondaryWeapon(weapon as SecondaryWeapon)
+        else
+            detailPlayerFragment?.addMainWeapon(weapon as MainWeapon)
 
-            }
-            EquipmentCategoryEnum.SMG -> {
-                if (mainDialog)
-                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
-            }
-            EquipmentCategoryEnum.RIFLE -> {
-                if (mainDialog)
-                    Toast.makeText(this, weapon.name, Toast.LENGTH_SHORT).show()
-            }
-            else -> Toast.makeText(this, "", Toast.LENGTH_SHORT).show()
-        }
+        detailPlayerFragment?.updatePlayerView()
+
         dialog?.dismiss()
     }
 

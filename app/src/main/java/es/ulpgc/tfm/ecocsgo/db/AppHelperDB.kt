@@ -337,7 +337,7 @@ class AppHelperDB(private val helper: AppDatabase?) {
                 val cost = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_COST_FIELD))
                 val reward = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_REWARD_FIELD))
                 val item = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_ITEM_FIELD))
-                val numeration = EquipmentNumeration(item, EquipmentCategoryEnum.GEAR)
+                val numeration = EquipmentNumeration(item, EquipmentCategoryEnum.PISTOL)
                 val team = EquipmentTeamEnum.valueOf(
                     cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_TEAM_FIELD)))
 

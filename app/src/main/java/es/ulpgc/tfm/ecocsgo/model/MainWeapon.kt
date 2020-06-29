@@ -7,4 +7,6 @@ import kotlinx.android.parcel.Parcelize
 data class MainWeapon(override var name: String, override var team: EquipmentTeamEnum,
                       override var numeration: EquipmentNumeration,
                       override var cost: Int, override var reward: Int) :
-    Weapon(name, team, numeration, cost, reward), Parcelable
+    Weapon(name, team, numeration, cost, reward), Parcelable{
+    override fun toString(): String { return name }
+}
