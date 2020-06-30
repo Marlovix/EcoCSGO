@@ -15,10 +15,8 @@ import kotlinx.android.synthetic.main.item_weapon.view.*
 
 class WeaponRecyclerViewAdapter(
     private val values: List<Equipment>,
-    private val category: EquipmentCategoryEnum,
     private val interaction: WeaponListFragmentDialog.OnWeaponListFragmentInteraction?
-) :
-    RecyclerView.Adapter<WeaponRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<WeaponRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_weapon, parent, false)
@@ -28,6 +26,7 @@ class WeaponRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val weapon = values[position]
         holder.nameWeaponTextView.text = values[position].name
         val cost = values[position].cost.toString() + "$"
         holder.costWeapon.text = cost

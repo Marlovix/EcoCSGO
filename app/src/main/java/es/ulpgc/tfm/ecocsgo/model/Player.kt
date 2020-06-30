@@ -16,6 +16,7 @@ data class Player(val equipmentTeam: EquipmentTeamEnum,
                   var alive: Boolean = true) : Parcelable {
 
     fun registerSecondaryWeapon(secondaryWeapon: SecondaryWeapon){
+        secondaryWeapon.inGame = true
         secondaryWeapons?.add(secondaryWeapon)
         secondaryWeaponInGame = secondaryWeapon
     }

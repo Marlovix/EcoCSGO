@@ -35,7 +35,7 @@ class EquipmentCategoryRecyclerViewAdapter(
             holder.nameWeaponTextView.text = titles[position]
             holder.nameWeaponTextView.setTypeface(null, Typeface.BOLD)
             holder.weaponsRecyclerView.adapter = values[EquipmentCategoryEnum.PISTOL]?.let {
-                WeaponRecyclerViewAdapter(it, EquipmentCategoryEnum.PISTOL, interaction)
+                WeaponRecyclerViewAdapter(it, interaction)
             }
         }else if(values.size == 3){
             val titles = context!!.resources.getStringArray(R.array.main_weapon_titles)
@@ -44,13 +44,13 @@ class EquipmentCategoryRecyclerViewAdapter(
             var adapter : WeaponRecyclerViewAdapter? = null
             when (position) {
                 0 -> adapter = values[EquipmentCategoryEnum.HEAVY]?.let {
-                    WeaponRecyclerViewAdapter(it, EquipmentCategoryEnum.HEAVY, interaction)
+                    WeaponRecyclerViewAdapter(it, interaction)
                 }
                 1 -> adapter = values[EquipmentCategoryEnum.SMG]?.let {
-                    WeaponRecyclerViewAdapter(it, EquipmentCategoryEnum.SMG, interaction)
+                    WeaponRecyclerViewAdapter(it, interaction)
                 }
                 2 -> adapter = values[EquipmentCategoryEnum.RIFLE]?.let {
-                    WeaponRecyclerViewAdapter(it, EquipmentCategoryEnum.RIFLE, interaction)
+                    WeaponRecyclerViewAdapter(it, interaction)
                 }
             }
             holder.weaponsRecyclerView.adapter = adapter
