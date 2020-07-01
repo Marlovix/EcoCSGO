@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.item_category_weapon.view.*
 
 class EquipmentCategoryRecyclerViewAdapter(
     private val values: Map<EquipmentCategoryEnum, List<Equipment>>,
+    private val weaponInGame: String,
     private val interaction: WeaponListFragmentDialog.OnWeaponListFragmentInteraction?
 ) :
     RecyclerView.Adapter<EquipmentCategoryRecyclerViewAdapter.ViewHolder>(){
@@ -35,7 +36,7 @@ class EquipmentCategoryRecyclerViewAdapter(
             holder.nameWeaponTextView.text = titles[position]
             holder.nameWeaponTextView.setTypeface(null, Typeface.BOLD)
             holder.weaponsRecyclerView.adapter = values[EquipmentCategoryEnum.PISTOL]?.let {
-                WeaponRecyclerViewAdapter(it, interaction)
+                WeaponRecyclerViewAdapter(it, weaponInGame, interaction)
             }
         }else if(values.size == 3){
             val titles = context!!.resources.getStringArray(R.array.main_weapon_titles)
@@ -44,13 +45,13 @@ class EquipmentCategoryRecyclerViewAdapter(
             var adapter : WeaponRecyclerViewAdapter? = null
             when (position) {
                 0 -> adapter = values[EquipmentCategoryEnum.HEAVY]?.let {
-                    WeaponRecyclerViewAdapter(it, interaction)
+                    WeaponRecyclerViewAdapter(it, weaponInGame, interaction)
                 }
                 1 -> adapter = values[EquipmentCategoryEnum.SMG]?.let {
-                    WeaponRecyclerViewAdapter(it, interaction)
+                    WeaponRecyclerViewAdapter(it, weaponInGame, interaction)
                 }
                 2 -> adapter = values[EquipmentCategoryEnum.RIFLE]?.let {
-                    WeaponRecyclerViewAdapter(it, interaction)
+                    WeaponRecyclerViewAdapter(it, weaponInGame, interaction)
                 }
             }
             holder.weaponsRecyclerView.adapter = adapter

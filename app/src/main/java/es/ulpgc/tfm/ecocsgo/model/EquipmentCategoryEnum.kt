@@ -2,7 +2,6 @@ package es.ulpgc.tfm.ecocsgo.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import java.util.*
 
 @Parcelize
 enum class EquipmentCategoryEnum(var description: String, var id: Int) : Parcelable {

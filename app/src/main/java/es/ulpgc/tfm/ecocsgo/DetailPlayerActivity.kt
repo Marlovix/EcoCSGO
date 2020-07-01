@@ -23,7 +23,6 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     private var mainDialog = false
     private var secondaryDialog = false
 
-    private var player: Player? = null
     private val playerViewModel: PlayerViewModel by viewModels()
 
     private var detailPlayerFragment: DetailPlayerFragment? = null
@@ -37,7 +36,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
 
-        player = intent.getParcelableExtra(ARG_PLAYER)
+        val player : Player? = intent.getParcelableExtra(ARG_PLAYER)
         playerViewModel.setPlayer(player!!)
 
         detailPlayerFragment = DetailPlayerFragment()
@@ -92,28 +91,34 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     override fun openMainWeaponsDialog() {
         mainDialog = true
         val mainWeapons = detailPlayerFragment!!.retrieveMainWeapons()
+        val mainWeaponInGame = playerViewModel.getPlayer()?.value?.getMainWeaponInGame()
 
         val bundle = Bundle()
         bundle.putSerializable(ARG_WEAPONS, mainWeapons)
+        bundle.putString(ARG_WEAPON_IN_GAME, mainWeaponInGame?.name)
         openGunDialog(bundle)
     }
 
     override fun openSecondaryWeaponsDialog() {
         secondaryDialog = true
         val secondaryWeapons = detailPlayerFragment!!.retrieveSecondaryWeapons()
+        val secondaryWeaponInGame = playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()
 
         val bundle = Bundle()
         bundle.putSerializable(ARG_WEAPONS, secondaryWeapons)
+        bundle.putString(ARG_WEAPON_IN_GAME, secondaryWeaponInGame?.name)
         openGunDialog(bundle)
     }
 
     override fun selectWeapon(weapon: Weapon) {
-        if(weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
-            detailPlayerFragment?.addSecondaryWeapon(weapon as SecondaryWeapon)
-        else
-            detailPlayerFragment?.addMainWeapon(weapon as MainWeapon)
+        if (!weapon.inGame){
+            if(weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
+                detailPlayerFragment?.addSecondaryWeapon(weapon as SecondaryWeapon)
+            else
+                detailPlayerFragment?.addMainWeapon(weapon as MainWeapon)
 
-        detailPlayerFragment?.updatePlayerView()
+            detailPlayerFragment?.updatePlayerView()
+        }
 
         dialog?.dismiss()
     }
@@ -126,7 +131,8 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
 
     companion object {
         const val ARG_WEAPONS = "weapons"
-        const val ARG_PLAYER = "ARG_PLAYER"
+        const val ARG_WEAPON_IN_GAME = "weapon_in_game"
+        const val ARG_PLAYER = "player"
     }
 
 }

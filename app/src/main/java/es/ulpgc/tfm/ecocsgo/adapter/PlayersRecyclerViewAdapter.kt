@@ -112,14 +112,14 @@ class PlayersRecyclerViewAdapter(
     override fun getItemCount() = players.size
 
     private fun updateView(holder: ViewHolder, player: Player){
-        holder.mainWeapon.text = if (player.mainWeaponInGame != null)
-            player.mainWeaponInGame!!.name else "-"
-        holder.mainDeaths.text = if (player.mainWeaponInGame != null)
-            "x" + player.mainWeaponInGame!!.name else "x0"
-        holder.secondaryWeapon.text = if (player.secondaryWeaponInGame != null)
-            player.secondaryWeaponInGame!!.name else "-"
-        holder.secondaryDeaths.text = if (player.secondaryWeaponInGame != null)
-            "x" + player.secondaryWeaponInGame!!.casualty.toString() else "x0"
+        holder.mainWeapon.text = if (player.getMainWeaponInGame() != null)
+            player.getMainWeaponInGame()!!.name else "-"
+        holder.mainDeaths.text = if (player.getMainWeaponInGame() != null)
+            "x" + player.getMainWeaponInGame()!!.name else "x0"
+        holder.secondaryWeapon.text = if (player.getSecondaryWeaponInGame() != null)
+            player.getSecondaryWeaponInGame()!!.name else "-"
+        holder.secondaryDeaths.text = if (player.getSecondaryWeaponInGame() != null)
+            "x" + player.getSecondaryWeaponInGame()!!.casualty.toString() else "x0"
 
         holder.togglePlayerAlive.isChecked = player.alive
     }

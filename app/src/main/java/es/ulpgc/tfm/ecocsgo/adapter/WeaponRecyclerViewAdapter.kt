@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.model.Equipment
-import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
 import es.ulpgc.tfm.ecocsgo.model.Weapon
 import kotlinx.android.synthetic.main.item_weapon.view.*
 
 class WeaponRecyclerViewAdapter(
     private val values: List<Equipment>,
+    private val weaponInGame: String,
     private val interaction: WeaponListFragmentDialog.OnWeaponListFragmentInteraction?
 ) : RecyclerView.Adapter<WeaponRecyclerViewAdapter.ViewHolder>() {
 
@@ -26,14 +26,16 @@ class WeaponRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val weapon = values[position]
-        holder.nameWeaponTextView.text = values[position].name
-        val cost = values[position].cost.toString() + "$"
+        val weapon = values[position] as Weapon
+        holder.nameWeaponTextView.text = weapon.name
+        val cost = weapon.cost.toString() + "$"
         holder.costWeapon.text = cost
-        if(false)
+        if(weapon.name == weaponInGame){
+            weapon.inGame = true
             holder.selectedWeapon.visibility = View.VISIBLE
-        else
+        } else {
             holder.selectedWeapon.visibility = View.INVISIBLE
+        }
     }
 
     override fun getItemCount(): Int {

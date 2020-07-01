@@ -178,18 +178,22 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun openMainWeaponsDialog() {
         mainDialog = true
         val mainWeapons = detailPlayerFragment!!.retrieveMainWeapons()
+        val mainWeaponInGame = playerViewModel.getPlayer()?.value?.getMainWeaponInGame()
 
         val bundle = Bundle()
         bundle.putSerializable(DetailPlayerActivity.ARG_WEAPONS, mainWeapons)
+        bundle.putString(DetailPlayerActivity.ARG_WEAPON_IN_GAME, mainWeaponInGame?.name)
         openGunDialog(bundle)
     }
 
     override fun openSecondaryWeaponsDialog() {
         secondaryDialog = true
         val secondaryWeapons = detailPlayerFragment!!.retrieveSecondaryWeapons()
+        val secondaryWeaponInGame = playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()
 
         val bundle = Bundle()
         bundle.putSerializable(DetailPlayerActivity.ARG_WEAPONS, secondaryWeapons)
+        bundle.putString(DetailPlayerActivity.ARG_WEAPON_IN_GAME, secondaryWeaponInGame?.name)
         openGunDialog(bundle)
     }
 

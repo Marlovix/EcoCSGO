@@ -23,6 +23,7 @@ class WeaponListFragmentDialog(
 
     private var weapons : Map<EquipmentCategoryEnum, List<Equipment>> =
         EnumMap(EquipmentCategoryEnum::class.java)
+    private var weaponInGame : String? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -47,8 +48,12 @@ class WeaponListFragmentDialog(
         weapons = bundle?.getSerializable(DetailPlayerActivity.ARG_WEAPONS)
                 as Map<EquipmentCategoryEnum, ArrayList<Weapon>>
 
-        if (rootView is RecyclerView) recyclerView.adapter =
-            EquipmentCategoryRecyclerViewAdapter(weapons, interaction)
+        val weaponInGame = bundle.getString(DetailPlayerActivity.ARG_WEAPON_IN_GAME)
+
+        this.weaponInGame = weaponInGame ?: ""
+
+        recyclerView.adapter =
+            EquipmentCategoryRecyclerViewAdapter(weapons, this.weaponInGame!!, interaction)
 
         return rootView
     }

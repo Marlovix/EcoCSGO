@@ -13,7 +13,7 @@ import es.ulpgc.tfm.ecocsgo.model.Game
 import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
 import kotlinx.android.synthetic.main.fragment_list_players.*
 
-class GameListPlayersFragment() : Fragment(){
+class GameListPlayersFragment : Fragment(){
 
     private var playersAdapter: PlayersRecyclerViewAdapter? = null
     private var onClickPlayerListener: View.OnClickListener? = null
@@ -56,7 +56,7 @@ class GameListPlayersFragment() : Fragment(){
 
         list_players.adapter = playersAdapter
 
-        // observe de viewmodel???
+        // observe de viewModel???
     }
 
     override fun onDetach() {
