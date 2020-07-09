@@ -1,6 +1,7 @@
 package es.ulpgc.tfm.ecocsgo
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -15,6 +16,7 @@ import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
 import kotlinx.android.synthetic.main.activity_detail_player.*
 import kotlinx.android.synthetic.main.activity_game.*
 
+
 class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     DetailPlayerFragment.OnDetailPlayerFragmentInteraction, DialogInterface.OnDismissListener,
     WeaponListFragmentDialog.OnWeaponListFragmentInteraction{
@@ -24,6 +26,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     private var secondaryDialog = false
 
     private val playerViewModel: PlayerViewModel by viewModels()
+    private var playerSelectedIndex : Int? = null
 
     private var detailPlayerFragment: DetailPlayerFragment? = null
 
@@ -37,6 +40,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         supportActionBar!!.setDisplayShowHomeEnabled(true)
 
         val player : Player? = intent.getParcelableExtra(ARG_PLAYER)
+        playerSelectedIndex = intent.getIntExtra(ARG_PLAYER_INDEX, -1)
         playerViewModel.setPlayer(player!!)
 
         detailPlayerFragment = DetailPlayerFragment()
@@ -79,7 +83,14 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+
+        val intent = Intent()
+        intent.putExtra(ARG_PLAYER, playerViewModel.getPlayer()?.value)
+        intent.putExtra(ARG_PLAYER_INDEX, playerSelectedIndex)
+        setResult(GameActivity.ARG_RESPONSE_PLAYER, intent)
+        finish() //finishing activity
+
+        //onBackPressed()
         return true
     }
 
@@ -133,6 +144,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         const val ARG_WEAPONS = "weapons"
         const val ARG_WEAPON_IN_GAME = "weapon_in_game"
         const val ARG_PLAYER = "player"
+        const val ARG_PLAYER_INDEX = "player_selected"
     }
 
 }

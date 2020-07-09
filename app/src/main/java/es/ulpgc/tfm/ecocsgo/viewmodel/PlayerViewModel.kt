@@ -9,6 +9,10 @@ class PlayerViewModel : ViewModel()  {
     private var playerLiveData: MutableLiveData<Player>? = null
 
     fun getPlayer(): LiveData<Player>? {
+        if(playerLiveData == null){
+            playerLiveData = MutableLiveData()
+        }
+
         return playerLiveData
     }
 

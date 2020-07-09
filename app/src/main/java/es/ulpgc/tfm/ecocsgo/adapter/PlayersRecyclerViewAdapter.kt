@@ -98,7 +98,7 @@ class PlayersRecyclerViewAdapter(
         updateView(holder, player)
 
         with(holder.itemView) {
-            tag = player
+            tag = position
             setOnClickListener(listener)
         }
 
@@ -115,11 +115,11 @@ class PlayersRecyclerViewAdapter(
         holder.mainWeapon.text = if (player.getMainWeaponInGame() != null)
             player.getMainWeaponInGame()!!.name else "-"
         holder.mainDeaths.text = if (player.getMainWeaponInGame() != null)
-            "x" + player.getMainWeaponInGame()!!.name else "x0"
+            "x" + player.getMainWeaponInGame()!!.casualty else "x0"
         holder.secondaryWeapon.text = if (player.getSecondaryWeaponInGame() != null)
             player.getSecondaryWeaponInGame()!!.name else "-"
         holder.secondaryDeaths.text = if (player.getSecondaryWeaponInGame() != null)
-            "x" + player.getSecondaryWeaponInGame()!!.casualty.toString() else "x0"
+            "x" + player.getSecondaryWeaponInGame()!!.casualty else "x0"
 
         holder.togglePlayerAlive.isChecked = player.alive
     }
@@ -128,8 +128,8 @@ class PlayersRecyclerViewAdapter(
         val cardView: CardView = view.cardView_player
         val mainWeapon: TextView = view.textView_main_weapon
         val secondaryWeapon: TextView = view.textView_secondary_weapon
-        val mainDeaths: TextView = view.textView_secondary_deaths
-        val secondaryDeaths: TextView = view.textView_main_deaths
+        val mainDeaths: TextView = view.textView_main_deaths
+        val secondaryDeaths: TextView = view.textView_secondary_deaths
         val togglePlayerAlive: ToggleButton = view.toggleButton_player_alive
         /*
         togglePlayerAlive.setOnCheckedChangeListener( new OnCheckedChangeListener() {

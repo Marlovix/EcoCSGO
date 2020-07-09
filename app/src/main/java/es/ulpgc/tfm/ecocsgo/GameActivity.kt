@@ -3,23 +3,20 @@ package es.ulpgc.tfm.ecocsgo
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
-import androidx.core.view.setMargins
 import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import es.ulpgc.tfm.ecocsgo.MainActivity.Companion.ARG_TEAM
 import es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment
-import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.fragment.GameListPlayersFragment
+import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.model.*
 import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
 import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
@@ -55,6 +52,8 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         game?.createPlayers(EquipmentTeamEnum.valueOf(intent.getStringExtra(ARG_TEAM)!!))
         game?.initRound()
 
+        game?.players?.let { gameViewModel.updatePlayers(it) }
+
         gameListPlayersFragment = GameListPlayersFragment()
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_list_players, gameListPlayersFragment!!).commit()
@@ -65,18 +64,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             detailPlayerFragment = DetailPlayerFragment()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_detail_player, detailPlayerFragment!!).commit()
-
-            val params = CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.WRAP_CONTENT,
-                CoordinatorLayout.LayoutParams.MATCH_PARENT)
-            params.gravity = Gravity.START or Gravity.BOTTOM
-            params.setMargins(resources.getDimension(R.dimen.fab_margin).toInt())
-            //fab.layoutParams = params
-        }
-
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
         }
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -105,6 +92,20 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             Toast.makeText(this, "NO", Toast.LENGTH_SHORT).show() //super.onBackPressed()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == ARG_RESPONSE_PLAYER) {
+            val player = data?.getParcelableExtra<Player>(DetailPlayerActivity.ARG_PLAYER)
+            val index = data?.getIntExtra(DetailPlayerActivity.ARG_PLAYER_INDEX, -1)
+
+            if(index != -1){
+                gameViewModel.getGame().value?.players?.set(index!!, player!!)
+                gameViewModel.getGame().value?.players?.let { gameViewModel.updatePlayers(it) }
+            }
         }
     }
 
@@ -162,16 +163,16 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         dialog?.dismiss()
     }
 
-    override fun selectPlayer(view: View) {
-        val player = view.tag as Player
+    override fun selectPlayer(playerSelectedIndex: Int) {
+        val player = gameViewModel.getGame().value?.players?.get(playerSelectedIndex)
 
         if (fragment_detail_player != null) {
-            playerViewModel.setPlayer(player)
-            detailPlayerFragment?.updatePlayerView()
+            playerViewModel.setPlayer(player!!)
         }else{
             val intent = Intent(this, DetailPlayerActivity::class.java)
             intent.putExtra(DetailPlayerActivity.ARG_PLAYER, player)
-            startActivity(intent)
+            intent.putExtra(DetailPlayerActivity.ARG_PLAYER_INDEX, playerSelectedIndex)
+            startActivityForResult(intent, ARG_RESPONSE_PLAYER)
         }
     }
 
@@ -201,6 +202,10 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         dialog = WeaponListFragmentDialog(this)
         dialog!!.arguments = bundle
         dialog!!.show(supportFragmentManager, null)
+    }
+
+    companion object {
+        const val ARG_RESPONSE_PLAYER = 1
     }
 
 }

@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.observe
+import com.google.android.material.snackbar.Snackbar
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.adapter.PlayersRecyclerViewAdapter
 import es.ulpgc.tfm.ecocsgo.model.Game
@@ -34,8 +36,9 @@ class GameListPlayersFragment : Fragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        onClickPlayerListener = View.OnClickListener { v ->
-            interaction?.selectPlayer(v)
+        onClickPlayerListener = View.OnClickListener { view ->
+            val playerSelectedIndex = view.tag as Int
+            interaction?.selectPlayer(playerSelectedIndex)
         }
 
         game = gameViewModel.getGame().value
@@ -56,7 +59,14 @@ class GameListPlayersFragment : Fragment(){
 
         list_players.adapter = playersAdapter
 
-        // observe de viewModel???
+        gameViewModel.getPlayers().observe(viewLifecycleOwner) { players ->
+            list_players.adapter?.notifyDataSetChanged()
+        }
+
+        fab.setOnClickListener { v ->
+            Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
+        }
     }
 
     override fun onDetach() {
@@ -65,7 +75,7 @@ class GameListPlayersFragment : Fragment(){
     }
 
     interface OnListPlayersFragmentInteraction{
-        fun selectPlayer(view: View)
+        fun selectPlayer(playerSelectedIndex: Int)
     }
 
 }
