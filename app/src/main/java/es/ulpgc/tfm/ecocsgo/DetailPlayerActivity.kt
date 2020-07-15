@@ -26,7 +26,6 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     private var secondaryDialog = false
 
     private val playerViewModel: PlayerViewModel by viewModels()
-    private var playerSelectedIndex : Int? = null
 
     private var detailPlayerFragment: DetailPlayerFragment? = null
 
@@ -40,7 +39,6 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         supportActionBar!!.setDisplayShowHomeEnabled(true)
 
         val player : Player? = intent.getParcelableExtra(ARG_PLAYER)
-        playerSelectedIndex = intent.getIntExtra(ARG_PLAYER_INDEX, -1)
         playerViewModel.setPlayer(player!!)
 
         detailPlayerFragment = DetailPlayerFragment()
@@ -86,7 +84,6 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
 
         val intent = Intent()
         intent.putExtra(ARG_PLAYER, playerViewModel.getPlayer()?.value)
-        intent.putExtra(ARG_PLAYER_INDEX, playerSelectedIndex)
         setResult(GameActivity.ARG_RESPONSE_PLAYER, intent)
         finish() //finishing activity
 
@@ -121,6 +118,22 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         openGunDialog(bundle)
     }
 
+    override fun deleteWeapon(weapon: Weapon) {
+        detailPlayerFragment?.deleteWeapon(weapon)
+    }
+
+    override fun addCasualty(weapon: Weapon) {
+        detailPlayerFragment?.addCasualty(weapon)
+    }
+
+    override fun removeCasualty(weapon: Weapon) {
+        detailPlayerFragment?.removeCasualty(weapon)
+    }
+
+    override fun selectWeaponInGame(weapon: Weapon) {
+        detailPlayerFragment?.selectWeaponInGame(weapon)
+    }
+
     override fun selectWeapon(weapon: Weapon) {
         if (!weapon.inGame){
             if(weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
@@ -128,7 +141,7 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
             else
                 detailPlayerFragment?.addMainWeapon(weapon as MainWeapon)
 
-            detailPlayerFragment?.updatePlayerView()
+            detailPlayerFragment?.updatePlayerView(playerViewModel.getPlayer()?.value!!)
         }
 
         dialog?.dismiss()
@@ -144,7 +157,6 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         const val ARG_WEAPONS = "weapons"
         const val ARG_WEAPON_IN_GAME = "weapon_in_game"
         const val ARG_PLAYER = "player"
-        const val ARG_PLAYER_INDEX = "player_selected"
     }
 
 }

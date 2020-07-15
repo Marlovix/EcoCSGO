@@ -9,7 +9,9 @@ import es.ulpgc.tfm.ecocsgo.model.Player
 class GameActivityViewModel(application: Application) : AndroidViewModel(application) {
 
     private var gameLiveData: MutableLiveData<Game>? = null
-    private var playersLiveData: MutableLiveData<ArrayList<Player>>? = null
+    private var playersLiveData: MutableLiveData<ArrayList<Player>>? = MutableLiveData()
+    private var selectedPlayerIndexLiveData: MutableLiveData<Int>? = MutableLiveData()
+    private var enemyEconomyLiveData: MutableLiveData<Int>? = MutableLiveData()
 
     fun getGame() : MutableLiveData<Game>{
         if (gameLiveData == null) {
@@ -20,16 +22,29 @@ class GameActivityViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun getPlayers() : MutableLiveData<ArrayList<Player>>{
-        if (playersLiveData == null) {
-            playersLiveData = MutableLiveData()
-        }
-
         return playersLiveData as MutableLiveData<ArrayList<Player>>
     }
 
     fun updatePlayers(players: ArrayList<Player>){
         playersLiveData?.value = players
         gameLiveData?.value?.players = players
+    }
+
+    fun getSelectedPlayer() : MutableLiveData<Int>{
+        return selectedPlayerIndexLiveData as MutableLiveData<Int>
+    }
+
+    fun setSelectedPlayer(index: Int){
+        selectedPlayerIndexLiveData?.value = index
+    }
+
+    fun setEnemyEconomy(enemyEconomy: Int){
+        enemyEconomyLiveData?.value = enemyEconomy
+        gameLiveData?.value?.enemyEconomy = enemyEconomy
+    }
+
+    fun getEnemyEconomy() : MutableLiveData<Int>{
+        return enemyEconomyLiveData as MutableLiveData<Int>
     }
 
 }

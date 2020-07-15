@@ -45,14 +45,18 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_game)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        toolbar.title = title
 
         // Init the game //
         game = gameViewModel.getGame().value
-        game?.createPlayers(EquipmentTeamEnum.valueOf(intent.getStringExtra(ARG_TEAM)!!))
-        game?.initRound()
 
-        game?.players?.let { gameViewModel.updatePlayers(it) }
+        if (game?.players?.isEmpty()!!){
+            game?.createPlayers(EquipmentTeamEnum.valueOf(intent.getStringExtra(ARG_TEAM)!!))
+            game?.initRound()
+            game?.players?.let { gameViewModel.updatePlayers(it) }
+            game?.enemyEconomy?.let { gameViewModel.setEnemyEconomy(it) }
+        }
+
+        updateToolBar()
 
         gameListPlayersFragment = GameListPlayersFragment()
         supportFragmentManager.beginTransaction()
@@ -75,10 +79,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
-
-        //val callback = playersAdapter?.let { PlayerCallback(it, this) }
-        //val touchHelper = callback?.let { ItemTouchHelper(it) }
-        //touchHelper?.attachToRecyclerView(list_players)
     }
 
     override fun onDismiss(dialog: DialogInterface?) {
@@ -100,12 +100,8 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (requestCode == ARG_RESPONSE_PLAYER) {
             val player = data?.getParcelableExtra<Player>(DetailPlayerActivity.ARG_PLAYER)
-            val index = data?.getIntExtra(DetailPlayerActivity.ARG_PLAYER_INDEX, -1)
 
-            if(index != -1){
-                gameViewModel.getGame().value?.players?.set(index!!, player!!)
-                gameViewModel.getGame().value?.players?.let { gameViewModel.updatePlayers(it) }
-            }
+            updatePlayerData(player!!)
         }
     }
 
@@ -152,26 +148,16 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun selectWeapon(weapon: Weapon) {
-        if(weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
-            detailPlayerFragment?.addSecondaryWeapon(weapon as SecondaryWeapon)
-        else
-            detailPlayerFragment?.addMainWeapon(weapon as MainWeapon)
+    override fun selectPlayer(selectedPlayerIndex: Int) {
+        val player = gameViewModel.getGame().value?.players?.get(selectedPlayerIndex)
 
-        detailPlayerFragment?.updatePlayerView()
-
-        dialog?.dismiss()
-    }
-
-    override fun selectPlayer(playerSelectedIndex: Int) {
-        val player = gameViewModel.getGame().value?.players?.get(playerSelectedIndex)
+        gameViewModel.setSelectedPlayer(selectedPlayerIndex)
 
         if (fragment_detail_player != null) {
             playerViewModel.setPlayer(player!!)
         }else{
             val intent = Intent(this, DetailPlayerActivity::class.java)
             intent.putExtra(DetailPlayerActivity.ARG_PLAYER, player)
-            intent.putExtra(DetailPlayerActivity.ARG_PLAYER_INDEX, playerSelectedIndex)
             startActivityForResult(intent, ARG_RESPONSE_PLAYER)
         }
     }
@@ -198,10 +184,59 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         openGunDialog(bundle)
     }
 
+    override fun deleteWeapon(weapon: Weapon) {
+        detailPlayerFragment?.deleteWeapon(weapon)
+        updatePlayersView()
+    }
+
+    override fun addCasualty(weapon: Weapon) {
+        detailPlayerFragment?.addCasualty(weapon)
+        updatePlayersView()
+    }
+
+    override fun removeCasualty(weapon: Weapon) {
+        detailPlayerFragment?.removeCasualty(weapon)
+        updatePlayersView()
+    }
+
+    override fun selectWeaponInGame(weapon: Weapon) {
+        detailPlayerFragment?.selectWeaponInGame(weapon)
+        updatePlayersView()
+    }
+
+    override fun selectWeapon(weapon: Weapon) {
+        if(weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
+            detailPlayerFragment?.addSecondaryWeapon(weapon as SecondaryWeapon)
+        else
+            detailPlayerFragment?.addMainWeapon(weapon as MainWeapon)
+
+        detailPlayerFragment?.updatePlayerView(playerViewModel.getPlayer()?.value!!)
+        updatePlayersView()
+
+        dialog?.dismiss()
+    }
+
+    private fun updateToolBar(){
+        supportActionBar?.title = resources.getString(R.string.label_round) + " " +
+                gameViewModel.getGame().value?.roundInGame
+    }
+
     private fun openGunDialog(bundle: Bundle) {
         dialog = WeaponListFragmentDialog(this)
         dialog!!.arguments = bundle
         dialog!!.show(supportFragmentManager, null)
+    }
+
+    private fun updatePlayersView(){
+        val selectedPlayerIndex = gameViewModel.getSelectedPlayer().value!!
+        val player = gameViewModel.getGame().value?.players?.get(selectedPlayerIndex)
+        updatePlayerData(player!!)
+    }
+
+    private fun updatePlayerData(player: Player){
+        val selectedPlayerIndex = gameViewModel.getSelectedPlayer().value!!
+        gameViewModel.getGame().value?.players?.set(selectedPlayerIndex, player)
+        gameViewModel.getGame().value?.players?.let { gameViewModel.updatePlayers(it) }
     }
 
     companion object {

@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import es.ulpgc.tfm.ecocsgo.model.*
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class AppHelperDB(private val helper: AppDatabase?) {
     private var database: SQLiteDatabase? = null
@@ -355,6 +356,70 @@ class AppHelperDB(private val helper: AppDatabase?) {
         results[EquipmentCategoryEnum.PISTOL] = pistol
 
         return results
+    }
+
+    fun fetchEconomyGame() : EconomyGame{
+        val cursor = database!!.query(AppDatabase.KEY_ECONOMY_TABLE,
+            columnsEconomy, null, null,
+            null, null, null, null)
+
+        cursor.moveToFirst()
+
+        val beginning = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_BEGINNING_FIELD))
+        val defeatBonus = fetchDefeatBonus()
+        val defuseBonus = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_DEFUSE_BONUS_FIELD))
+        val explosionBonus = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_EXPLOSION_BONUS_FIELD))
+        val grenadeKill = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_GRENADE_KILL_FIELD))
+        val killPartnerPenalty = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_KILL_PARTNER_PENALTY_FIELD))
+        val knifeKill = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_KNIFE_KILL_FIELD))
+        val leavingGame = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_LEAVING_GAME_FIELD))
+        val max = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_MAX_FIELD))
+        val plantBonus = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_PLANT_BONUS_FIELD))
+        val victory = fetchVictoryTypes()
+
+        cursor.close()
+
+        return EconomyGame(beginning, defeatBonus, defuseBonus,
+            explosionBonus, grenadeKill, killPartnerPenalty, knifeKill, leavingGame,
+            max, plantBonus, victory)
+    }
+
+    private fun fetchVictoryTypes() : HashMap<TypeVictoryGameEnum, Int>{
+        val cursor = database!!.query(AppDatabase.KEY_VICTORY_TABLE,
+            columnsVictory, null, null,
+            null, null, null, null)
+
+        val victoryTypes = HashMap<TypeVictoryGameEnum, Int>()
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast) {
+                val type = TypeVictoryGameEnum.valueOf(cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_TYPE_FIELD)))
+                val bonus = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_BONUS_FIELD))
+                victoryTypes[type] = bonus
+                cursor.moveToNext()
+            }
+        }
+
+        cursor.close()
+
+        return victoryTypes
+    }
+
+    private fun fetchDefeatBonus() :  ArrayList<Int>{
+        val cursor = database!!.query(AppDatabase.KEY_DEFEAT_TABLE,
+            columnsDefeat, null, null,
+            null, null, AppDatabase.KEY_ORDER_FIELD, null)
+
+        val defeatBonus = ArrayList<Int>()
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast) {
+                defeatBonus.add(cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_BONUS_FIELD)))
+                cursor.moveToNext()
+            }
+        }
+
+        cursor.close()
+
+        return defeatBonus
     }
 
     private fun equipmentMapper(equipment: Equipment): ContentValues {

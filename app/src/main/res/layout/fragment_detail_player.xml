@@ -51,7 +51,6 @@
 				android:layout_height="50dp"
 				android:layout_marginStart="8dp"
 				android:layout_marginLeft="8dp"
-				android:layout_marginTop="8dp"
 				android:layout_marginEnd="72dp"
 				android:layout_marginRight="72dp"
 				android:layout_marginBottom="8dp"
@@ -71,7 +70,6 @@
 				android:layout_height="50dp"
 				android:layout_marginStart="8dp"
 				android:layout_marginLeft="8dp"
-				android:layout_marginTop="8dp"
 				android:layout_marginEnd="16dp"
 				android:layout_marginRight="16dp"
 				android:layout_marginBottom="8dp"
@@ -105,7 +103,7 @@
 
 		<EditText
 				android:id="@+id/editText_main_casualties"
-				android:layout_width="161dp"
+				android:layout_width="20dp"
 				android:layout_height="48dp"
 				android:layout_marginStart="16dp"
 				android:layout_marginLeft="16dp"
@@ -114,7 +112,9 @@
 				android:layout_marginRight="8dp"
 				android:layout_marginBottom="8dp"
 				android:autofillHints="@string/label_casualties"
+				android:clickable="false"
 				android:ems="10"
+				android:focusable="false"
 				android:inputType="none"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
@@ -123,7 +123,7 @@
 				app:layout_constraintTop_toBottomOf="@+id/textView_main_casualties"
 				app:layout_constraintVertical_bias="0.0"
 				tools:ignore="LabelFor"
-				tools:targetApi="o"/>
+				tools:targetApi="o" />
 
 		<ImageButton
 				android:id="@+id/imageButton_remove_main_casualty"
@@ -158,6 +158,33 @@
 				app:layout_constraintTop_toBottomOf="@+id/textView_main_casualties"
 				app:layout_constraintVertical_bias="0.0"
 				app:srcCompat="@drawable/ic_add"/>
+
+		<TextView
+				android:id="@+id/textView_main_origin"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:text="@string/label_origin"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.68"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/imageButton_add_main_weapon"
+				app:layout_constraintVertical_bias="0.01999998" />
+
+		<ToggleButton
+				android:id="@+id/toggleButton_main_origin"
+				android:layout_width="141dp"
+				android:layout_height="47dp"
+				android:textOff="@string/label_no_purchased"
+				android:textOn="@string/label_purchased"
+				android:background="@drawable/toggle_origin"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.93"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/textView_main_origin"
+				app:layout_constraintVertical_bias="0.0" />
 
 		<View
 				android:id="@+id/divider_1"
@@ -218,7 +245,6 @@
 				android:layout_height="50dp"
 				android:layout_marginStart="8dp"
 				android:layout_marginLeft="8dp"
-				android:layout_marginTop="8dp"
 				android:layout_marginEnd="72dp"
 				android:layout_marginRight="72dp"
 				android:layout_marginBottom="8dp"
@@ -238,7 +264,6 @@
 				android:layout_height="50dp"
 				android:layout_marginStart="8dp"
 				android:layout_marginLeft="8dp"
-				android:layout_marginTop="8dp"
 				android:layout_marginEnd="16dp"
 				android:layout_marginRight="16dp"
 				android:layout_marginBottom="8dp"
@@ -272,7 +297,7 @@
 
 		<EditText
 				android:id="@+id/editText_secondary_casualties"
-				android:layout_width="155dp"
+				android:layout_width="20dp"
 				android:layout_height="48dp"
 				android:layout_marginStart="16dp"
 				android:layout_marginLeft="16dp"
@@ -283,6 +308,8 @@
 				android:autofillHints="@string/label_casualties"
 				android:ems="10"
 				android:inputType="none"
+				android:clickable="false"
+				android:focusable="false"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintHorizontal_bias="0.0"
@@ -326,6 +353,33 @@
 				app:layout_constraintVertical_bias="0.0"
 				app:srcCompat="@drawable/ic_add"/>
 
+		<TextView
+				android:id="@+id/textView_secondary_origin"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="8dp"
+				android:text="@string/label_origin"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.68"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/imageButton_add_secondary_weapon"
+				app:layout_constraintVertical_bias="0.01999998" />
+
+		<ToggleButton
+				android:id="@+id/toggleButton_secondary_origin"
+				android:layout_width="141dp"
+				android:layout_height="47dp"
+				android:textOff="@string/label_no_purchased"
+				android:textOn="@string/label_purchased"
+				android:background="@drawable/toggle_origin"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.93"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/textView_secondary_origin"
+				app:layout_constraintVertical_bias="0.0" />
+
 		<View
 				android:id="@+id/divider2"
 				android:layout_width="395dp"
@@ -350,13 +404,13 @@
 				android:layout_height="wrap_content"
 				android:layout_marginStart="16dp"
 				android:layout_marginLeft="16dp"
-				android:layout_marginTop="12dp"
+				android:layout_marginTop="8dp"
 				android:layout_marginEnd="8dp"
 				android:layout_marginRight="8dp"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/divider2"/>
+				app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
 		<Switch
 				android:id="@+id/switch_vest"
@@ -379,7 +433,7 @@
 				android:layout_height="wrap_content"
 				android:layout_marginStart="16dp"
 				android:layout_marginLeft="16dp"
-				android:layout_marginTop="12dp"
+				android:layout_marginTop="20dp"
 				android:layout_marginEnd="8dp"
 				android:layout_marginRight="8dp"
 				android:layout_marginBottom="8dp"
@@ -388,7 +442,7 @@
 				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/textView_vest"
-				app:layout_constraintVertical_bias="0.037"/>
+				app:layout_constraintVertical_bias="0.037" />
 
 		<Switch
 				android:id="@+id/switch_helmet"
@@ -411,7 +465,7 @@
 				android:layout_height="wrap_content"
 				android:layout_marginStart="16dp"
 				android:layout_marginLeft="16dp"
-				android:layout_marginTop="12dp"
+				android:layout_marginTop="22dp"
 				android:layout_marginEnd="8dp"
 				android:layout_marginRight="8dp"
 				android:layout_marginBottom="8dp"
@@ -420,7 +474,7 @@
 				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/textView_helmet"
-				app:layout_constraintVertical_bias="0.043"/>
+				app:layout_constraintVertical_bias="0.043" />
 
 		<Switch
 				android:id="@+id/switch_defuse_kit"

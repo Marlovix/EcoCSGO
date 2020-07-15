@@ -23,6 +23,20 @@ data class Player(val equipmentTeam: EquipmentTeamEnum,
         secondaryWeapons?.add(secondaryWeapon)
     }
 
+    fun removeSecondaryWeapon(weaponInGame: Weapon){
+        secondaryWeapons?.remove(weaponInGame)
+        if (!secondaryWeapons?.isEmpty()!!){
+            updateSelectedWeapon(secondaryWeapons!!.first())
+        }
+    }
+
+    fun removeMainWeapon(weaponInGame: Weapon){
+        mainWeapons?.remove(weaponInGame)
+        if (!mainWeapons?.isEmpty()!!){
+             updateSelectedWeapon(mainWeapons!!.first())
+        }
+    }
+
     fun getMainWeaponInGame() : MainWeapon? {
         for (weapon in mainWeapons!!){
             if (weapon.inGame) return weapon

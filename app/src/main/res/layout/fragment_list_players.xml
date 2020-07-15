@@ -19,11 +19,33 @@
 			tools:listitem="@layout/item_player" />
 
 	<com.google.android.material.floatingactionbutton.FloatingActionButton
-			android:id="@+id/fab"
+			android:id="@+id/fab_finish_round"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_gravity="bottom|end"
-			android:layout_margin="@dimen/fab_margin"
-			app:srcCompat="@android:drawable/ic_dialog_email" />
+			android:layout_marginEnd="@dimen/fab_margin"
+			app:srcCompat="@android:drawable/ic_menu_send"
+			android:layout_marginBottom="@dimen/fab_margin_vertical"
+			android:layout_marginRight="@dimen/fab_margin" />
+
+	<com.google.android.material.bottomappbar.BottomAppBar
+			android:id="@+id/bottomAppBar"
+			android:theme="@style/BottomActionBar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom" >
+
+		<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
+			<TextView
+					android:id="@+id/textView_enemy_economy"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_centerInParent="true"
+					android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"/>
+		</RelativeLayout>
+
+	</com.google.android.material.bottomappbar.BottomAppBar>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

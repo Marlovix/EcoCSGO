@@ -14,7 +14,9 @@
 
 	<!-- Labels -->
 	<string name="label_casualties">Bajas</string>
+	<string name="label_origin">Origen</string>
 	<string name="label_loading">Cargando</string>
+	<string name="label_round">Ronda</string>
 	<string name="label_main_weapon">Arma principal</string>
 	<string name="label_secondary_weapon">Arma secundaria</string>
 	<string name="label_start_game">Empezar partida</string>
@@ -23,6 +25,8 @@
 	<string name="label_select_team">Selecciona un bando</string>
 	<string name="label_eliminated">Eliminado</string>
 	<string name="label_in_game">En juego</string>
+	<string name="label_purchased">Comprada</string>
+	<string name="label_no_purchased">No comprada</string>
 
 	<!-- Actions -->
 	<string name="content_description_add_casualty">Añadir baja</string>

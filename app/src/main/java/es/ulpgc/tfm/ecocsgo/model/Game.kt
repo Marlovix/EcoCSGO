@@ -25,6 +25,9 @@ class Game(context : Context) {
     init {
         appDatabase = AppDatabase(context)
         appHelperDB = AppHelperDB(appDatabase)
+
+        appHelperDB!!.open()
+        economy = appHelperDB!!.fetchEconomyGame()
     }
 
     fun createPlayers(enemyTeamEnum: EquipmentTeamEnum){
@@ -36,16 +39,17 @@ class Game(context : Context) {
         if(roundInGame == 1 || roundInGame == (ROUNDS / 2) + 1){
             val numeration = EquipmentNumeration(1, EquipmentCategoryEnum.PISTOL)
             val secondaryWeapon = findWeaponByNumeration(numeration, enemyTeam!!) as SecondaryWeapon
-            for (player in players!!) player.registerSecondaryWeapon(secondaryWeapon.copy())
+            for (player in players!!){
+                player.registerSecondaryWeapon(secondaryWeapon.copy())
+                enemyEconomy += economy?.beginning!!
+            }
         }
     }
 
     fun findWeaponByNumeration(numeration: EquipmentNumeration,
                             team: EquipmentTeamEnum = EquipmentTeamEnum.BOTH): Weapon? {
         appHelperDB!!.open()
-        val weapon: Weapon? = appHelperDB!!.fetchWeaponByNumeration(numeration, team)
-        appHelperDB!!.close()
-        return weapon
+        return appHelperDB!!.fetchWeaponByNumeration(numeration, team)
     }
 
 }
