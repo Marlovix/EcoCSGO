@@ -3,7 +3,6 @@ package es.ulpgc.tfm.ecocsgo
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -16,6 +15,7 @@ import com.google.android.material.navigation.NavigationView
 import es.ulpgc.tfm.ecocsgo.MainActivity.Companion.ARG_TEAM
 import es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment
 import es.ulpgc.tfm.ecocsgo.fragment.GameListPlayersFragment
+import es.ulpgc.tfm.ecocsgo.fragment.InfoGameFragmentDialog
 import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.model.*
 import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
@@ -25,14 +25,16 @@ import kotlinx.android.synthetic.main.list_players.*
 class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     GameListPlayersFragment.OnListPlayersFragmentInteraction, DialogInterface.OnDismissListener,
     DetailPlayerFragment.OnDetailPlayerFragmentInteraction,
-    WeaponListFragmentDialog.OnWeaponListFragmentInteraction {
+    WeaponListFragmentDialog.OnWeaponListFragmentInteraction,
+    InfoGameFragmentDialog.OnFormInfoGameFragmentInteraction{
 
-    private var dialog : WeaponListFragmentDialog? = null
+    private var dialogWeapons : WeaponListFragmentDialog? = null
+    private var dialogInfoGame : InfoGameFragmentDialog? = null
     private var mainDialog = false
     private var secondaryDialog = false
+    private var infoGameDialog = false
 
     var twoPane: Boolean = false
-    private var game: Game? = null
 
     private var gameListPlayersFragment: GameListPlayersFragment? = null
     private var detailPlayerFragment: DetailPlayerFragment? = null
@@ -47,13 +49,14 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
 
         // Init the game //
-        game = gameViewModel.getGame().value
+        val game = gameViewModel.getGame().value
 
         if (game?.players?.isEmpty()!!){
-            game?.createPlayers(EquipmentTeamEnum.valueOf(intent.getStringExtra(ARG_TEAM)!!))
-            game?.initRound()
-            game?.players?.let { gameViewModel.updatePlayers(it) }
-            game?.enemyEconomy?.let { gameViewModel.setEnemyEconomy(it) }
+            game.createPlayers(EquipmentTeamEnum.valueOf(intent.getStringExtra(ARG_TEAM)!!))
+            game.initRound()
+            game.players?.let { gameViewModel.updatePlayers(it) }
+            game.enemyEconomy.let { gameViewModel.setEnemyEconomy(it) }
+            game.infoGame?.let { gameViewModel.setInfoGameLiveData(it) }
         }
 
         updateToolBar()
@@ -84,6 +87,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onDismiss(dialog: DialogInterface?) {
         mainDialog = false
         secondaryDialog = false
+        infoGameDialog = false
     }
 
     override fun onBackPressed() {
@@ -100,49 +104,57 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (requestCode == ARG_RESPONSE_PLAYER) {
             val player = data?.getParcelableExtra<Player>(DetailPlayerActivity.ARG_PLAYER)
-
             updatePlayerData(player!!)
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.game_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val game = gameViewModel.getGame().value
+        var title = ""
+        var value = 0
+
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_home -> {
-                // Handle the camera action
+            R.id.nav_grenade_death -> {
+                title = resources.getString(R.string.menu_grenade_death)
+                value = game?.infoGame?.grenadeDeaths!!
             }
-            R.id.nav_gallery -> {
-
+            R.id.nav_knife_death -> {
+                title = resources.getString(R.string.menu_knife_death)
+                value = game?.infoGame?.knifeDeaths!!
             }
-            R.id.nav_slideshow -> {
-
+            R.id.nav_partner_death -> {
+                title = resources.getString(R.string.menu_partner_death)
+                value = game?.infoGame?.partnerDeaths!!
             }
-            R.id.nav_tools -> {
-
+            R.id.nav_zeus -> {
+                title = resources.getString(R.string.menu_zeus)
+                value = game?.infoGame?.zeus!!
             }
-            R.id.nav_share -> {
-
+            R.id.nav_smoke -> {
+                title = resources.getString(R.string.menu_smoke)
+                value = game?.infoGame?.smoke!!
             }
-            R.id.nav_send -> {
-
+            R.id.nav_flash -> {
+                title = resources.getString(R.string.menu_flash)
+                value = game?.infoGame?.flash!!
+            }
+            R.id.nav_he -> {
+                title = resources.getString(R.string.menu_he)
+                value = game?.infoGame?.he!!
+            }
+            R.id.nav_molotov -> {
+                title = resources.getString(R.string.menu_molotov)
+                value = game?.infoGame?.molotov!!
+            }
+            R.id.nav_decoy -> {
+                title = resources.getString(R.string.menu_decoy)
+                value = game?.infoGame?.decoy!!
             }
         }
+
+        openInfoGameDialog(title, value)
+
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
@@ -170,7 +182,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val bundle = Bundle()
         bundle.putSerializable(DetailPlayerActivity.ARG_WEAPONS, mainWeapons)
         bundle.putString(DetailPlayerActivity.ARG_WEAPON_IN_GAME, mainWeaponInGame?.name)
-        openGunDialog(bundle)
+        openWeaponsDialog(bundle)
     }
 
     override fun openSecondaryWeaponsDialog() {
@@ -181,7 +193,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val bundle = Bundle()
         bundle.putSerializable(DetailPlayerActivity.ARG_WEAPONS, secondaryWeapons)
         bundle.putString(DetailPlayerActivity.ARG_WEAPON_IN_GAME, secondaryWeaponInGame?.name)
-        openGunDialog(bundle)
+        openWeaponsDialog(bundle)
     }
 
     override fun deleteWeapon(weapon: Weapon) {
@@ -213,7 +225,57 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         detailPlayerFragment?.updatePlayerView(playerViewModel.getPlayer()?.value!!)
         updatePlayersView()
 
-        dialog?.dismiss()
+        dialogWeapons?.dismiss()
+    }
+
+    override fun add(title: String) {
+        val infoGame = gameViewModel.getInfoGameLiveData().value
+        when (title) {
+            resources.getString(R.string.menu_grenade_death) ->
+                infoGame?.grenadeDeaths = infoGame?.grenadeDeaths?.inc()!!
+            resources.getString(R.string.menu_knife_death) ->
+                infoGame?.knifeDeaths = infoGame?.knifeDeaths?.inc()!!
+            resources.getString(R.string.menu_partner_death) ->
+                infoGame?.partnerDeaths = infoGame?.partnerDeaths?.inc()!!
+            resources.getString(R.string.menu_zeus) ->
+                infoGame?.zeus = infoGame?.zeus?.inc()!!
+            resources.getString(R.string.menu_smoke) ->
+                infoGame?.smoke = infoGame?.smoke?.inc()!!
+            resources.getString(R.string.menu_flash) ->
+                infoGame?.flash = infoGame?.flash?.inc()!!
+            resources.getString(R.string.menu_he) ->
+                infoGame?.he = infoGame?.he?.inc()!!
+            resources.getString(R.string.menu_molotov) ->
+                infoGame?.molotov = infoGame?.molotov?.inc()!!
+            resources.getString(R.string.menu_decoy) ->
+                infoGame?.decoy = infoGame?.decoy?.inc()!!
+        }
+        infoGame?.let { gameViewModel.setInfoGameLiveData(it) }
+    }
+
+    override fun remove(title: String) {
+        val infoGame = gameViewModel.getInfoGameLiveData().value
+        when (title) {
+            resources.getString(R.string.menu_grenade_death) ->
+                infoGame?.grenadeDeaths = infoGame?.grenadeDeaths?.dec()!!
+            resources.getString(R.string.menu_knife_death) ->
+                infoGame?.knifeDeaths = infoGame?.knifeDeaths?.dec()!!
+            resources.getString(R.string.menu_partner_death) ->
+                infoGame?.partnerDeaths = infoGame?.partnerDeaths?.dec()!!
+            resources.getString(R.string.menu_zeus) ->
+                infoGame?.zeus = infoGame?.zeus?.dec()!!
+            resources.getString(R.string.menu_smoke) ->
+                infoGame?.smoke = infoGame?.smoke?.dec()!!
+            resources.getString(R.string.menu_flash) ->
+                infoGame?.flash = infoGame?.flash?.dec()!!
+            resources.getString(R.string.menu_he) ->
+                infoGame?.he = infoGame?.he?.dec()!!
+            resources.getString(R.string.menu_molotov) ->
+                infoGame?.molotov = infoGame?.molotov?.dec()!!
+            resources.getString(R.string.menu_decoy) ->
+                infoGame?.decoy = infoGame?.decoy?.dec()!!
+        }
+        infoGame?.let { gameViewModel.setInfoGameLiveData(it) }
     }
 
     private fun updateToolBar(){
@@ -221,10 +283,22 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 gameViewModel.getGame().value?.roundInGame
     }
 
-    private fun openGunDialog(bundle: Bundle) {
-        dialog = WeaponListFragmentDialog(this)
-        dialog!!.arguments = bundle
-        dialog!!.show(supportFragmentManager, null)
+    private fun openWeaponsDialog(bundle: Bundle){
+        dialogWeapons = WeaponListFragmentDialog(this)
+        dialogWeapons?.arguments = bundle
+        dialogWeapons?.show(supportFragmentManager, null)
+    }
+
+    private fun openInfoGameDialog(title: String, value: Int){
+        infoGameDialog = true
+
+        val bundle = Bundle()
+        bundle.putString(ARG_TITLE_INFO_GAME_DIALOG, title)
+        bundle.putInt(ARG_VALUE_INFO_GAME_DIALOG, value)
+
+        dialogInfoGame = InfoGameFragmentDialog(this)
+        dialogInfoGame?.arguments = bundle
+        dialogInfoGame?.show(supportFragmentManager, null)
     }
 
     private fun updatePlayersView(){
@@ -241,6 +315,8 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     companion object {
         const val ARG_RESPONSE_PLAYER = 1
+        const val ARG_TITLE_INFO_GAME_DIALOG = "TITLE"
+        const val ARG_VALUE_INFO_GAME_DIALOG = "VALUE"
     }
 
 }

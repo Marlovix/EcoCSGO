@@ -16,8 +16,8 @@ class Game(context : Context) {
     var players: ArrayList<Player>? = ArrayList()
     var enemyEconomy: Int = 0
     var enemyTeam: EquipmentTeamEnum? = null
-
     var economy: EconomyGame? = null
+    var infoGame: InfoGame? = null
 
     private var appDatabase: AppDatabase? = null
     private var appHelperDB: AppHelperDB? = null
@@ -28,6 +28,8 @@ class Game(context : Context) {
 
         appHelperDB!!.open()
         economy = appHelperDB!!.fetchEconomyGame()
+
+        infoGame = InfoGame()
     }
 
     fun createPlayers(enemyTeamEnum: EquipmentTeamEnum){

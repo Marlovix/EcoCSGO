@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import es.ulpgc.tfm.ecocsgo.model.Game
+import es.ulpgc.tfm.ecocsgo.model.InfoGame
 import es.ulpgc.tfm.ecocsgo.model.Player
 
 class GameActivityViewModel(application: Application) : AndroidViewModel(application) {
@@ -12,6 +13,7 @@ class GameActivityViewModel(application: Application) : AndroidViewModel(applica
     private var playersLiveData: MutableLiveData<ArrayList<Player>>? = MutableLiveData()
     private var selectedPlayerIndexLiveData: MutableLiveData<Int>? = MutableLiveData()
     private var enemyEconomyLiveData: MutableLiveData<Int>? = MutableLiveData()
+    private var infoGameLiveData: MutableLiveData<InfoGame>? = MutableLiveData()
 
     fun getGame() : MutableLiveData<Game>{
         if (gameLiveData == null) {
@@ -45,6 +47,15 @@ class GameActivityViewModel(application: Application) : AndroidViewModel(applica
 
     fun getEnemyEconomy() : MutableLiveData<Int>{
         return enemyEconomyLiveData as MutableLiveData<Int>
+    }
+
+    fun setInfoGameLiveData(infoGame: InfoGame){
+        infoGameLiveData?.value = infoGame
+        gameLiveData?.value?.infoGame = infoGame
+    }
+
+    fun getInfoGameLiveData() : MutableLiveData<InfoGame>{
+        return infoGameLiveData as MutableLiveData<InfoGame>
     }
 
 }

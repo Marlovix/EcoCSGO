@@ -3,21 +3,15 @@ package es.ulpgc.tfm.ecocsgo
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
-import com.google.android.material.navigation.NavigationView
 import es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment
 import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.model.*
 import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
 import kotlinx.android.synthetic.main.activity_detail_player.*
-import kotlinx.android.synthetic.main.activity_game.*
 
-
-class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+class DetailPlayerActivity : AppCompatActivity(),
     DetailPlayerFragment.OnDetailPlayerFragmentInteraction, DialogInterface.OnDismissListener,
     WeaponListFragmentDialog.OnWeaponListFragmentInteraction{
 
@@ -44,40 +38,6 @@ class DetailPlayerActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         detailPlayerFragment = DetailPlayerFragment()
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_detail_player, detailPlayerFragment!!).commit()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.detail_player_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_gallery -> {
-
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
-            }
-        }
-
-        drawer_layout.closeDrawer(GravityCompat.START)
-        return true
     }
 
     override fun onSupportNavigateUp(): Boolean {

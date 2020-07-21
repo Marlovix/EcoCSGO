@@ -69,7 +69,7 @@ class DetailPlayerFragment : Fragment(){
             if (playerViewModel.getPlayer()?.value != null) interaction?.addCasualty(
                 playerViewModel.getPlayer()?.value?.getMainWeaponInGame()!!)
         }
-        imageButton_add_secondary_casualty?.setOnClickListener {
+        imageButton_add?.setOnClickListener {
             if (playerViewModel.getPlayer()?.value != null) interaction?.addCasualty(
                 playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()!!)
         }
@@ -77,7 +77,7 @@ class DetailPlayerFragment : Fragment(){
             if (playerViewModel.getPlayer()?.value != null) interaction?.removeCasualty(
                 playerViewModel.getPlayer()?.value?.getMainWeaponInGame()!!)
         }
-        imageButton_remove_secondary_casualty?.setOnClickListener {
+        imageButton_remove?.setOnClickListener {
             if (playerViewModel.getPlayer()?.value != null) interaction?.removeCasualty(
                 playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()!!)
         }
@@ -210,7 +210,7 @@ class DetailPlayerFragment : Fragment(){
             weapon.casualty = weapon.casualty.inc()
 
             if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
-                editText_secondary_casualties.setText(weapon.casualty.toString())
+                editText_value.setText(weapon.casualty.toString())
             else
                 editText_main_casualties.setText(weapon.casualty.toString())
         }
@@ -221,7 +221,7 @@ class DetailPlayerFragment : Fragment(){
             weapon.casualty = weapon.casualty.dec()
 
             if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
-                editText_secondary_casualties.setText(weapon.casualty.toString())
+                editText_value.setText(weapon.casualty.toString())
             else
                 editText_main_casualties.setText(weapon.casualty.toString())
         }
@@ -230,7 +230,7 @@ class DetailPlayerFragment : Fragment(){
     fun selectWeaponInGame(weapon: Weapon){
         if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL) {
             playerViewModel.getPlayer()?.value?.updateSelectedWeapon(weapon)
-            editText_secondary_casualties.setText(
+            editText_value.setText(
                 playerViewModel.getPlayer()?.value?.
                 getSecondaryWeaponInGame()?.casualty.toString()
             )
@@ -260,7 +260,7 @@ class DetailPlayerFragment : Fragment(){
             }
         }
 
-        editText_secondary_casualties!!.setText("")
+        editText_value!!.setText("")
         toggleButton_secondary_origin.isChecked = false
         toggleButton_secondary_origin.isEnabled = false
         for (i in 0 until player.secondaryWeapons!!.size) {
@@ -271,7 +271,7 @@ class DetailPlayerFragment : Fragment(){
                 toggleButton_secondary_origin.isEnabled = true
                 toggleButton_secondary_origin.isChecked =
                     player.getSecondaryWeaponInGame()?.origin == OriginEquipmentEnum.PURCHASED
-                editText_secondary_casualties!!.setText(
+                editText_value!!.setText(
                     player.getSecondaryWeaponInGame()?.casualty.toString())
                 break
             }
