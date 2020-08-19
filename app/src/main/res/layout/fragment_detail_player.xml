@@ -406,28 +406,45 @@
 				android:layout_height="wrap_content"
 				android:layout_marginStart="16dp"
 				android:layout_marginLeft="16dp"
-				android:layout_marginTop="8dp"
+				android:layout_marginTop="12dp"
 				android:layout_marginEnd="8dp"
 				android:layout_marginRight="8dp"
+				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/divider2" />
+				app:layout_constraintTop_toBottomOf="@+id/divider2"
+				app:layout_constraintVertical_bias="0.0" />
 
-		<Switch
+		<androidx.appcompat.widget.SwitchCompat
 				android:id="@+id/switch_vest"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="8dp"
 				android:layout_marginLeft="8dp"
+				app:layout_constraintBottom_toBottomOf="@+id/toggleButton_vest_origin"
+				app:layout_constraintEnd_toStartOf="@+id/toggleButton_vest_origin"
+				app:layout_constraintHorizontal_bias="1.0"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="@+id/toggleButton_vest_origin" />
+
+		<ToggleButton
+				android:id="@+id/toggleButton_vest_origin"
+				android:layout_width="38dp"
+				android:layout_height="26dp"
 				android:layout_marginTop="8dp"
 				android:layout_marginEnd="16dp"
 				android:layout_marginRight="16dp"
-				android:switchMinWidth="100dp"
+				android:background="@drawable/toggle_origin"
+				android:drawableTop="@drawable/ic_dollar"
+				android:textOff=""
+				android:textOn=""
+				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintHorizontal_bias="1.0"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/divider2"/>
+				app:layout_constraintTop_toBottomOf="@+id/divider2"
+				app:layout_constraintVertical_bias="0.0" />
 
 		<TextView
 				android:id="@+id/textView_helmet"
@@ -444,22 +461,37 @@
 				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/textView_vest"
-				app:layout_constraintVertical_bias="0.037" />
+				app:layout_constraintVertical_bias="0.0" />
 
-		<Switch
+		<androidx.appcompat.widget.SwitchCompat
 				android:id="@+id/switch_helmet"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="8dp"
 				android:layout_marginLeft="8dp"
+				app:layout_constraintBottom_toBottomOf="@+id/toggleButton_helmet_origin"
+				app:layout_constraintEnd_toStartOf="@+id/toggleButton_helmet_origin"
+				app:layout_constraintHorizontal_bias="1.0"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="@+id/toggleButton_helmet_origin" />
+
+		<ToggleButton
+				android:id="@+id/toggleButton_helmet_origin"
+				android:layout_width="38dp"
+				android:layout_height="26dp"
 				android:layout_marginTop="16dp"
 				android:layout_marginEnd="16dp"
 				android:layout_marginRight="16dp"
-				android:switchMinWidth="100dp"
+				android:background="@drawable/toggle_origin"
+				android:drawableTop="@drawable/ic_dollar"
+				android:textOff=""
+				android:textOn=""
+				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintHorizontal_bias="1.0"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/switch_vest"/>
+				app:layout_constraintTop_toBottomOf="@+id/toggleButton_vest_origin"
+				app:layout_constraintVertical_bias="0.0" />
 
 		<TextView
 				android:id="@+id/textView_defuse_kit"
@@ -476,25 +508,37 @@
 				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/textView_helmet"
-				app:layout_constraintVertical_bias="0.043" />
+				app:layout_constraintVertical_bias="0.0" />
 
-		<Switch
+		<androidx.appcompat.widget.SwitchCompat
 				android:id="@+id/switch_defuse_kit"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="8dp"
 				android:layout_marginLeft="8dp"
+				android:gravity="center_vertical"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toStartOf="@+id/toggleButton_defuse_kit_origin"
+				app:layout_constraintHorizontal_bias="1.0"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="@+id/toggleButton_defuse_kit_origin" />
+
+		<ToggleButton
+				android:id="@+id/toggleButton_defuse_kit_origin"
+				android:layout_width="38dp"
+				android:layout_height="26dp"
 				android:layout_marginTop="16dp"
 				android:layout_marginEnd="16dp"
 				android:layout_marginRight="16dp"
-				android:layout_marginBottom="16dp"
-				android:gravity="center_vertical"
-				android:switchMinWidth="100dp"
+				android:background="@drawable/toggle_origin"
+				android:drawableTop="@drawable/ic_dollar"
+				android:textOff=""
+				android:textOn=""
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintHorizontal_bias="1.0"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/switch_helmet"
+				app:layout_constraintTop_toBottomOf="@+id/toggleButton_helmet_origin"
 				app:layout_constraintVertical_bias="0.0" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>

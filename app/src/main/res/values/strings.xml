@@ -34,9 +34,9 @@
 	<string name="menu_knife_death">Bajas por cuchillo</string>
 	<string name="menu_partner_death">Bajas por compañero</string>
 	<string name="menu_zeus">Zeus</string>
+	<!--<string name="menu_zeus">Zeus</string>
 	<string name="menu_zeus">Zeus</string>
-	<string name="menu_zeus">Zeus</string>
-	<string name="menu_zeus">Zeus</string>
+	<string name="menu_zeus">Zeus</string>-->
 
 	<!-- Data Codes -->
 	<string name="defuse_kit_data">-LehmCiShwGhhq7OmbZJ</string>
