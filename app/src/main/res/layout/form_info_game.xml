@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+	<com.google.android.material.appbar.AppBarLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:theme="@style/AppTheme.AppBarOverlay">
+
+		<androidx.appcompat.widget.Toolbar
+				android:id="@+id/toolbar"
+				android:layout_width="match_parent"
+				android:layout_height="?attr/actionBarSize"
+				android:background="?attr/colorPrimary"
+				app:popupTheme="@style/AppTheme.PopupOverlay" />
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+		<EditText
+				android:id="@+id/editText_value"
+				android:layout_width="40dp"
+				android:layout_height="48dp"
+				android:layout_marginStart="16dp"
+				android:layout_marginLeft="16dp"
+				android:layout_marginTop="16dp"
+				android:clickable="false"
+				android:longClickable="false"
+				android:ems="100"
+				android:focusable="false"
+				android:importantForAutofill="no"
+				android:inputType="none"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.0"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintVertical_bias="0.0"
+				tools:ignore="LabelFor" />
+
+		<ImageButton
+				android:id="@+id/imageButton_remove"
+				android:layout_width="45dp"
+				android:layout_height="50dp"
+				android:layout_marginStart="24dp"
+				android:layout_marginLeft="24dp"
+				android:layout_marginTop="16dp"
+				android:contentDescription="@string/content_description_remove"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.0"
+				app:layout_constraintStart_toEndOf="@+id/editText_value"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintVertical_bias="0.0"
+				app:srcCompat="@drawable/ic_remove" />
+
+		<ImageButton
+				android:id="@+id/imageButton_add"
+				android:layout_width="43dp"
+				android:layout_height="50dp"
+				android:layout_marginTop="16dp"
+				android:contentDescription="@string/content_description_add"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintStart_toEndOf="@+id/imageButton_remove"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintVertical_bias="0.0"
+				app:srcCompat="@drawable/ic_add" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

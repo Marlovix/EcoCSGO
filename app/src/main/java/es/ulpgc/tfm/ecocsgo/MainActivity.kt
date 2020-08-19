@@ -2,13 +2,14 @@ package es.ulpgc.tfm.ecocsgo
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import es.ulpgc.tfm.ecocsgo.model.*
+import es.ulpgc.tfm.ecocsgo.db.RepoEquipment
+import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
-
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         startGameButton = findViewById(R.id.start_game)
+        startGameButton?.visibility = View.GONE
         startGameButton?.setOnClickListener {
 
             val options = arrayOf<CharSequence>(
@@ -30,9 +32,9 @@ class MainActivity : AppCompatActivity() {
             builder.setCancelable(false)
             builder.setTitle("Select your option:")
             builder.setItems(options) { _, which ->
-                val teamSelected = if (which == 0) EquipmentTeam.CT.name else EquipmentTeam.T.name
+                val teamSelected = if (which == 0) EquipmentTeamEnum.CT.name else EquipmentTeamEnum.T.name
                 val intent = Intent(this, GameActivity::class.java)
-                intent.putExtra(ItemDetailFragment.ARG_TEAM, teamSelected)
+                intent.putExtra(ARG_TEAM, teamSelected)
                 startActivity(intent)
                 finish()
             }
@@ -41,6 +43,18 @@ class MainActivity : AppCompatActivity() {
             }
             builder.show()
         }
+
+        val repo = RepoEquipment(this)
+        repo.loadData()
+    }
+
+    fun finishRepoLoading(){
+        progress_bar.visibility = View.GONE
+        startGameButton?.visibility = View.VISIBLE
+    }
+
+    companion object{
+        const val ARG_TEAM = "ARG_TEAM"
     }
 
 }
