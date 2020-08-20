@@ -9,8 +9,8 @@
 
 	<com.google.android.material.appbar.AppBarLayout
 			android:id="@+id/bar"
-			android:layout_height="wrap_content"
 			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
 			android:theme="@style/AppTheme.AppBarOverlay">
 
 		<androidx.appcompat.widget.Toolbar
@@ -22,11 +22,10 @@
 
 	</com.google.android.material.appbar.AppBarLayout>
 
-	<ScrollView
+	<androidx.fragment.app.FragmentContainerView
+			android:id="@+id/fragment_detail_player"
 			android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-			app:layout_behavior="@string/appbar_scrolling_view_behavior">
-		<include layout="@layout/content_detail_player"/>
-	</ScrollView>
+			android:layout_height="match_parent"
+			app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

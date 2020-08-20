@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<array name="main_gun_titles">
+	<array name="main_weapon_titles">
 		<item>Armas pesadas</item>
 		<item>Subfusiles</item>
 		<item>Rifles</item>
 	</array>
-	<array name="secondary_gun_titles">
+	<array name="secondary_weapon_titles">
 		<item>Pistolas</item>
 	</array>
 </resources>
