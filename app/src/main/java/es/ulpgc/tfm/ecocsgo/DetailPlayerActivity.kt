@@ -13,9 +13,9 @@ import kotlinx.android.synthetic.main.activity_detail_player.*
 
 class DetailPlayerActivity : AppCompatActivity(),
     DetailPlayerFragment.OnDetailPlayerFragmentInteraction, DialogInterface.OnDismissListener,
-    WeaponListFragmentDialog.OnWeaponListFragmentInteraction{
+    WeaponListFragmentDialog.OnWeaponListFragmentInteraction {
 
-    private var dialog : WeaponListFragmentDialog? = null
+    private var dialog: WeaponListFragmentDialog? = null
     private var mainDialog = false
     private var secondaryDialog = false
 
@@ -32,7 +32,7 @@ class DetailPlayerActivity : AppCompatActivity(),
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
 
-        val player : Player? = intent.getParcelableExtra(ARG_PLAYER)
+        val player: Player? = intent.getParcelableExtra(ARG_PLAYER)
         playerViewModel.setPlayer(player!!)
 
         detailPlayerFragment = DetailPlayerFragment()
@@ -95,8 +95,8 @@ class DetailPlayerActivity : AppCompatActivity(),
     }
 
     override fun selectWeapon(weapon: Weapon) {
-        if (!weapon.inGame){
-            if(weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
+        if (!weapon.inGame) {
+            if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
                 detailPlayerFragment?.addSecondaryWeapon(weapon as SecondaryWeapon)
             else
                 detailPlayerFragment?.addMainWeapon(weapon as MainWeapon)

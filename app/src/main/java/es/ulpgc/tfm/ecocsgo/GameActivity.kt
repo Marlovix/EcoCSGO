@@ -27,10 +27,10 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     GameListPlayersFragment.OnListPlayersFragmentInteraction, DialogInterface.OnDismissListener,
     DetailPlayerFragment.OnDetailPlayerFragmentInteraction,
     WeaponListFragmentDialog.OnWeaponListFragmentInteraction,
-    InfoGameFragmentDialog.OnFormInfoGameFragmentInteraction{
+    InfoGameFragmentDialog.OnFormInfoGameFragmentInteraction {
 
-    private var dialogWeapons : WeaponListFragmentDialog? = null
-    private var dialogInfoGame : InfoGameFragmentDialog? = null
+    private var dialogWeapons: WeaponListFragmentDialog? = null
+    private var dialogInfoGame: InfoGameFragmentDialog? = null
     private var mainDialog = false
     private var secondaryDialog = false
     private var infoGameDialog = false
@@ -52,7 +52,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Init the game //
         val game = gameViewModel.getGame().value
 
-        if (game?.players?.isEmpty()!!){
+        if (game?.players?.isEmpty()!!) {
             game.createPlayers(EquipmentTeamEnum.valueOf(intent.getStringExtra(ARG_TEAM)!!))
             game.initRound()
             game.players?.let { gameViewModel.updatePlayers(it) }
@@ -77,7 +77,11 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
@@ -184,7 +188,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (fragment_detail_player != null) {
             playerViewModel.setPlayer(player!!)
-        }else{
+        } else {
             val intent = Intent(this, DetailPlayerActivity::class.java)
             intent.putExtra(DetailPlayerActivity.ARG_PLAYER, player)
             startActivityForResult(intent, ARG_RESPONSE_PLAYER)
@@ -234,7 +238,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun selectWeapon(weapon: Weapon) {
-        if(weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
+        if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
             detailPlayerFragment?.addSecondaryWeapon(weapon as SecondaryWeapon)
         else
             detailPlayerFragment?.addMainWeapon(weapon as MainWeapon)
@@ -295,18 +299,18 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         infoGame?.let { gameViewModel.setInfoGameLiveData(it) }
     }
 
-    private fun updateToolBar(){
+    private fun updateToolBar() {
         supportActionBar?.title = resources.getString(R.string.label_round) + " " +
                 gameViewModel.getGame().value?.roundInGame
     }
 
-    private fun openWeaponsDialog(bundle: Bundle){
+    private fun openWeaponsDialog(bundle: Bundle) {
         dialogWeapons = WeaponListFragmentDialog(this)
         dialogWeapons?.arguments = bundle
         dialogWeapons?.show(supportFragmentManager, null)
     }
 
-    private fun openInfoGameDialog(title: String, value: Int){
+    private fun openInfoGameDialog(title: String, value: Int) {
         infoGameDialog = true
 
         val bundle = Bundle()
@@ -318,13 +322,13 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         dialogInfoGame?.show(supportFragmentManager, null)
     }
 
-    private fun updatePlayersView(){
+    private fun updatePlayersView() {
         val selectedPlayerIndex = gameViewModel.getSelectedPlayer().value!!
         val player = gameViewModel.getGame().value?.players?.get(selectedPlayerIndex)
         updatePlayerData(player!!)
     }
 
-    private fun updatePlayerData(player: Player){
+    private fun updatePlayerData(player: Player) {
         val selectedPlayerIndex = gameViewModel.getSelectedPlayer().value!!
         gameViewModel.getGame().value?.players?.set(selectedPlayerIndex, player)
         gameViewModel.getGame().value?.players?.let { gameViewModel.updatePlayers(it) }

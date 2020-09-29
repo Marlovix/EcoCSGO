@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.R
+import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.model.Equipment
 import es.ulpgc.tfm.ecocsgo.model.Weapon
 import kotlinx.android.synthetic.main.item_weapon.view.*
@@ -30,7 +30,7 @@ class WeaponRecyclerViewAdapter(
         holder.nameWeaponTextView.text = weapon.name
         val cost = weapon.cost.toString() + "$"
         holder.costWeapon.text = cost
-        if(weapon.name == weaponInGame){
+        if (weapon.name == weaponInGame) {
             weapon.inGame = true
             holder.selectedWeapon.visibility = View.VISIBLE
         } else {

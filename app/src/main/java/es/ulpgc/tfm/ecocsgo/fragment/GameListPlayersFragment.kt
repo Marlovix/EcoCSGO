@@ -15,7 +15,7 @@ import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
 import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
 import kotlinx.android.synthetic.main.fragment_list_players.*
 
-class GameListPlayersFragment : Fragment(){
+class GameListPlayersFragment : Fragment() {
 
     private var playersAdapter: PlayersRecyclerViewAdapter? = null
     private var onClickPlayerListener: View.OnClickListener? = null
@@ -66,7 +66,7 @@ class GameListPlayersFragment : Fragment(){
         }
 
         gameViewModel.getEnemyEconomy().observe(viewLifecycleOwner) {
-            val team = if(gameViewModel.getGame().value?.enemyTeam == EquipmentTeamEnum.T)
+            val team = if (gameViewModel.getGame().value?.enemyTeam == EquipmentTeamEnum.T)
                 getString(R.string.label_terrorist) else getString(R.string.label_counter_terrorists)
             val text = team + "s: " + it + "$"
             textView_enemy_economy.text = text
@@ -78,7 +78,7 @@ class GameListPlayersFragment : Fragment(){
         super.onDetach()
     }
 
-    interface OnListPlayersFragmentInteraction{
+    interface OnListPlayersFragmentInteraction {
         fun selectPlayer(selectedPlayerIndex: Int)
     }
 

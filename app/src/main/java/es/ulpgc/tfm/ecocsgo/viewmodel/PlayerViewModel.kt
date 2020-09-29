@@ -5,19 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import es.ulpgc.tfm.ecocsgo.model.Player
 
-class PlayerViewModel : ViewModel()  {
+class PlayerViewModel : ViewModel() {
     private var playerLiveData: MutableLiveData<Player>? = null
 
     fun getPlayer(): LiveData<Player>? {
-        if(playerLiveData == null){
+        if (playerLiveData == null) {
             playerLiveData = MutableLiveData()
         }
 
         return playerLiveData
     }
 
-    fun setPlayer(player: Player){
-        if(playerLiveData == null){
+    fun setPlayer(player: Player) {
+        if (playerLiveData == null) {
             playerLiveData = MutableLiveData()
         }
 

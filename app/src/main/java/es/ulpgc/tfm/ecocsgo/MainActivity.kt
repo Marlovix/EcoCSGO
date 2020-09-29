@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var startGameButton : Button? = null
+    private var startGameButton: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,13 +26,15 @@ class MainActivity : AppCompatActivity() {
 
             val options = arrayOf<CharSequence>(
                 getString(R.string.label_counter_terrorists),
-                getString(R.string.label_terrorist))
+                getString(R.string.label_terrorist)
+            )
 
             val builder = AlertDialog.Builder(this)
             builder.setCancelable(false)
             builder.setTitle("Select your option:")
             builder.setItems(options) { _, which ->
-                val teamSelected = if (which == 0) EquipmentTeamEnum.CT.name else EquipmentTeamEnum.T.name
+                val teamSelected =
+                    if (which == 0) EquipmentTeamEnum.CT.name else EquipmentTeamEnum.T.name
                 val intent = Intent(this, GameActivity::class.java)
                 intent.putExtra(ARG_TEAM, teamSelected)
                 startActivity(intent)
@@ -48,12 +50,12 @@ class MainActivity : AppCompatActivity() {
         repo.loadData()
     }
 
-    fun finishRepoLoading(){
+    fun finishRepoLoading() {
         progress_bar.visibility = View.GONE
         startGameButton?.visibility = View.VISIBLE
     }
 
-    companion object{
+    companion object {
         const val ARG_TEAM = "ARG_TEAM"
     }
 

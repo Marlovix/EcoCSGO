@@ -3,7 +3,9 @@ package es.ulpgc.tfm.ecocsgo.fragment
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.widget.Toolbar
@@ -13,6 +15,7 @@ import es.ulpgc.tfm.ecocsgo.GameActivity
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.model.Game
 import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
+
 class InfoGameFragmentDialog(
     private var interaction: OnFormInfoGameFragmentInteraction?
 ) : DialogFragment() {
@@ -39,8 +42,8 @@ class InfoGameFragmentDialog(
         val title = bundle?.getString(GameActivity.ARG_TITLE_INFO_GAME_DIALOG)
         var value = bundle?.getInt(GameActivity.ARG_VALUE_INFO_GAME_DIALOG)
 
-        val toolbar : Toolbar = rootView.findViewById(R.id.toolbar)
-        val editTextValue : EditText = rootView.findViewById(R.id.editText_value)
+        val toolbar: Toolbar = rootView.findViewById(R.id.toolbar)
+        val editTextValue: EditText = rootView.findViewById(R.id.editText_value)
         val imageButtonRemove: ImageButton = rootView.findViewById(R.id.imageButton_remove)
         val imageButtonAdd: ImageButton = rootView.findViewById(R.id.imageButton_add)
 
@@ -57,7 +60,7 @@ class InfoGameFragmentDialog(
         editTextValue.setText(value!!.toString())
 
         imageButtonRemove.setOnClickListener {
-            if (value > 0){
+            if (value > 0) {
                 interaction?.remove(title!!)
                 value -= 1
                 editTextValue.setText(value.toString())
@@ -65,7 +68,7 @@ class InfoGameFragmentDialog(
         }
 
         imageButtonAdd.setOnClickListener {
-            if (value < Game.ENEMIES){
+            if (value < Game.ENEMIES) {
                 interaction?.add(title!!)
                 value += 1
                 editTextValue.setText(value.toString())
@@ -79,8 +82,8 @@ class InfoGameFragmentDialog(
         super.onStart()
         val dialog = dialog
         if (dialog != null) {
-            val width : Int = ViewGroup.LayoutParams.MATCH_PARENT
-            val height : Int = resources.getDimension(R.dimen.width_info_game_dialog).toInt()
+            val width: Int = ViewGroup.LayoutParams.MATCH_PARENT
+            val height: Int = resources.getDimension(R.dimen.width_info_game_dialog).toInt()
 
             dialog.window?.setLayout(width, height)
         }
@@ -99,7 +102,7 @@ class InfoGameFragmentDialog(
         super.onDetach()
     }
 
-    interface OnFormInfoGameFragmentInteraction{
+    interface OnFormInfoGameFragmentInteraction {
         fun add(title: String)
         fun remove(title: String)
     }

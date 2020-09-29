@@ -26,7 +26,7 @@
 				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toTopOf="parent"
-				app:layout_constraintVertical_bias="0.0"/>
+				app:layout_constraintVertical_bias="0.0" />
 
 		<Spinner
 				android:id="@+id/spinner_main_weapons"
@@ -113,10 +113,10 @@
 				android:layout_marginBottom="8dp"
 				android:autofillHints="@string/label_casualties"
 				android:clickable="false"
-				android:longClickable="false"
 				android:ems="10"
 				android:focusable="false"
 				android:inputType="none"
+				android:longClickable="false"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintHorizontal_bias="0.0"
@@ -144,7 +144,7 @@
 				app:layout_constraintStart_toEndOf="@+id/editText_main_casualties"
 				app:layout_constraintTop_toBottomOf="@+id/textView_main_casualties"
 				app:layout_constraintVertical_bias="0.0"
-				app:srcCompat="@drawable/ic_remove"/>
+				app:srcCompat="@drawable/ic_remove" />
 
 		<ImageButton
 				android:id="@+id/imageButton_add_main_casualty"
@@ -158,7 +158,7 @@
 				app:layout_constraintStart_toEndOf="@+id/imageButton_remove_main_casualty"
 				app:layout_constraintTop_toBottomOf="@+id/textView_main_casualties"
 				app:layout_constraintVertical_bias="0.0"
-				app:srcCompat="@drawable/ic_add"/>
+				app:srcCompat="@drawable/ic_add" />
 
 		<TextView
 				android:id="@+id/textView_main_origin"
@@ -177,9 +177,9 @@
 				android:id="@+id/toggleButton_main_origin"
 				android:layout_width="141dp"
 				android:layout_height="47dp"
+				android:background="@drawable/toggle_origin"
 				android:textOff="@string/label_no_purchased"
 				android:textOn="@string/label_purchased"
-				android:background="@drawable/toggle_origin"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintHorizontal_bias="0.93"
@@ -203,7 +203,7 @@
 				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/imageButton_remove_main_casualty"
-				app:layout_constraintVertical_bias="0.0"/>
+				app:layout_constraintVertical_bias="0.0" />
 
 		<TextView
 				android:id="@+id/textView_secondary_weapon"
@@ -221,7 +221,7 @@
 				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/divider_1"
-				app:layout_constraintVertical_bias="0.0"/>
+				app:layout_constraintVertical_bias="0.0" />
 
 		<Spinner
 				android:id="@+id/spinner_secondary_weapons"
@@ -307,11 +307,11 @@
 				android:layout_marginRight="8dp"
 				android:layout_marginBottom="8dp"
 				android:autofillHints="@string/label_casualties"
-				android:ems="10"
-				android:inputType="none"
 				android:clickable="false"
-				android:longClickable="false"
+				android:ems="10"
 				android:focusable="false"
+				android:inputType="none"
+				android:longClickable="false"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintHorizontal_bias="0.0"
@@ -319,7 +319,7 @@
 				app:layout_constraintTop_toBottomOf="@+id/textView_secondary_casualties"
 				app:layout_constraintVertical_bias="0.0"
 				tools:ignore="LabelFor"
-				tools:targetApi="o"/>
+				tools:targetApi="o" />
 
 		<ImageButton
 				android:id="@+id/imageButton_remove"
@@ -339,7 +339,7 @@
 				app:layout_constraintStart_toEndOf="@+id/editText_value"
 				app:layout_constraintTop_toBottomOf="@+id/textView_secondary_casualties"
 				app:layout_constraintVertical_bias="0.0"
-				app:srcCompat="@drawable/ic_remove"/>
+				app:srcCompat="@drawable/ic_remove" />
 
 		<ImageButton
 				android:id="@+id/imageButton_add"
@@ -353,7 +353,7 @@
 				app:layout_constraintStart_toEndOf="@+id/imageButton_remove"
 				app:layout_constraintTop_toBottomOf="@+id/textView_secondary_casualties"
 				app:layout_constraintVertical_bias="0.0"
-				app:srcCompat="@drawable/ic_add"/>
+				app:srcCompat="@drawable/ic_add" />
 
 		<TextView
 				android:id="@+id/textView_secondary_origin"
@@ -372,9 +372,9 @@
 				android:id="@+id/toggleButton_secondary_origin"
 				android:layout_width="141dp"
 				android:layout_height="47dp"
+				android:background="@drawable/toggle_origin"
 				android:textOff="@string/label_no_purchased"
 				android:textOn="@string/label_purchased"
-				android:background="@drawable/toggle_origin"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintHorizontal_bias="0.93"
@@ -398,7 +398,7 @@
 				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/imageButton_remove"
-				app:layout_constraintVertical_bias="0.0"/>
+				app:layout_constraintVertical_bias="0.0" />
 
 		<TextView
 				android:id="@+id/textView_vest"

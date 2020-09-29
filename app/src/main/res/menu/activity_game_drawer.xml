@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:showIn="navigation_view">
+		xmlns:tools="http://schemas.android.com/tools"
+		tools:showIn="navigation_view">
 
 	<item
 			android:id="@+id/nav_grenade_death"
-			android:title="@string/menu_grenade_death"/>
+			android:title="@string/menu_grenade_death" />
 	<item
 			android:id="@+id/nav_knife_death"
-			android:title="@string/menu_knife_death"/>
+			android:title="@string/menu_knife_death" />
 	<item
 			android:id="@+id/nav_partner_death"
-			android:title="@string/menu_partner_death"/>
+			android:title="@string/menu_partner_death" />
 	<item
 			android:id="@+id/nav_zeus"
-			android:title="@string/menu_zeus"/>
+			android:title="@string/menu_zeus" />
 
 	<item android:title="@string/menu_section_grenades">
 		<menu>
 			<item
 					android:id="@+id/nav_smoke"
-					android:title="@string/menu_smoke"/>
+					android:title="@string/menu_smoke" />
 			<item
 					android:id="@+id/nav_flash"
-					android:title="@string/menu_flash"/>
+					android:title="@string/menu_flash" />
 			<item
 					android:id="@+id/nav_he"
-					android:title="@string/menu_he"/>
+					android:title="@string/menu_he" />
 			<item
 					android:id="@+id/nav_molotov"
-					android:title="@string/menu_molotov"/>
+					android:title="@string/menu_molotov" />
 			<item
 					android:id="@+id/nav_decoy"
-					android:title="@string/menu_decoy"/>
+					android:title="@string/menu_decoy" />
 		</menu>
 	</item>
 

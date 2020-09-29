@@ -20,7 +20,7 @@ import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
 import kotlinx.android.synthetic.main.fragment_detail_player.*
 import java.util.*
 
-class DetailPlayerFragment : Fragment(){
+class DetailPlayerFragment : Fragment() {
 
     private var interaction: OnDetailPlayerFragmentInteraction? = null
 
@@ -59,34 +59,41 @@ class DetailPlayerFragment : Fragment(){
         }
         imageButton_delete_main_weapon?.setOnClickListener {
             if (playerViewModel.getPlayer()?.value != null) interaction?.deleteWeapon(
-                playerViewModel.getPlayer()?.value?.getMainWeaponInGame()!!)
+                playerViewModel.getPlayer()?.value?.getMainWeaponInGame()!!
+            )
         }
         imageButton_delete_secondary_weapon?.setOnClickListener {
             if (playerViewModel.getPlayer()?.value != null) interaction?.deleteWeapon(
-                playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()!!)
+                playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()!!
+            )
         }
         imageButton_add_main_casualty?.setOnClickListener {
             if (playerViewModel.getPlayer()?.value != null) interaction?.addCasualty(
-                playerViewModel.getPlayer()?.value?.getMainWeaponInGame()!!)
+                playerViewModel.getPlayer()?.value?.getMainWeaponInGame()!!
+            )
         }
         imageButton_add?.setOnClickListener {
             if (playerViewModel.getPlayer()?.value != null) interaction?.addCasualty(
-                playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()!!)
+                playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()!!
+            )
         }
         imageButton_remove_main_casualty?.setOnClickListener {
             if (playerViewModel.getPlayer()?.value != null) interaction?.removeCasualty(
-                playerViewModel.getPlayer()?.value?.getMainWeaponInGame()!!)
+                playerViewModel.getPlayer()?.value?.getMainWeaponInGame()!!
+            )
         }
         imageButton_remove?.setOnClickListener {
             if (playerViewModel.getPlayer()?.value != null) interaction?.removeCasualty(
-                playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()!!)
+                playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()!!
+            )
         }
         spinner_main_weapons.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parentView: AdapterView<*>?, selectedItemView: View, position: Int, id: Long
             ) {
                 if (playerViewModel.getPlayer()?.value != null) interaction?.selectWeaponInGame(
-                    playerViewModel.getPlayer()!!.value?.mainWeapons?.get(position)!!)
+                    playerViewModel.getPlayer()!!.value?.mainWeapons?.get(position)!!
+                )
             }
 
             override fun onNothingSelected(parentView: AdapterView<*>?) {}
@@ -96,7 +103,8 @@ class DetailPlayerFragment : Fragment(){
                 parentView: AdapterView<*>?, selectedItemView: View, position: Int, id: Long
             ) {
                 if (playerViewModel.getPlayer()?.value != null) interaction?.selectWeaponInGame(
-                    playerViewModel.getPlayer()?.value?.secondaryWeapons?.get(position)!!)
+                    playerViewModel.getPlayer()?.value?.secondaryWeapons?.get(position)!!
+                )
             }
 
             override fun onNothingSelected(parentView: AdapterView<*>?) {}
@@ -105,10 +113,11 @@ class DetailPlayerFragment : Fragment(){
         with(toggleButton_main_origin) {
             setOnCheckedChangeListener { _, isChecked ->
                 if (playerViewModel.getPlayer()?.value != null &&
-                    playerViewModel.getPlayer()?.value?.getMainWeaponInGame() != null)
-                playerViewModel.getPlayer()?.value?.getMainWeaponInGame()?.origin =
-                    if (isChecked) OriginEquipmentEnum.PURCHASED
-                    else OriginEquipmentEnum.NO_PURCHASED
+                    playerViewModel.getPlayer()?.value?.getMainWeaponInGame() != null
+                )
+                    playerViewModel.getPlayer()?.value?.getMainWeaponInGame()?.origin =
+                        if (isChecked) OriginEquipmentEnum.PURCHASED
+                        else OriginEquipmentEnum.NO_PURCHASED
             }
             isEnabled = playerViewModel.getPlayer()?.value?.getMainWeaponInGame() != null
         }
@@ -116,10 +125,11 @@ class DetailPlayerFragment : Fragment(){
         with(toggleButton_secondary_origin) {
             setOnCheckedChangeListener { _, isChecked ->
                 if (playerViewModel.getPlayer()?.value != null &&
-                    playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame() != null)
-                playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()?.origin =
-                    if (isChecked) OriginEquipmentEnum.PURCHASED
-                    else OriginEquipmentEnum.NO_PURCHASED
+                    playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame() != null
+                )
+                    playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()?.origin =
+                        if (isChecked) OriginEquipmentEnum.PURCHASED
+                        else OriginEquipmentEnum.NO_PURCHASED
             }
             isEnabled = playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame() != null
         }
@@ -136,7 +146,7 @@ class DetailPlayerFragment : Fragment(){
         super.onDetach()
     }
 
-    fun updatePlayerView(player: Player){
+    fun updatePlayerView(player: Player) {
         val mainAdapter = activity?.let {
             ArrayAdapter(it, android.R.layout.simple_spinner_item, player.mainWeapons!!)
         }
@@ -157,15 +167,15 @@ class DetailPlayerFragment : Fragment(){
         switch_defuse_kit.isChecked = player.defuseKit != null
     }
 
-    fun addMainWeapon(weapon: MainWeapon){
+    fun addMainWeapon(weapon: MainWeapon) {
         playerViewModel.getPlayer()!!.value?.registerMainWeapon(weapon)
     }
 
-    fun addSecondaryWeapon(weapon: SecondaryWeapon){
+    fun addSecondaryWeapon(weapon: SecondaryWeapon) {
         playerViewModel.getPlayer()!!.value?.registerSecondaryWeapon(weapon)
     }
 
-    fun retrieveMainWeapons() : EnumMap<EquipmentCategoryEnum, List<MainWeapon>> {
+    fun retrieveMainWeapons(): EnumMap<EquipmentCategoryEnum, List<MainWeapon>> {
         val appDatabase = AppDatabase(activity)
         val appHelperDB = AppHelperDB(appDatabase)
 
@@ -177,7 +187,7 @@ class DetailPlayerFragment : Fragment(){
         return mainWeapons
     }
 
-    fun retrieveSecondaryWeapons() : EnumMap<EquipmentCategoryEnum, List<SecondaryWeapon>> {
+    fun retrieveSecondaryWeapons(): EnumMap<EquipmentCategoryEnum, List<SecondaryWeapon>> {
         val appDatabase = AppDatabase(activity)
         val appHelperDB = AppHelperDB(appDatabase)
 
@@ -189,9 +199,9 @@ class DetailPlayerFragment : Fragment(){
         return secondaryWeapons
     }
 
-    fun deleteWeapon(weaponInGame: Weapon){
+    fun deleteWeapon(weaponInGame: Weapon) {
         val adapter: SpinnerAdapter? =
-            if (weaponInGame.numeration.category == EquipmentCategoryEnum.PISTOL){
+            if (weaponInGame.numeration.category == EquipmentCategoryEnum.PISTOL) {
                 playerViewModel.getPlayer()?.value?.removeSecondaryWeapon(weaponInGame)
                 spinner_secondary_weapons!!.adapter
             } else {
@@ -205,8 +215,8 @@ class DetailPlayerFragment : Fragment(){
         updateWeaponsView(playerViewModel.getPlayer()?.value!!)
     }
 
-    fun addCasualty(weapon: Weapon){
-        if(weapon.casualty < 5){
+    fun addCasualty(weapon: Weapon) {
+        if (weapon.casualty < 5) {
             weapon.casualty = weapon.casualty.inc()
 
             if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
@@ -216,8 +226,8 @@ class DetailPlayerFragment : Fragment(){
         }
     }
 
-    fun removeCasualty(weapon: Weapon){
-        if(weapon.casualty > 0){
+    fun removeCasualty(weapon: Weapon) {
+        if (weapon.casualty > 0) {
             weapon.casualty = weapon.casualty.dec()
 
             if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
@@ -227,12 +237,11 @@ class DetailPlayerFragment : Fragment(){
         }
     }
 
-    fun selectWeaponInGame(weapon: Weapon){
+    fun selectWeaponInGame(weapon: Weapon) {
         if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL) {
             playerViewModel.getPlayer()?.value?.updateSelectedWeapon(weapon)
             editText_value.setText(
-                playerViewModel.getPlayer()?.value?.
-                getSecondaryWeaponInGame()?.casualty.toString()
+                playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()?.casualty.toString()
             )
         } else {
             playerViewModel.getPlayer()?.value?.updateSelectedWeapon(weapon)
@@ -255,7 +264,8 @@ class DetailPlayerFragment : Fragment(){
                 toggleButton_main_origin.isChecked =
                     player.getMainWeaponInGame()?.origin == OriginEquipmentEnum.PURCHASED
                 editText_main_casualties!!.setText(
-                    player.getMainWeaponInGame()?.casualty.toString())
+                    player.getMainWeaponInGame()?.casualty.toString()
+                )
                 break
             }
         }
@@ -272,13 +282,14 @@ class DetailPlayerFragment : Fragment(){
                 toggleButton_secondary_origin.isChecked =
                     player.getSecondaryWeaponInGame()?.origin == OriginEquipmentEnum.PURCHASED
                 editText_value!!.setText(
-                    player.getSecondaryWeaponInGame()?.casualty.toString())
+                    player.getSecondaryWeaponInGame()?.casualty.toString()
+                )
                 break
             }
         }
     }
 
-    private fun initUtilityView(){
+    private fun initUtilityView() {
         val appDatabase = AppDatabase(context)
         val appHelperDB = AppHelperDB(appDatabase)
 
@@ -287,8 +298,8 @@ class DetailPlayerFragment : Fragment(){
         appHelperDB.open()
         utilities = appHelperDB.fetchUtilityEquipment()
 
-        for (utility in utilities){
-            when(utility.numeration.item){
+        for (utility in utilities) {
+            when (utility.numeration.item) {
                 1 -> vest = utility as Vest
                 2 -> helmet = utility as Helmet
                 4 -> defuseKit = utility as DefuseKit

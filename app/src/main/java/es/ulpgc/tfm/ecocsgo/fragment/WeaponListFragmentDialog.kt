@@ -21,9 +21,9 @@ class WeaponListFragmentDialog(
     private var interaction: OnWeaponListFragmentInteraction?
 ) : DialogFragment() {
 
-    private var weapons : Map<EquipmentCategoryEnum, List<Equipment>> =
+    private var weapons: Map<EquipmentCategoryEnum, List<Equipment>> =
         EnumMap(EquipmentCategoryEnum::class.java)
-    private var weaponInGame : String? = null
+    private var weaponInGame: String? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -64,15 +64,15 @@ class WeaponListFragmentDialog(
         if (dialog != null) {
 
             var twoPane = false
-            if(activity is GameActivity){
+            if (activity is GameActivity) {
                 val gameActivity = activity as GameActivity
                 twoPane = gameActivity.twoPane
             }
 
-            val width : Int =
+            val width: Int =
                 if (twoPane) resources.getDimension(R.dimen.width_weapon_dialog).toInt()
                 else ViewGroup.LayoutParams.MATCH_PARENT
-            val height : Int =
+            val height: Int =
                 if (twoPane) resources.getDimension(R.dimen.width_weapon_dialog).toInt()
                 else ViewGroup.LayoutParams.MATCH_PARENT
 
@@ -93,7 +93,7 @@ class WeaponListFragmentDialog(
         super.onDetach()
     }
 
-    interface OnWeaponListFragmentInteraction{
+    interface OnWeaponListFragmentInteraction {
         fun selectWeapon(weapon: Weapon)
     }
 

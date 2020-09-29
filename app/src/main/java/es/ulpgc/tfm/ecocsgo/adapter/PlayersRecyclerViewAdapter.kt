@@ -7,14 +7,14 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import es.ulpgc.tfm.ecocsgo.*
+import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.model.Player
 import kotlinx.android.synthetic.main.item_player.view.*
 import java.util.*
 
 class PlayersRecyclerViewAdapter(
-    private var players: ArrayList<Player>, private val listener : View.OnClickListener
-) : RecyclerView.Adapter<PlayersRecyclerViewAdapter.ViewHolder>(){
+    private var players: ArrayList<Player>, private val listener: View.OnClickListener
+) : RecyclerView.Adapter<PlayersRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -41,7 +41,7 @@ class PlayersRecyclerViewAdapter(
 
     override fun getItemCount() = players.size
 
-    private fun updateView(holder: ViewHolder, player: Player){
+    private fun updateView(holder: ViewHolder, player: Player) {
         holder.mainWeapon.text = if (player.getMainWeaponInGame() != null)
             player.getMainWeaponInGame()!!.name else "-"
         holder.mainDeaths.text = if (player.getMainWeaponInGame() != null)
@@ -52,16 +52,17 @@ class PlayersRecyclerViewAdapter(
             "x" + player.getSecondaryWeaponInGame()!!.casualty else "x0"
 
         var color = android.R.color.white
-        if (player.getMainWeaponInGame() != null){
+        if (player.getMainWeaponInGame() != null) {
             color = player.getMainWeaponInGame()?.origin?.colorResource!!
         }
         holder.mainWeapon.background = ContextCompat.getDrawable(holder.itemView.context, color)
 
         color = android.R.color.white
-        if (player.getSecondaryWeaponInGame() != null){
+        if (player.getSecondaryWeaponInGame() != null) {
             color = player.getSecondaryWeaponInGame()?.origin?.colorResource!!
         }
-        holder.secondaryWeapon.background = ContextCompat.getDrawable(holder.itemView.context, color)
+        holder.secondaryWeapon.background =
+            ContextCompat.getDrawable(holder.itemView.context, color)
 
         holder.togglePlayerAlive.isChecked = player.alive
     }

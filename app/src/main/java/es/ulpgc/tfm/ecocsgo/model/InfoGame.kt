@@ -11,7 +11,7 @@ class InfoGame {
     var molotov: Int = 0
     var decoy: Int = 0
 
-    fun reset(){
+    fun reset() {
         grenadeDeaths = 0
         knifeDeaths = 0
         partnerDeaths = 0

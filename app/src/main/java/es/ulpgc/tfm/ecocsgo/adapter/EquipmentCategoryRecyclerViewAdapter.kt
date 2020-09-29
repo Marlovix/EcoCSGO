@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.R
+import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
 import es.ulpgc.tfm.ecocsgo.model.Equipment
 import es.ulpgc.tfm.ecocsgo.model.EquipmentCategoryEnum
 import kotlinx.android.synthetic.main.item_category_weapon.view.*
@@ -18,7 +18,7 @@ class EquipmentCategoryRecyclerViewAdapter(
     private val weaponInGame: String,
     private val interaction: WeaponListFragmentDialog.OnWeaponListFragmentInteraction?
 ) :
-    RecyclerView.Adapter<EquipmentCategoryRecyclerViewAdapter.ViewHolder>(){
+    RecyclerView.Adapter<EquipmentCategoryRecyclerViewAdapter.ViewHolder>() {
 
     private var context: Context? = null
 
@@ -31,18 +31,18 @@ class EquipmentCategoryRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        if(values.size == 1){
+        if (values.size == 1) {
             val titles = context!!.resources.getStringArray(R.array.secondary_weapon_titles)
             holder.nameWeaponTextView.text = titles[position]
             holder.nameWeaponTextView.setTypeface(null, Typeface.BOLD)
             holder.weaponsRecyclerView.adapter = values[EquipmentCategoryEnum.PISTOL]?.let {
                 WeaponRecyclerViewAdapter(it, weaponInGame, interaction)
             }
-        }else if(values.size == 3){
+        } else if (values.size == 3) {
             val titles = context!!.resources.getStringArray(R.array.main_weapon_titles)
             holder.nameWeaponTextView.text = titles[position]
             holder.nameWeaponTextView.setTypeface(null, Typeface.BOLD)
-            var adapter : WeaponRecyclerViewAdapter? = null
+            var adapter: WeaponRecyclerViewAdapter? = null
             when (position) {
                 0 -> adapter = values[EquipmentCategoryEnum.HEAVY]?.let {
                     WeaponRecyclerViewAdapter(it, weaponInGame, interaction)
@@ -61,7 +61,7 @@ class EquipmentCategoryRecyclerViewAdapter(
     override fun getItemCount() = values.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nameWeaponTextView : TextView = view.textView_category
-        val weaponsRecyclerView : RecyclerView = view.weapon_list
+        val nameWeaponTextView: TextView = view.textView_category
+        val weaponsRecyclerView: RecyclerView = view.weapon_list
     }
 }
