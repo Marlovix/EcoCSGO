@@ -14,10 +14,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import es.ulpgc.tfm.ecocsgo.MainActivity.Companion.ARG_TEAM
-import es.ulpgc.tfm.ecocsgo.fragment.DetailPlayerFragment
-import es.ulpgc.tfm.ecocsgo.fragment.GameListPlayersFragment
-import es.ulpgc.tfm.ecocsgo.fragment.InfoGameFragmentDialog
-import es.ulpgc.tfm.ecocsgo.fragment.WeaponListFragmentDialog
+import es.ulpgc.tfm.ecocsgo.fragment.*
 import es.ulpgc.tfm.ecocsgo.model.*
 import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
 import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
@@ -27,13 +24,16 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     GameListPlayersFragment.OnListPlayersFragmentInteraction, DialogInterface.OnDismissListener,
     DetailPlayerFragment.OnDetailPlayerFragmentInteraction,
     WeaponListFragmentDialog.OnWeaponListFragmentInteraction,
-    InfoGameFragmentDialog.OnFormInfoGameFragmentInteraction {
+    InfoGameFragmentDialog.OnFormInfoGameFragmentInteraction,
+    FinishRoundFragmentDialog.OnFinishRoundFragmentInteraction{
 
     private var dialogWeapons: WeaponListFragmentDialog? = null
     private var dialogInfoGame: InfoGameFragmentDialog? = null
+    private var dialogFinishRound: FinishRoundFragmentDialog? = null
     private var mainDialog = false
     private var secondaryDialog = false
     private var infoGameDialog = false
+    private var finishRoundDialog = false
 
     var twoPane: Boolean = false
 
@@ -87,6 +87,12 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
+
+        if(mainDialog){
+            openMainWeaponsDialog()
+        }else if(secondaryDialog){
+            openSecondaryWeaponsDialog()
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface?) {
@@ -299,6 +305,29 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         infoGame?.let { gameViewModel.setInfoGameLiveData(it) }
     }
 
+    override fun openFinishRoundDialog(team: EquipmentTeamEnum) {
+        finishRoundDialog = true
+
+        val bundle = Bundle()
+        bundle.putParcelable(ARG_TEAM_FINISH_ROUND, team)
+
+        dialogFinishRound = FinishRoundFragmentDialog(this)
+        dialogFinishRound?.arguments = bundle
+        dialogFinishRound?.show(supportFragmentManager, null)
+    }
+
+    override fun win(team: EquipmentTeamEnum) {
+        gameViewModel.getGame().value?.economy?.victory?.let {
+            dialogFinishRound?.setVictoryOptions(team, it)
+        }
+    }
+
+    override fun lose(team: EquipmentTeamEnum) {
+        gameViewModel.getGame().value?.economy?.defeatBonus?.let {
+            dialogFinishRound?.setDefeatOptions(team, it)
+        }
+    }
+
     private fun updateToolBar() {
         supportActionBar?.title = resources.getString(R.string.label_round) + " " +
                 gameViewModel.getGame().value?.roundInGame
@@ -338,6 +367,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         const val ARG_RESPONSE_PLAYER = 1
         const val ARG_TITLE_INFO_GAME_DIALOG = "TITLE"
         const val ARG_VALUE_INFO_GAME_DIALOG = "VALUE"
+        const val ARG_TEAM_FINISH_ROUND = "TEAM"
     }
 
 }

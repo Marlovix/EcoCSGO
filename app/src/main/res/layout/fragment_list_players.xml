@@ -23,9 +23,9 @@
 			android:layout_height="wrap_content"
 			android:layout_gravity="bottom|end"
 			android:layout_marginEnd="@dimen/fab_margin"
-			android:layout_marginRight="@dimen/fab_margin"
 			android:layout_marginBottom="@dimen/fab_margin_vertical"
-			app:srcCompat="@android:drawable/ic_menu_send" />
+			app:srcCompat="@android:drawable/ic_menu_send"
+			android:contentDescription="TODO" />
 
 	<com.google.android.material.bottomappbar.BottomAppBar
 			android:id="@+id/bottomAppBar"

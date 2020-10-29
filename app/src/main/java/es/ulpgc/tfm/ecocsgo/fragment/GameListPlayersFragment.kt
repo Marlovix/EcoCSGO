@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.observe
 import com.google.android.material.snackbar.Snackbar
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.adapter.PlayersRecyclerViewAdapter
@@ -57,8 +56,9 @@ class GameListPlayersFragment : Fragment() {
         list_players.adapter = playersAdapter
 
         fab_finish_round.setOnClickListener { v ->
-            Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            //Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
+            //  .setAction("Action", null).show()
+            gameViewModel.getGame().value?.enemyTeam?.let { interaction?.openFinishRoundDialog(it) }
         }
 
         gameViewModel.getPlayers().observe(viewLifecycleOwner) {
@@ -80,6 +80,7 @@ class GameListPlayersFragment : Fragment() {
 
     interface OnListPlayersFragmentInteraction {
         fun selectPlayer(selectedPlayerIndex: Int)
+        fun openFinishRoundDialog(team: EquipmentTeamEnum)
     }
 
 }

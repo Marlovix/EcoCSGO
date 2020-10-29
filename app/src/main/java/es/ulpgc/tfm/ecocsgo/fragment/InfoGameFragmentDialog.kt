@@ -38,6 +38,8 @@ class InfoGameFragmentDialog(
         val rootView =
             inflater.inflate(R.layout.form_info_game, container, false)
 
+        retainInstance = true
+
         val bundle = arguments
         val title = bundle?.getString(GameActivity.ARG_TITLE_INFO_GAME_DIALOG)
         var value = bundle?.getInt(GameActivity.ARG_VALUE_INFO_GAME_DIALOG)
@@ -95,6 +97,13 @@ class InfoGameFragmentDialog(
         if (activity is DialogInterface.OnDismissListener) {
             (activity as DialogInterface.OnDismissListener).onDismiss(dialog)
         }
+    }
+
+    override fun onDestroyView() {
+        if (dialog != null && retainInstance) {
+            dialog!!.setDismissMessage(null)
+        }
+        super.onDestroyView()
     }
 
     override fun onDetach() {

@@ -442,7 +442,7 @@ class AppHelperDB(private val helper: AppDatabase?) {
         return victoryTypes
     }
 
-    private fun fetchDefeatBonus(): ArrayList<Int> {
+    fun fetchDefeatBonus(): ArrayList<Int> {
         val cursor = database!!.query(
             AppDatabase.KEY_DEFEAT_TABLE,
             columnsDefeat, null, null,

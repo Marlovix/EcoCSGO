@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter
 import android.widget.SpinnerAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.observe
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.db.AppDatabase
 import es.ulpgc.tfm.ecocsgo.db.AppHelperDB

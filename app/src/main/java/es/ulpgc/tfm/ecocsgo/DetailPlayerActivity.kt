@@ -38,6 +38,12 @@ class DetailPlayerActivity : AppCompatActivity(),
         detailPlayerFragment = DetailPlayerFragment()
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_detail_player, detailPlayerFragment!!).commit()
+
+        if(mainDialog){
+            openMainWeaponsDialog()
+        }else if(secondaryDialog){
+            openSecondaryWeaponsDialog()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

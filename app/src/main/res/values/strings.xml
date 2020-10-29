@@ -6,6 +6,7 @@
 	<string name="navigation_drawer_close">Close navigation drawer</string>
 
 	<!-- Labels -->
+	<string name="select_enemy_team">Selecciona el bando del equipo enemigo</string>
 	<string name="label_casualties">Bajas</string>
 	<string name="label_origin">Origen</string>
 	<string name="label_round">Ronda</string>
@@ -18,6 +19,13 @@
 	<string name="label_in_game">En juego</string>
 	<string name="label_purchased">Comprada</string>
 	<string name="label_no_purchased">No comprada</string>
+	<string name="label_no_connection">No hay conexión</string>
+	<string name="label_no_data">No existen datos</string>
+	<string name="label_how_round_finish">¿Cómo ha terminado la ronda?</string>
+	<string name="label_they_have_won">Han ganado</string>
+	<string name="label_they_have_lost">Han perdido</string>
+	<string name="label_terrorist_have">Los terroristas han</string>
+	<string name="label_counter_terrorist_have">Los antiterroristas han</string>
 
 	<!-- Actions -->
 	<string name="content_description_add">Añadir</string>

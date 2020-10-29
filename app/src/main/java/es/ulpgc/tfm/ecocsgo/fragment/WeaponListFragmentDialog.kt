@@ -42,6 +42,8 @@ class WeaponListFragmentDialog(
         val rootView =
             inflater.inflate(R.layout.list_category_weapon, container, false)
 
+        retainInstance = true
+
         val recyclerView = rootView.findViewById(R.id.list_category_weapon) as RecyclerView
 
         val bundle = arguments
@@ -86,6 +88,13 @@ class WeaponListFragmentDialog(
         if (activity is DialogInterface.OnDismissListener) {
             (activity as DialogInterface.OnDismissListener).onDismiss(dialog)
         }
+    }
+
+    override fun onDestroyView() {
+        if (dialog != null && retainInstance) {
+            dialog!!.setDismissMessage(null)
+        }
+        super.onDestroyView()
     }
 
     override fun onDetach() {
