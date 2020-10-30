@@ -10,10 +10,8 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.RecyclerView
 import es.ulpgc.tfm.ecocsgo.GameActivity
 import es.ulpgc.tfm.ecocsgo.R
-import es.ulpgc.tfm.ecocsgo.adapter.EquipmentCategoryRecyclerViewAdapter
 import es.ulpgc.tfm.ecocsgo.adapter.FinishRoundRecyclerViewAdapter
 import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
 import es.ulpgc.tfm.ecocsgo.model.TypeVictoryGameEnum
@@ -44,8 +42,6 @@ class FinishRoundFragmentDialog(
             inflater.inflate(R.layout.finish_round, container, false)
 
         retainInstance = true
-
-        val recyclerView = rootView.findViewById(R.id.options_finish_round) as RecyclerView
 
         val title = context?.resources?.getString(R.string.label_how_round_finish)
 
@@ -88,7 +84,7 @@ class FinishRoundFragmentDialog(
         val dialog = dialog
         if (dialog != null) {
             val width: Int = ViewGroup.LayoutParams.MATCH_PARENT
-            val height: Int = resources.getDimension(R.dimen.height_option_dialog).toInt()
+            val height: Int = resources.getDimension(R.dimen.height_without_option_dialog).toInt()
             dialog.window?.setLayout(width, height)
         }
     }
@@ -113,19 +109,32 @@ class FinishRoundFragmentDialog(
         super.onDetach()
     }
 
-    fun setDefeatOptions(team: EquipmentTeamEnum, options: ArrayList<Int>){
+    fun setDefeatOptions(options: Map<TypeVictoryGameEnum, String>){
+        val width: Int = ViewGroup.LayoutParams.MATCH_PARENT
+        val height: Int = resources.getDimension(R.dimen.height_option_defeat_dialog).toInt()
+        dialog?.window?.setLayout(width, height)
 
+        options_finish_round.adapter = interaction?.let {
+            FinishRoundRecyclerViewAdapter(options, it)
+        }
+        adapter?.notifyDataSetChanged()
     }
 
-    fun setVictoryOptions(team: EquipmentTeamEnum, options: Map<TypeVictoryGameEnum, Int>){
-        options_finish_round.adapter = FinishRoundRecyclerViewAdapter(options, interaction)
+    fun setVictoryOptions(options: Map<TypeVictoryGameEnum, String>){
+        val width: Int = ViewGroup.LayoutParams.MATCH_PARENT
+        val height: Int = resources.getDimension(R.dimen.height_option_victory_dialog).toInt()
+        dialog?.window?.setLayout(width, height)
+
+        options_finish_round.adapter = interaction?.let {
+            FinishRoundRecyclerViewAdapter(options, it)
+        }
         adapter?.notifyDataSetChanged()
     }
 
     private fun getTitle(team: EquipmentTeamEnum): String? {
-        if (team == EquipmentTeamEnum.CT) {
+        if (team == EquipmentTeamEnum.T) {
             return context?.resources?.getString(R.string.label_terrorist_have) + ":"
-        } else if (team == EquipmentTeamEnum.T) {
+        } else if (team == EquipmentTeamEnum.CT) {
             return context?.resources?.getString(R.string.label_counter_terrorist_have) + ":"
         }
         return ""
@@ -134,6 +143,7 @@ class FinishRoundFragmentDialog(
     interface OnFinishRoundFragmentInteraction {
         fun win(team: EquipmentTeamEnum)
         fun lose(team: EquipmentTeamEnum)
+        fun selectOption(option: TypeVictoryGameEnum?)
     }
 
 }

@@ -24,8 +24,8 @@
 	<string name="label_how_round_finish">¿Cómo ha terminado la ronda?</string>
 	<string name="label_they_have_won">Han ganado</string>
 	<string name="label_they_have_lost">Han perdido</string>
-	<string name="label_terrorist_have">Los terroristas han</string>
-	<string name="label_counter_terrorist_have">Los antiterroristas han</string>
+	<string name="label_terrorist_have">Los terroristas</string>
+	<string name="label_counter_terrorist_have">Los antiterroristas</string>
 
 	<!-- Actions -->
 	<string name="content_description_add">Añadir</string>
@@ -42,9 +42,14 @@
 	<string name="menu_knife_death">Bajas por cuchillo</string>
 	<string name="menu_partner_death">Bajas por compañero</string>
 	<string name="menu_zeus">Zeus</string>
-	<!--<string name="menu_zeus">Zeus</string>
-	<string name="menu_zeus">Zeus</string>
-	<string name="menu_zeus">Zeus</string>-->
+	<string name="menu_detonated_bomb">Bomba detonada</string>
+	<string name="menu_defused_bomb">Bomba desactivada</string>
+	<string name="menu_expired_time">Tiempo expirado</string>
+	<string name="menu_deleted_enemies">Enemigos eliminados</string>
+	<string name="menu_deleted_enemies_bomb">Enemigos eliminados colocando bomba</string>
+	<string name="menu_deleted_enemies_no_bomb">Enemigos eliminados sin colocar bomba</string>
+	<string name="menu_defeat_with_bomb">La bomba se ha colocado</string>
+	<string name="menu_defeat_without_bomb">La bomba no se ha colocado</string>
 
 	<!-- Data Codes -->
 	<string name="defuse_kit_data">-LehmCiShwGhhq7OmbZJ</string>

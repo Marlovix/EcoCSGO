@@ -19,7 +19,8 @@ class WeaponRecyclerViewAdapter(
 ) : RecyclerView.Adapter<WeaponRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_weapon, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(
+            R.layout.item_weapon, parent, false)
         val viewHolder = ViewHolder(view)
         view.setOnClickListener(viewHolder)
         return viewHolder

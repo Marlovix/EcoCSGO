@@ -187,21 +187,42 @@ class RepoEquipment(val context: Context) {
                         )!!
                     )
 
-                    val defuseBonus = snapshot.child("defuse_bonus").getValue(Int::class.java)!!
+                    val defuseBonus =
+                        snapshot.child("defuse_bonus").getValue(Int::class.java)!!
                     val explosionBonus =
                         snapshot.child("explosion_bonus").getValue(Int::class.java)!!
-                    val grenadeKill = snapshot.child("grenade_kill").getValue(Int::class.java)!!
+                    val grenadeKill =
+                        snapshot.child("grenade_kill").getValue(Int::class.java)!!
                     val killPartnerPenalty =
                         snapshot.child("kill_partner_penalty").getValue(Int::class.java)!!
-                    val knifeKill = snapshot.child("knife_kill").getValue(Int::class.java)!!
-                    val leavingGame = snapshot.child("leaving_game").getValue(Int::class.java)!!
+                    val knifeKill =
+                        snapshot.child("knife_kill").getValue(Int::class.java)!!
+                    val leavingGame =
+                        snapshot.child("leaving_game").getValue(Int::class.java)!!
+                    val plantBonus =
+                        snapshot.child("plant_bonus").getValue(Int::class.java)!!
                     val max = snapshot.child("max").getValue(Int::class.java)!!
-                    val plantBonus = snapshot.child("plant_bonus").getValue(Int::class.java)!!
 
                     val victory = HashMap<TypeVictoryGameEnum, Int>()
-                    for (quantity in snapshot.child("victory").children)
-                        victory[TypeVictoryGameEnum.valueOf(quantity.key!!)] =
-                            quantity.getValue(Int::class.java)!!
+                    for (quantity in snapshot.child("victory").children) {
+                        val typeVictory =
+                            TypeVictoryGameEnum.valueOf(quantity.key!!)
+
+                        when(typeVictory){
+                            TypeVictoryGameEnum.TEAM -> {
+                                val completeQuantity =
+                                    quantity.getValue(Int::class.java)!! + explosionBonus
+                                victory[typeVictory] = quantity.getValue(Int::class.java)!!
+                                victory[TypeVictoryGameEnum.TEAM_BOMB] = completeQuantity
+                            }
+                            TypeVictoryGameEnum.EXPLOSION -> {
+                                val completeQuantity =
+                                    quantity.getValue(Int::class.java)!! + explosionBonus
+                                victory[typeVictory] = completeQuantity
+                            }
+                            else -> victory[typeVictory] = quantity.getValue(Int::class.java)!!
+                        }
+                    }
 
                     customerHelper!!.createEconomy(
                         EconomyGame(

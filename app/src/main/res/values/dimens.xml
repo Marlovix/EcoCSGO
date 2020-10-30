@@ -4,6 +4,8 @@
 	<dimen name="item_width">512dp</dimen>
 	<dimen name="text_margin">16dp</dimen>
 	<dimen name="width_weapon_dialog">400dp</dimen>
-	<dimen name="height_option_dialog">400dp</dimen>
+	<dimen name="height_without_option_dialog">200dp</dimen>
+	<dimen name="height_option_defeat_dialog">300dp</dimen>
+	<dimen name="height_option_victory_dialog">350dp</dimen>
 	<dimen name="width_info_game_dialog">170dp</dimen>
 </resources>

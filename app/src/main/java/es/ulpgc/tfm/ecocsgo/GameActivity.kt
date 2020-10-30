@@ -19,6 +19,7 @@ import es.ulpgc.tfm.ecocsgo.model.*
 import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
 import es.ulpgc.tfm.ecocsgo.viewmodel.PlayerViewModel
 import kotlinx.android.synthetic.main.list_players.*
+import java.util.*
 
 class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     GameListPlayersFragment.OnListPlayersFragmentInteraction, DialogInterface.OnDismissListener,
@@ -317,14 +318,44 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun win(team: EquipmentTeamEnum) {
-        gameViewModel.getGame().value?.economy?.victory?.let {
-            dialogFinishRound?.setVictoryOptions(team, it)
+        val options : MutableMap<TypeVictoryGameEnum, String> =
+            EnumMap(TypeVictoryGameEnum::class.java)
+
+        if(team == EquipmentTeamEnum.CT){
+            options[TypeVictoryGameEnum.TEAM] = getString(R.string.menu_deleted_enemies)
+            options[TypeVictoryGameEnum.DEFUSE] = getString(R.string.menu_defused_bomb)
+            options[TypeVictoryGameEnum.TIME] = getString(R.string.menu_expired_time)
+        } else if(team == EquipmentTeamEnum.T){
+            options[TypeVictoryGameEnum.TEAM] = getString(R.string.menu_deleted_enemies_no_bomb)
+            options[TypeVictoryGameEnum.TEAM_BOMB] = getString(R.string.menu_deleted_enemies_bomb)
+            options[TypeVictoryGameEnum.EXPLOSION] = getString(R.string.menu_detonated_bomb)
         }
+
+        dialogFinishRound?.setVictoryOptions(options)
     }
 
     override fun lose(team: EquipmentTeamEnum) {
-        gameViewModel.getGame().value?.economy?.defeatBonus?.let {
-            dialogFinishRound?.setDefeatOptions(team, it)
+        val options : MutableMap<TypeVictoryGameEnum, String> =
+            EnumMap(TypeVictoryGameEnum::class.java)
+
+        if(team == EquipmentTeamEnum.T){
+            options[TypeVictoryGameEnum.TEAM_BOMB] = getString(R.string.menu_defeat_with_bomb)
+            options[TypeVictoryGameEnum.TEAM] = getString(R.string.menu_defeat_without_bomb)
+        }
+
+        if(options.isNotEmpty()){
+            dialogFinishRound?.setDefeatOptions(options)
+        } else {
+            selectOption(null)
+        }
+    }
+
+    override fun selectOption(option: TypeVictoryGameEnum?) {
+        // Losing as CT need not options //
+        if (option == null){
+            Toast.makeText(this, "Perdieron los chichones", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, option.name, Toast.LENGTH_SHORT).show()
         }
     }
 
