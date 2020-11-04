@@ -10,6 +10,7 @@ class Game(context: Context) {
     companion object {
         const val ROUNDS = 30
         const val ENEMIES = 5
+        const val MAX_CONSECUTIVE_LOST = 4
     }
 
     var roundInGame: Int = 1
@@ -18,6 +19,7 @@ class Game(context: Context) {
     var enemyTeam: EquipmentTeamEnum? = null
     var economy: EconomyGame? = null
     var infoGame: InfoGame? = null
+    var consecutiveLostRounds : Int = 0
 
     private var appDatabase: AppDatabase? = null
     private var appHelperDB: AppHelperDB? = null
@@ -54,6 +56,41 @@ class Game(context: Context) {
     ): Weapon? {
         appHelperDB!!.open()
         return appHelperDB!!.fetchWeaponByNumeration(numeration, team)
+    }
+
+    fun addVictoryToEnemyEconomy(type: TypeFinalRoundEnum){
+        val reward : Int = economy?.type!![type] ?: error("")
+        val teamReward : Int =  reward * ENEMIES
+
+        enemyEconomy += teamReward
+
+        if(consecutiveLostRounds > 0){
+            consecutiveLostRounds--
+        }
+    }
+
+    fun addDefeatToEnemyEconomy(type: TypeFinalRoundEnum){
+        val defeatBonus = economy?.defeatBonus?.get(consecutiveLostRounds)
+        var teamReward : Int =  defeatBonus!! * ENEMIES
+
+        // Losing as CT need not options //
+        if (type == TypeFinalRoundEnum.TEAM_BOMB){
+            teamReward += economy?.explosionBonus!! * ENEMIES
+        }
+
+        enemyEconomy += teamReward
+
+        if(consecutiveLostRounds < MAX_CONSECUTIVE_LOST){
+            consecutiveLostRounds++
+        }
+    }
+
+    fun addPlayersInfoToEnemyEconomy(){
+
+    }
+
+    fun addGameInfoToEnemyEconomy(){
+
     }
 
 }

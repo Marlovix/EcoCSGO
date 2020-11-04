@@ -100,6 +100,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mainDialog = false
         secondaryDialog = false
         infoGameDialog = false
+        finishRoundDialog = false
     }
 
     override fun onBackPressed() {
@@ -318,45 +319,52 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun win(team: EquipmentTeamEnum) {
-        val options : MutableMap<TypeVictoryGameEnum, String> =
-            EnumMap(TypeVictoryGameEnum::class.java)
+        val options : MutableMap<TypeFinalRoundEnum, String> =
+            EnumMap(TypeFinalRoundEnum::class.java)
 
         if(team == EquipmentTeamEnum.CT){
-            options[TypeVictoryGameEnum.TEAM] = getString(R.string.menu_deleted_enemies)
-            options[TypeVictoryGameEnum.DEFUSE] = getString(R.string.menu_defused_bomb)
-            options[TypeVictoryGameEnum.TIME] = getString(R.string.menu_expired_time)
+            options[TypeFinalRoundEnum.TEAM] = getString(R.string.menu_deleted_enemies)
+            options[TypeFinalRoundEnum.DEFUSE] = getString(R.string.menu_defused_bomb)
+            options[TypeFinalRoundEnum.TIME] = getString(R.string.menu_expired_time)
         } else if(team == EquipmentTeamEnum.T){
-            options[TypeVictoryGameEnum.TEAM] = getString(R.string.menu_deleted_enemies_no_bomb)
-            options[TypeVictoryGameEnum.TEAM_BOMB] = getString(R.string.menu_deleted_enemies_bomb)
-            options[TypeVictoryGameEnum.EXPLOSION] = getString(R.string.menu_detonated_bomb)
+            options[TypeFinalRoundEnum.TEAM] = getString(R.string.menu_deleted_enemies_no_bomb)
+            options[TypeFinalRoundEnum.TEAM_BOMB] = getString(R.string.menu_deleted_enemies_bomb)
+            options[TypeFinalRoundEnum.EXPLOSION] = getString(R.string.menu_detonated_bomb)
         }
 
         dialogFinishRound?.setVictoryOptions(options)
     }
 
     override fun lose(team: EquipmentTeamEnum) {
-        val options : MutableMap<TypeVictoryGameEnum, String> =
-            EnumMap(TypeVictoryGameEnum::class.java)
+        val options : MutableMap<TypeFinalRoundEnum, String> =
+            EnumMap(TypeFinalRoundEnum::class.java)
 
         if(team == EquipmentTeamEnum.T){
-            options[TypeVictoryGameEnum.TEAM_BOMB] = getString(R.string.menu_defeat_with_bomb)
-            options[TypeVictoryGameEnum.TEAM] = getString(R.string.menu_defeat_without_bomb)
+            options[TypeFinalRoundEnum.TEAM_BOMB] = getString(R.string.menu_defeat_with_bomb)
+            options[TypeFinalRoundEnum.TEAM] = getString(R.string.menu_defeat_without_bomb)
         }
 
         if(options.isNotEmpty()){
             dialogFinishRound?.setDefeatOptions(options)
         } else {
-            selectOption(null)
+            selectOption(null, false)
         }
     }
 
-    override fun selectOption(option: TypeVictoryGameEnum?) {
-        // Losing as CT need not options //
-        if (option == null){
-            Toast.makeText(this, "Perdieron los chichones", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, option.name, Toast.LENGTH_SHORT).show()
+    override fun selectOption(option: TypeFinalRoundEnum?, isVictory: Boolean) {
+        if(isVictory){
+            option.let { gameViewModel.getGame().value?.addVictoryToEnemyEconomy(it!!) }
+        }else{
+            var type: TypeFinalRoundEnum = TypeFinalRoundEnum.TEAM
+            if(option != null){
+                type = option
+            }
+            gameViewModel.getGame().value?.addDefeatToEnemyEconomy(type)
         }
+
+        gameViewModel.getGame().value?.enemyEconomy?.let { gameViewModel.setEnemyEconomy(it) }
+
+        dialogFinishRound?.dismiss()
     }
 
     private fun updateToolBar() {

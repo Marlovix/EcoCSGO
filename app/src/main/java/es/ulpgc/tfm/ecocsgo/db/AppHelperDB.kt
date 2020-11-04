@@ -130,7 +130,7 @@ class AppHelperDB(private val helper: AppDatabase?) {
             order++
         }
 
-        for (victory in economy.victory) {
+        for (victory in economy.type) {
             createVictory(victory.key, victory.value)
         }
 
@@ -146,7 +146,7 @@ class AppHelperDB(private val helper: AppDatabase?) {
         return database!!.insert(AppDatabase.KEY_DEFEAT_TABLE, null, contentDB)
     }
 
-    private fun createVictory(type: TypeVictoryGameEnum, bonus: Int): Long {
+    private fun createVictory(type: TypeFinalRoundEnum, bonus: Int): Long {
         val contentDB = ContentValues()
         contentDB.put(AppDatabase.KEY_TYPE_FIELD, type.name)
         contentDB.put(AppDatabase.KEY_BONUS_FIELD, bonus)
@@ -419,18 +419,18 @@ class AppHelperDB(private val helper: AppDatabase?) {
         )
     }
 
-    private fun fetchVictoryTypes(): HashMap<TypeVictoryGameEnum, Int> {
+    private fun fetchVictoryTypes(): HashMap<TypeFinalRoundEnum, Int> {
         val cursor = database!!.query(
             AppDatabase.KEY_VICTORY_TABLE,
             columnsVictory, null, null,
             null, null, null, null
         )
 
-        val victoryTypes = HashMap<TypeVictoryGameEnum, Int>()
+        val victoryTypes = HashMap<TypeFinalRoundEnum, Int>()
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast) {
                 val type =
-                    TypeVictoryGameEnum.valueOf(cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_TYPE_FIELD)))
+                    TypeFinalRoundEnum.valueOf(cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_TYPE_FIELD)))
                 val bonus = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_BONUS_FIELD))
                 victoryTypes[type] = bonus
                 cursor.moveToNext()

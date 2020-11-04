@@ -70,7 +70,7 @@ class DetailPlayerActivity : AppCompatActivity(),
         val bundle = Bundle()
         bundle.putSerializable(ARG_WEAPONS, mainWeapons)
         bundle.putString(ARG_WEAPON_IN_GAME, mainWeaponInGame?.name)
-        openGunDialog(bundle)
+        openWeaponDialog(bundle)
     }
 
     override fun openSecondaryWeaponsDialog() {
@@ -81,7 +81,7 @@ class DetailPlayerActivity : AppCompatActivity(),
         val bundle = Bundle()
         bundle.putSerializable(ARG_WEAPONS, secondaryWeapons)
         bundle.putString(ARG_WEAPON_IN_GAME, secondaryWeaponInGame?.name)
-        openGunDialog(bundle)
+        openWeaponDialog(bundle)
     }
 
     override fun deleteWeapon(weapon: Weapon) {
@@ -113,7 +113,7 @@ class DetailPlayerActivity : AppCompatActivity(),
         dialog?.dismiss()
     }
 
-    private fun openGunDialog(bundle: Bundle) {
+    private fun openWeaponDialog(bundle: Bundle) {
         dialog = WeaponListFragmentDialog(this)
         dialog!!.arguments = bundle
         dialog!!.show(supportFragmentManager, null)

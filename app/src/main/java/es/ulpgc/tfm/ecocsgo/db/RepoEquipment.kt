@@ -203,24 +203,24 @@ class RepoEquipment(val context: Context) {
                         snapshot.child("plant_bonus").getValue(Int::class.java)!!
                     val max = snapshot.child("max").getValue(Int::class.java)!!
 
-                    val victory = HashMap<TypeVictoryGameEnum, Int>()
+                    val type = HashMap<TypeFinalRoundEnum, Int>()
                     for (quantity in snapshot.child("victory").children) {
                         val typeVictory =
-                            TypeVictoryGameEnum.valueOf(quantity.key!!)
+                            TypeFinalRoundEnum.valueOf(quantity.key!!)
 
                         when(typeVictory){
-                            TypeVictoryGameEnum.TEAM -> {
+                            TypeFinalRoundEnum.TEAM -> {
                                 val completeQuantity =
                                     quantity.getValue(Int::class.java)!! + explosionBonus
-                                victory[typeVictory] = quantity.getValue(Int::class.java)!!
-                                victory[TypeVictoryGameEnum.TEAM_BOMB] = completeQuantity
+                                type[typeVictory] = quantity.getValue(Int::class.java)!!
+                                type[TypeFinalRoundEnum.TEAM_BOMB] = completeQuantity
                             }
-                            TypeVictoryGameEnum.EXPLOSION -> {
+                            TypeFinalRoundEnum.EXPLOSION -> {
                                 val completeQuantity =
                                     quantity.getValue(Int::class.java)!! + explosionBonus
-                                victory[typeVictory] = completeQuantity
+                                type[typeVictory] = completeQuantity
                             }
-                            else -> victory[typeVictory] = quantity.getValue(Int::class.java)!!
+                            else -> type[typeVictory] = quantity.getValue(Int::class.java)!!
                         }
                     }
 
@@ -228,7 +228,7 @@ class RepoEquipment(val context: Context) {
                         EconomyGame(
                             beginning, defeatBonus, defuseBonus,
                             explosionBonus, grenadeKill, killPartnerPenalty, knifeKill, leavingGame,
-                            max, plantBonus, victory
+                            max, plantBonus, type
                         )
                     )
 

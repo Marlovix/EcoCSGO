@@ -4,20 +4,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.fragment.FinishRoundFragmentDialog
-import es.ulpgc.tfm.ecocsgo.model.TypeVictoryGameEnum
+import es.ulpgc.tfm.ecocsgo.model.TypeFinalRoundEnum
 import kotlinx.android.synthetic.main.item_finish_round.view.*
 
 class FinishRoundRecyclerViewAdapter(
-    private val values: Map<TypeVictoryGameEnum, String>,
-    private val interaction: FinishRoundFragmentDialog.OnFinishRoundFragmentInteraction
+    private val values: Map<TypeFinalRoundEnum, String>,
+    private val interaction: FinishRoundFragmentDialog.OnFinishRoundFragmentInteraction,
+    private val isVictory: Boolean
 ) :  RecyclerView.Adapter<FinishRoundRecyclerViewAdapter.ViewHolder>()  {
 
-    val indexValues : ArrayList<TypeVictoryGameEnum> = ArrayList()
+    val indexValues : ArrayList<TypeFinalRoundEnum> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
             FinishRoundRecyclerViewAdapter.ViewHolder {
@@ -49,9 +48,7 @@ class FinishRoundRecyclerViewAdapter(
         val optionTextView: TextView = view.textView_option
 
         override fun onClick(v: View?) {
-            interaction.selectOption(indexValues[adapterPosition])
-            //val weaponSelected = values[adapterPosition] as Weapon
-            //interaction?.win(weaponSelected)
+            interaction.selectOption(indexValues[adapterPosition], isVictory)
         }
     }
 

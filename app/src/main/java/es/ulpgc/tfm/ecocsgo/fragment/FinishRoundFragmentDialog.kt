@@ -9,13 +9,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
 import es.ulpgc.tfm.ecocsgo.GameActivity
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.adapter.FinishRoundRecyclerViewAdapter
 import es.ulpgc.tfm.ecocsgo.model.EquipmentTeamEnum
-import es.ulpgc.tfm.ecocsgo.model.TypeVictoryGameEnum
-import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
+import es.ulpgc.tfm.ecocsgo.model.TypeFinalRoundEnum
 import kotlinx.android.synthetic.main.finish_round.*
 
 class FinishRoundFragmentDialog(
@@ -23,7 +21,6 @@ class FinishRoundFragmentDialog(
 ) : DialogFragment() {
 
     private val adapter: FinishRoundRecyclerViewAdapter? = null
-    private val gameViewModel: GameActivityViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -74,8 +71,6 @@ class FinishRoundFragmentDialog(
             interaction?.lose(team!!)
         }
 
-        val economy = gameViewModel.getGame().value?.economy
-
         return rootView
     }
 
@@ -109,24 +104,24 @@ class FinishRoundFragmentDialog(
         super.onDetach()
     }
 
-    fun setDefeatOptions(options: Map<TypeVictoryGameEnum, String>){
-        val width: Int = ViewGroup.LayoutParams.MATCH_PARENT
-        val height: Int = resources.getDimension(R.dimen.height_option_defeat_dialog).toInt()
-        dialog?.window?.setLayout(width, height)
-
-        options_finish_round.adapter = interaction?.let {
-            FinishRoundRecyclerViewAdapter(options, it)
-        }
-        adapter?.notifyDataSetChanged()
-    }
-
-    fun setVictoryOptions(options: Map<TypeVictoryGameEnum, String>){
+    fun setVictoryOptions(options: Map<TypeFinalRoundEnum, String>){
         val width: Int = ViewGroup.LayoutParams.MATCH_PARENT
         val height: Int = resources.getDimension(R.dimen.height_option_victory_dialog).toInt()
         dialog?.window?.setLayout(width, height)
 
         options_finish_round.adapter = interaction?.let {
-            FinishRoundRecyclerViewAdapter(options, it)
+            FinishRoundRecyclerViewAdapter(options, it, true)
+        }
+        adapter?.notifyDataSetChanged()
+    }
+
+    fun setDefeatOptions(options: Map<TypeFinalRoundEnum, String>){
+        val width: Int = ViewGroup.LayoutParams.MATCH_PARENT
+        val height: Int = resources.getDimension(R.dimen.height_option_defeat_dialog).toInt()
+        dialog?.window?.setLayout(width, height)
+
+        options_finish_round.adapter = interaction?.let {
+            FinishRoundRecyclerViewAdapter(options, it, false)
         }
         adapter?.notifyDataSetChanged()
     }
@@ -143,7 +138,7 @@ class FinishRoundFragmentDialog(
     interface OnFinishRoundFragmentInteraction {
         fun win(team: EquipmentTeamEnum)
         fun lose(team: EquipmentTeamEnum)
-        fun selectOption(option: TypeVictoryGameEnum?)
+        fun selectOption(option: TypeFinalRoundEnum?, isVictory: Boolean)
     }
 
 }
