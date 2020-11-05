@@ -9,7 +9,7 @@ data class SecondaryWeapon(
     override var numeration: EquipmentNumeration,
     override var cost: Int, override var reward: Int,
     override var inGame: Boolean = false, override var casualty: Int = 0,
-    override var origin: OriginEquipmentEnum = OriginEquipmentEnum.NO_PURCHASED
+    override var origin: OriginEquipmentEnum = OriginEquipmentEnum.PURCHASED
 ) :
     Weapon(name, team, numeration, cost, reward, inGame, casualty, origin), Parcelable {
     override fun toString(): String {

@@ -61,4 +61,38 @@ data class Player(
 
         weapon.inGame = true
     }
+
+    fun prepareMainWeapons() {
+        val weaponInGame = getMainWeaponInGame()
+        mainWeapons?.clear()
+        weaponInGame?.casualty = 0
+        weaponInGame?.origin = OriginEquipmentEnum.NO_PURCHASED
+        weaponInGame?.let { registerMainWeapon(it) }
+    }
+
+    fun prepareSecondaryWeapon() {
+        val weaponInGame = getSecondaryWeaponInGame()
+        secondaryWeapons?.clear()
+        weaponInGame?.casualty = 0
+        weaponInGame?.origin = OriginEquipmentEnum.NO_PURCHASED
+        weaponInGame?.let { registerSecondaryWeapon(it) }
+    }
+
+    fun prepareUtility() {
+        if(vest != null){
+            vest!!.origin = OriginEquipmentEnum.NO_PURCHASED
+        }
+        if(helmet != null){
+            helmet!!.origin = OriginEquipmentEnum.NO_PURCHASED
+        }
+        if(defuseKit != null){
+            defuseKit!!.origin = OriginEquipmentEnum.NO_PURCHASED
+        }
+    }
+
+    fun resetUtility() {
+        vest = null
+        helmet = null
+        defuseKit = null
+    }
 }

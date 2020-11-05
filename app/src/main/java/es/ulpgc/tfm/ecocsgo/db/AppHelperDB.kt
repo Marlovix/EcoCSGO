@@ -105,13 +105,14 @@ class AppHelperDB(private val helper: AppDatabase?) {
     fun createGrenade(grenade: Grenade): Long {
         val contentDB = equipmentMapper(grenade)
 
-        if (equipmentAlreadyExists(grenade.numeration)) {
-            val selectionArgs = arrayOf(
-                grenade.numeration.category.id.toString(), grenade.numeration.item.toString()
+        if (equipmentAlreadyExists(grenade.numeration, grenade.name)) {
+            val selectionArgs = arrayOf(grenade.numeration.category.id.toString(),
+                grenade.numeration.item.toString(), grenade.name
             )
             database!!.delete(
                 AppDatabase.KEY_GRENADE_TABLE,
-                AppDatabase.SELECTION_NUMERATION, selectionArgs
+                AppDatabase.SELECTION_NUMERATION + " AND " +
+                        AppDatabase.SELECTION_NAME, selectionArgs
             )
         }
 
@@ -154,7 +155,7 @@ class AppHelperDB(private val helper: AppDatabase?) {
         return database!!.insert(AppDatabase.KEY_VICTORY_TABLE, null, contentDB)
     }
 
-    fun equipmentAlreadyExists(numeration: EquipmentNumeration): Boolean {
+    private fun equipmentAlreadyExists(numeration: EquipmentNumeration): Boolean {
         val table = when (numeration.category) {
             EquipmentCategoryEnum.PISTOL,
             EquipmentCategoryEnum.HEAVY,
@@ -189,7 +190,7 @@ class AppHelperDB(private val helper: AppDatabase?) {
         return equipmentAlreadyExists
     }
 
-    fun equipmentAlreadyExists(numeration: EquipmentNumeration, name: String): Boolean {
+    private fun equipmentAlreadyExists(numeration: EquipmentNumeration, name: String): Boolean {
         val table = when (numeration.category) {
             EquipmentCategoryEnum.PISTOL,
             EquipmentCategoryEnum.HEAVY,
@@ -279,6 +280,38 @@ class AppHelperDB(private val helper: AppDatabase?) {
                     2 -> results.add(Helmet(name, team, numeration, cost))
                     3 -> results.add(Zeus(name, team, numeration, cost))
                     else -> results.add(DefuseKit(name, team, numeration, cost))
+                }
+
+                cursor.moveToNext()
+            }
+        }
+
+        cursor.close()
+
+        return results
+    }
+
+    fun fetchGrenades(enemyTeam: EquipmentTeamEnum): List<Equipment> {
+        val cursor = database!!.query(
+            AppDatabase.KEY_GRENADE_TABLE,
+            columnsGrenade, null, null,
+            null, null,null, null
+        )
+
+        val results = ArrayList<Equipment>()
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast) {
+                val name = cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_NAME_FIELD))
+                val cost = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_COST_FIELD))
+                val item = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_ITEM_FIELD))
+                val numeration = EquipmentNumeration(item, EquipmentCategoryEnum.GRENADE)
+                val team = EquipmentTeamEnum.valueOf(
+                    cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_TEAM_FIELD))
+                )
+
+                // Only one molotov (CT and T types) is fetched
+                if((item == 1 && team == enemyTeam) || item != 1){
+                    results.add(Grenade(name, team, numeration, cost))
                 }
 
                 cursor.moveToNext()

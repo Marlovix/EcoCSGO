@@ -133,6 +133,40 @@ class DetailPlayerFragment : Fragment() {
             isEnabled = playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame() != null
         }
 
+        with(toggleButton_vest_origin) {
+            setOnCheckedChangeListener { _, isChecked ->
+                if (playerViewModel.getPlayer()?.value != null &&
+                    playerViewModel.getPlayer()?.value?.vest != null
+                )
+                    playerViewModel.getPlayer()?.value?.vest?.origin =
+                        if (isChecked) OriginEquipmentEnum.PURCHASED
+                        else OriginEquipmentEnum.NO_PURCHASED
+            }
+            isEnabled = playerViewModel.getPlayer()?.value?.vest != null
+        }
+        with(toggleButton_helmet_origin) {
+            setOnCheckedChangeListener { _, isChecked ->
+                if (playerViewModel.getPlayer()?.value != null &&
+                    playerViewModel.getPlayer()?.value?.helmet != null
+                )
+                    playerViewModel.getPlayer()?.value?.helmet?.origin =
+                        if (isChecked) OriginEquipmentEnum.PURCHASED
+                        else OriginEquipmentEnum.NO_PURCHASED
+            }
+            isEnabled = playerViewModel.getPlayer()?.value?.helmet != null
+        }
+        with(toggleButton_defuse_kit_origin) {
+            setOnCheckedChangeListener { _, isChecked ->
+                if (playerViewModel.getPlayer()?.value != null &&
+                    playerViewModel.getPlayer()?.value?.defuseKit != null
+                )
+                    playerViewModel.getPlayer()?.value?.defuseKit?.origin =
+                        if (isChecked) OriginEquipmentEnum.PURCHASED
+                        else OriginEquipmentEnum.NO_PURCHASED
+            }
+            isEnabled = playerViewModel.getPlayer()?.value?.defuseKit != null
+        }
+
         initUtilityView()
 
         playerViewModel.getPlayer()?.observe(viewLifecycleOwner) { player ->

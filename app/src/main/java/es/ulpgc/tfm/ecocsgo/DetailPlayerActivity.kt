@@ -62,6 +62,10 @@ class DetailPlayerActivity : AppCompatActivity(),
         secondaryDialog = false
     }
 
+    override fun onBackPressed() {
+        onSupportNavigateUp()
+    }
+
     override fun openMainWeaponsDialog() {
         mainDialog = true
         val mainWeapons = detailPlayerFragment!!.retrieveMainWeapons()

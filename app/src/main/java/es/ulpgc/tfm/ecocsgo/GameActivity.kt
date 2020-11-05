@@ -353,14 +353,25 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun selectOption(option: TypeFinalRoundEnum?, isVictory: Boolean) {
         if(isVictory){
-            option.let { gameViewModel.getGame().value?.addVictoryToEnemyEconomy(it!!) }
+            //option.let { gameViewModel.getGame().value?.calculateVictoryToEnemyEconomy(it!!) }
         }else{
             var type: TypeFinalRoundEnum = TypeFinalRoundEnum.TEAM
             if(option != null){
                 type = option
             }
-            gameViewModel.getGame().value?.addDefeatToEnemyEconomy(type)
+            //gameViewModel.getGame().value?.calculateDefeatToEnemyEconomy(type)
         }
+
+        //gameViewModel.getGame().value?.calculateInfoGameToEnemyEconomy()
+
+        gameViewModel.getGame().value?.calculatePlayersDataToEnemyEconomy()
+
+        gameViewModel.getGame().value?.players?.let { gameViewModel.updatePlayers(it) }
+
+        gameViewModel.getGame().value?.roundInGame =
+            gameViewModel.getGame().value?.roundInGame!! + 1
+
+        updateToolBar()
 
         gameViewModel.getGame().value?.enemyEconomy?.let { gameViewModel.setEnemyEconomy(it) }
 
