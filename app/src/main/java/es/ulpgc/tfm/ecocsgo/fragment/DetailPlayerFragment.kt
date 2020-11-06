@@ -57,14 +57,15 @@ class DetailPlayerFragment : Fragment() {
                 interaction?.openSecondaryWeaponsDialog()
         }
         imageButton_delete_main_weapon?.setOnClickListener {
-            if (playerViewModel.getPlayer()?.value != null) interaction?.deleteWeapon(
-                playerViewModel.getPlayer()?.value?.getMainWeaponInGame()!!
-            )
+            val weapon = playerViewModel.getPlayer()?.value?.getMainWeaponInGame()
+            if (weapon != null && playerViewModel.getPlayer()?.value != null)
+                interaction?.deleteWeapon(weapon)
         }
         imageButton_delete_secondary_weapon?.setOnClickListener {
-            if (playerViewModel.getPlayer()?.value != null) interaction?.deleteWeapon(
-                playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()!!
-            )
+            val weapon =
+                playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()
+            if (weapon != null && playerViewModel.getPlayer()?.value != null)
+                interaction?.deleteWeapon(weapon)
         }
         imageButton_add_main_casualty?.setOnClickListener {
             if (playerViewModel.getPlayer()?.value != null) interaction?.addCasualty(
@@ -90,9 +91,11 @@ class DetailPlayerFragment : Fragment() {
             override fun onItemSelected(
                 parentView: AdapterView<*>?, selectedItemView: View, position: Int, id: Long
             ) {
-                if (playerViewModel.getPlayer()?.value != null) interaction?.selectWeaponInGame(
-                    playerViewModel.getPlayer()!!.value?.mainWeapons?.get(position)!!
-                )
+                if (playerViewModel.getPlayer()?.value != null) {
+                    interaction?.selectWeaponInGame(
+                        playerViewModel.getPlayer()!!.value?.mainWeapons?.get(position)!!
+                    )
+                }
             }
 
             override fun onNothingSelected(parentView: AdapterView<*>?) {}
@@ -110,7 +113,7 @@ class DetailPlayerFragment : Fragment() {
         }
 
         with(toggleButton_main_origin) {
-            setOnCheckedChangeListener { _, isChecked ->
+            setOnClickListener {
                 if (playerViewModel.getPlayer()?.value != null &&
                     playerViewModel.getPlayer()?.value?.getMainWeaponInGame() != null
                 )
@@ -122,7 +125,7 @@ class DetailPlayerFragment : Fragment() {
         }
 
         with(toggleButton_secondary_origin) {
-            setOnCheckedChangeListener { _, isChecked ->
+            setOnClickListener {
                 if (playerViewModel.getPlayer()?.value != null &&
                     playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame() != null
                 )
@@ -134,7 +137,7 @@ class DetailPlayerFragment : Fragment() {
         }
 
         with(toggleButton_vest_origin) {
-            setOnCheckedChangeListener { _, isChecked ->
+            setOnClickListener {
                 if (playerViewModel.getPlayer()?.value != null &&
                     playerViewModel.getPlayer()?.value?.vest != null
                 )
@@ -145,7 +148,7 @@ class DetailPlayerFragment : Fragment() {
             isEnabled = playerViewModel.getPlayer()?.value?.vest != null
         }
         with(toggleButton_helmet_origin) {
-            setOnCheckedChangeListener { _, isChecked ->
+            setOnClickListener {
                 if (playerViewModel.getPlayer()?.value != null &&
                     playerViewModel.getPlayer()?.value?.helmet != null
                 )
@@ -156,7 +159,7 @@ class DetailPlayerFragment : Fragment() {
             isEnabled = playerViewModel.getPlayer()?.value?.helmet != null
         }
         with(toggleButton_defuse_kit_origin) {
-            setOnCheckedChangeListener { _, isChecked ->
+            setOnClickListener {
                 if (playerViewModel.getPlayer()?.value != null &&
                     playerViewModel.getPlayer()?.value?.defuseKit != null
                 )
@@ -198,6 +201,21 @@ class DetailPlayerFragment : Fragment() {
         switch_vest.isChecked = player.vest != null
         switch_helmet.isChecked = player.helmet != null
         switch_defuse_kit.isChecked = player.defuseKit != null
+
+        if (player.vest != null) {
+            toggleButton_vest_origin.isChecked =
+                player.vest!!.origin == OriginEquipmentEnum.PURCHASED
+        }
+
+        if (player.helmet != null) {
+            toggleButton_helmet_origin.isChecked =
+                player.helmet!!.origin == OriginEquipmentEnum.PURCHASED
+        }
+
+        if (player.defuseKit != null) {
+            toggleButton_defuse_kit_origin.isChecked =
+                player.defuseKit!!.origin == OriginEquipmentEnum.PURCHASED
+        }
     }
 
     fun addMainWeapon(weapon: MainWeapon) {
@@ -253,7 +271,7 @@ class DetailPlayerFragment : Fragment() {
             weapon.casualty = weapon.casualty.inc()
 
             if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
-                editText_value.setText(weapon.casualty.toString())
+                editText_secondary_casualties.setText(weapon.casualty.toString())
             else
                 editText_main_casualties.setText(weapon.casualty.toString())
         }
@@ -264,7 +282,7 @@ class DetailPlayerFragment : Fragment() {
             weapon.casualty = weapon.casualty.dec()
 
             if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL)
-                editText_value.setText(weapon.casualty.toString())
+                editText_secondary_casualties.setText(weapon.casualty.toString())
             else
                 editText_main_casualties.setText(weapon.casualty.toString())
         }
@@ -273,14 +291,23 @@ class DetailPlayerFragment : Fragment() {
     fun selectWeaponInGame(weapon: Weapon) {
         if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL) {
             playerViewModel.getPlayer()?.value?.updateSelectedWeapon(weapon)
-            editText_value.setText(
+            editText_secondary_casualties.setText(
                 playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()?.casualty.toString()
             )
+            val originState =
+                playerViewModel.getPlayer()?.value?.getSecondaryWeaponInGame()?.origin ==
+                        OriginEquipmentEnum.PURCHASED
+            toggleButton_secondary_origin.isChecked = originState
+
         } else {
             playerViewModel.getPlayer()?.value?.updateSelectedWeapon(weapon)
             editText_main_casualties.setText(
                 playerViewModel.getPlayer()?.value?.getMainWeaponInGame()!!.casualty.toString()
             )
+            val originState =
+                playerViewModel.getPlayer()?.value?.getMainWeaponInGame()?.origin ==
+                        OriginEquipmentEnum.PURCHASED
+            toggleButton_main_origin.isChecked = originState
         }
     }
 
@@ -303,7 +330,7 @@ class DetailPlayerFragment : Fragment() {
             }
         }
 
-        editText_value!!.setText("")
+        editText_secondary_casualties!!.setText("")
         toggleButton_secondary_origin.isChecked = false
         toggleButton_secondary_origin.isEnabled = false
         for (i in 0 until player.secondaryWeapons!!.size) {
@@ -314,7 +341,7 @@ class DetailPlayerFragment : Fragment() {
                 toggleButton_secondary_origin.isEnabled = true
                 toggleButton_secondary_origin.isChecked =
                     player.getSecondaryWeaponInGame()?.origin == OriginEquipmentEnum.PURCHASED
-                editText_value!!.setText(
+                editText_secondary_casualties!!.setText(
                     player.getSecondaryWeaponInGame()?.casualty.toString()
                 )
                 break
@@ -343,18 +370,38 @@ class DetailPlayerFragment : Fragment() {
         textView_helmet.text = helmet?.name
         textView_defuse_kit.text = defuseKit?.name
 
-        switch_vest.setOnCheckedChangeListener { _, isChecked ->
-            if (playerViewModel.getPlayer()?.value == null) return@setOnCheckedChangeListener
-            playerViewModel.getPlayer()?.value?.vest = if (isChecked) vest?.copy() else null
+        with(switch_vest) {
+            setOnClickListener {
+                if (playerViewModel.getPlayer()?.value == null) return@setOnClickListener
+                playerViewModel.getPlayer()?.value?.vest = if (isChecked) vest?.copy() else null
+                toggleButton_vest_origin.isEnabled = isChecked
+                if (isChecked) toggleButton_vest_origin.isChecked =
+                    playerViewModel.getPlayer()?.value?.vest?.origin ==
+                            OriginEquipmentEnum.PURCHASED
+            }
         }
-        switch_helmet.setOnCheckedChangeListener { _, isChecked ->
-            if (playerViewModel.getPlayer()?.value == null) return@setOnCheckedChangeListener
-            playerViewModel.getPlayer()?.value?.helmet = if (isChecked) helmet?.copy() else null
+
+        with(switch_helmet) {
+            setOnClickListener {
+                if (playerViewModel.getPlayer()?.value == null) return@setOnClickListener
+                playerViewModel.getPlayer()?.value?.helmet = if (isChecked) helmet?.copy() else null
+                toggleButton_helmet_origin.isEnabled = isChecked
+                if (isChecked) toggleButton_helmet_origin.isChecked =
+                    playerViewModel.getPlayer()?.value?.helmet?.origin ==
+                            OriginEquipmentEnum.PURCHASED
+            }
         }
-        switch_defuse_kit.setOnCheckedChangeListener { _, isChecked ->
-            if (playerViewModel.getPlayer()?.value == null) return@setOnCheckedChangeListener
-            playerViewModel.getPlayer()?.value?.defuseKit =
-                if (isChecked) defuseKit?.copy() else null
+
+        with(switch_defuse_kit) {
+            setOnClickListener {
+                if (playerViewModel.getPlayer()?.value == null) return@setOnClickListener
+                playerViewModel.getPlayer()?.value?.defuseKit =
+                    if (isChecked) defuseKit?.copy() else null
+                toggleButton_defuse_kit_origin.isEnabled = isChecked
+                if (isChecked) toggleButton_defuse_kit_origin.isChecked =
+                    playerViewModel.getPlayer()?.value?.defuseKit?.origin ==
+                            OriginEquipmentEnum.PURCHASED
+            }
         }
     }
 

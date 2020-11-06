@@ -231,16 +231,22 @@ class AppHelperDB(private val helper: AppDatabase?) {
 
     fun fetchWeaponByNumeration(
         numeration: EquipmentNumeration,
-        team: EquipmentTeamEnum = EquipmentTeamEnum.BOTH
+        team: EquipmentTeamEnum? = null
     ): Weapon? {
-        val selectionArgs = arrayOf(
-            numeration.category.id.toString(), numeration.item.toString(), team.name
-        )
+        val selectionArgs = ArrayList<String>()
+        selectionArgs.add(numeration.category.id.toString())
+        selectionArgs.add(numeration.item.toString())
+
+        var selection = AppDatabase.SELECTION_NUMERATION
+
+        if (team != null) {
+            selectionArgs.add(team.name)
+            selection += " AND " + AppDatabase.SELECTION_TEAM
+        }
 
         val cursor = database!!.query(
             true, AppDatabase.KEY_WEAPON_TABLE,
-            columnsWeapon, AppDatabase.SELECTION_NUMERATION + " AND " +
-                    AppDatabase.SELECTION_TEAM, selectionArgs,
+            columnsWeapon, selection, selectionArgs.toTypedArray(),
             null, null, null, null
         )
 
@@ -249,12 +255,15 @@ class AppHelperDB(private val helper: AppDatabase?) {
         val name = cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_NAME_FIELD))
         val cost = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_COST_FIELD))
         val reward = cursor.getInt(cursor.getColumnIndex(AppDatabase.KEY_REWARD_FIELD))
+        val weaponTeam = EquipmentTeamEnum.valueOf(
+            cursor.getString(cursor.getColumnIndex(AppDatabase.KEY_TEAM_FIELD))
+        )
 
         cursor.close()
 
         return if (numeration.category == EquipmentCategoryEnum.PISTOL)
-            SecondaryWeapon(name, team, numeration, cost, reward)
-        else MainWeapon(name, team, numeration, cost, reward)
+            SecondaryWeapon(name, weaponTeam, numeration, cost, reward)
+        else MainWeapon(name, weaponTeam, numeration, cost, reward)
     }
 
     fun fetchUtilityEquipment(): List<Equipment> {

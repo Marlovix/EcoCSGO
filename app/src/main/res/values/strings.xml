@@ -21,15 +21,18 @@
 	<string name="label_no_purchased">No comprada</string>
 	<string name="label_no_connection">No hay conexión</string>
 	<string name="label_no_data">No existen datos</string>
+	<string name="label_finish_round">Finalizar ronda</string>
 	<string name="label_how_round_finish">¿Cómo ha terminado la ronda?</string>
 	<string name="label_they_have_won">Han ganado</string>
 	<string name="label_they_have_lost">Han perdido</string>
 	<string name="label_terrorist_have">Los terroristas</string>
 	<string name="label_counter_terrorist_have">Los antiterroristas</string>
+	<string name="label_add_weapon_by_voice">Para añadir un arma diga su numeración</string>
 
 	<!-- Actions -->
 	<string name="content_description_add">Añadir</string>
 	<string name="content_description_remove">Eliminar</string>
+	<string name="content_description_voice">Añadir arma por voz</string>
 
 	<!-- Menus Titles -->
 	<string name="menu_section_grenades">Granadas</string>

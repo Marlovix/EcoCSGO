@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import es.ulpgc.tfm.ecocsgo.R
@@ -57,7 +58,7 @@ class GameListPlayersFragment : Fragment() {
         fab_finish_round.setOnClickListener { v ->
             //Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
             //  .setAction("Action", null).show()
-            gameViewModel.getGame().value?.enemyTeam?.let { interaction?.openFinishRoundDialog(it) }
+            interaction?.openSpeechRecognize()
         }
 
         gameViewModel.getPlayers().observe(viewLifecycleOwner) {
@@ -69,6 +70,16 @@ class GameListPlayersFragment : Fragment() {
                 getString(R.string.label_terrorist) else getString(R.string.label_counter_terrorists)
             val text = team + "s: " + it + "$"
             textView_enemy_economy.text = text
+
+            if (gameViewModel.getGame().value?.roundInGame!! > 1 && it < 20000) {
+                textView_enemy_economy.setBackgroundColor(
+                    ContextCompat.getColor(requireContext(), R.color.greenNoPurchased)
+                )
+            } else {
+                textView_enemy_economy.setBackgroundColor(
+                    ContextCompat.getColor(requireContext(), android.R.color.white)
+                )
+            }
         }
     }
 
@@ -79,7 +90,7 @@ class GameListPlayersFragment : Fragment() {
 
     interface OnListPlayersFragmentInteraction {
         fun selectPlayer(selectedPlayerIndex: Int)
-        fun openFinishRoundDialog(team: EquipmentTeamEnum)
+        fun openSpeechRecognize()
     }
 
 }

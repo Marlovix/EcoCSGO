@@ -1,8 +1,10 @@
 package es.ulpgc.tfm.ecocsgo
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -55,7 +57,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (game?.players?.isEmpty()!!) {
             game.createPlayers(EquipmentTeamEnum.valueOf(intent.getStringExtra(ARG_TEAM)!!))
-            game.initRound()
+            game.initFirstRound()
             game.players?.let { gameViewModel.updatePlayers(it) }
             game.enemyEconomy.let { gameViewModel.setEnemyEconomy(it) }
             game.infoGame?.let { gameViewModel.setInfoGameLiveData(it) }
@@ -107,8 +109,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            Toast.makeText(this, "NO", Toast.LENGTH_SHORT).show() //super.onBackPressed()
         }
     }
 
@@ -118,6 +118,13 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (requestCode == ARG_RESPONSE_PLAYER) {
             val player = data?.getParcelableExtra<Player>(DetailPlayerActivity.ARG_PLAYER)
             updatePlayerData(player!!)
+        } else if (requestCode == SPEECH_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val spokenText: String? =
+                data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS).let { results ->
+                    results?.get(0)
+                }
+            spokenText?.let { parseVoiceToNumeration(it) }
+            //Toast.makeText(this, spokenText, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -184,7 +191,16 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_finish_round -> {
+                if (gameViewModel.getGame().value?.isThereNextRound()!!) {
+                    openFinishRoundDialog()
+                } else {
+                    val intent = Intent(this, MainActivity::class.java)
+                    finish()
+                    startActivity(intent)
+                }
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -201,6 +217,10 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             intent.putExtra(DetailPlayerActivity.ARG_PLAYER, player)
             startActivityForResult(intent, ARG_RESPONSE_PLAYER)
         }
+    }
+
+    override fun openSpeechRecognize() {
+        displaySpeechRecognizer()
     }
 
     override fun openMainWeaponsDialog() {
@@ -307,17 +327,6 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         infoGame?.let { gameViewModel.setInfoGameLiveData(it) }
     }
 
-    override fun openFinishRoundDialog(team: EquipmentTeamEnum) {
-        finishRoundDialog = true
-
-        val bundle = Bundle()
-        bundle.putParcelable(ARG_TEAM_FINISH_ROUND, team)
-
-        dialogFinishRound = FinishRoundFragmentDialog(this)
-        dialogFinishRound?.arguments = bundle
-        dialogFinishRound?.show(supportFragmentManager, null)
-    }
-
     override fun win(team: EquipmentTeamEnum) {
         val options : MutableMap<TypeFinalRoundEnum, String> =
             EnumMap(TypeFinalRoundEnum::class.java)
@@ -352,30 +361,126 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun selectOption(option: TypeFinalRoundEnum?, isVictory: Boolean) {
-        if(isVictory){
-            //option.let { gameViewModel.getGame().value?.calculateVictoryToEnemyEconomy(it!!) }
-        }else{
+        // Calculate economy after finish round //
+        if (isVictory) {
+            option.let { gameViewModel.getGame().value?.calculateVictoryToEnemyEconomy(it!!) }
+        } else {
             var type: TypeFinalRoundEnum = TypeFinalRoundEnum.TEAM
-            if(option != null){
+            if (option != null) {
                 type = option
             }
-            //gameViewModel.getGame().value?.calculateDefeatToEnemyEconomy(type)
+            gameViewModel.getGame().value?.calculateDefeatToEnemyEconomy(type)
         }
 
-        //gameViewModel.getGame().value?.calculateInfoGameToEnemyEconomy()
+        gameViewModel.getGame().value?.calculateInfoGameToEnemyEconomy()
 
         gameViewModel.getGame().value?.calculatePlayersDataToEnemyEconomy()
 
         gameViewModel.getGame().value?.players?.let { gameViewModel.updatePlayers(it) }
 
-        gameViewModel.getGame().value?.roundInGame =
-            gameViewModel.getGame().value?.roundInGame!! + 1
+        gameViewModel.getGame().value?.validEnemyEconomy()
 
-        updateToolBar()
+        // Update Round //
+
+        gameViewModel.getGame().value?.roundInGame =
+            gameViewModel.getGame().value?.roundInGame?.plus(1)!!
 
         gameViewModel.getGame().value?.enemyEconomy?.let { gameViewModel.setEnemyEconomy(it) }
 
+        // Changing of team //
+        if (gameViewModel.getGame().value?.roundInGame == (Game.ROUNDS / 2) + 1) {
+            if (gameViewModel.getGame().value?.enemyTeam == EquipmentTeamEnum.CT) {
+                gameViewModel.getGame().value?.enemyTeam = EquipmentTeamEnum.T
+            } else if (gameViewModel.getGame().value?.enemyTeam == EquipmentTeamEnum.T) {
+                gameViewModel.getGame().value?.enemyTeam = EquipmentTeamEnum.CT
+            }
+
+            gameViewModel.getGame().value?.initFirstRound()
+            gameViewModel.getGame().value?.enemyEconomy?.let { gameViewModel.setEnemyEconomy(it) }
+        }
+
+        updateToolBar()
+
         dialogFinishRound?.dismiss()
+    }
+
+    private fun parseVoiceToNumeration(voice: String) {
+        if (voice.length != 2) {
+            Toast.makeText(
+                this,
+                "No se ha reconocido la numeración. Por favor, vuelva a intentarlo.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        var item = 0
+        var categoryId = 0
+
+        for (i in voice.indices) {
+            if (voice[i].isDigit()) {
+                val number = voice[i].toString().toInt()
+                if (i == 0) {
+                    categoryId = number
+                } else if (i == 1) {
+                    item = number
+                }
+            } else {
+                Toast.makeText(
+                    this,
+                    "No se ha reconocido la numeración. Por favor, vuelva a intentarlo.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return
+            }
+        }
+
+        val categoryPistol = EquipmentCategoryEnum.PISTOL.id
+        val categoryHeavy = EquipmentCategoryEnum.HEAVY.id
+        val categorySmg = EquipmentCategoryEnum.SMG.id
+        val categoryRifle = EquipmentCategoryEnum.RIFLE.id
+
+        if ((categoryId == categoryPistol || categoryId == categoryHeavy || categoryId == categorySmg || categoryId == categoryRifle) && (item in 1..6)) {
+            val numeration: EquipmentNumeration
+            for (categoryEnum in EquipmentCategoryEnum.values()) {
+                if (categoryEnum.id == categoryId) {
+                    numeration = EquipmentNumeration(item, categoryEnum)
+                    val weapon = gameViewModel.getGame().value?.findWeaponByNumeration(numeration)
+                    weapon?.let { gameViewModel.getGame().value?.addWeaponByVoice(it) }
+                    gameViewModel.getGame().value?.players?.let { gameViewModel.updatePlayers(it) }
+                    break
+                }
+            }
+        } else {
+            Toast.makeText(
+                this,
+                "No se ha encontrado ningún arma con esa numeración",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun displaySpeechRecognizer() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.label_add_weapon_by_voice))
+        }
+        // Start the activity, the intent will be populated with the speech text
+        startActivityForResult(intent, SPEECH_REQUEST_CODE)
+    }
+
+    private fun openFinishRoundDialog() {
+        val team = gameViewModel.getGame().value?.enemyTeam
+        val bundle = Bundle()
+        bundle.putParcelable(ARG_TEAM_FINISH_ROUND, team)
+
+        finishRoundDialog = true
+        dialogFinishRound = FinishRoundFragmentDialog(this)
+        dialogFinishRound?.arguments = bundle
+        dialogFinishRound?.show(supportFragmentManager, null)
     }
 
     private fun updateToolBar() {
@@ -418,6 +523,7 @@ class GameActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         const val ARG_TITLE_INFO_GAME_DIALOG = "TITLE"
         const val ARG_VALUE_INFO_GAME_DIALOG = "VALUE"
         const val ARG_TEAM_FINISH_ROUND = "TEAM"
+        const val SPEECH_REQUEST_CODE = 0
     }
 
 }

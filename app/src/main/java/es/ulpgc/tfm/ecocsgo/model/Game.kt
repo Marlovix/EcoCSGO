@@ -39,46 +39,61 @@ class Game(context: Context) {
         for (i in 0 until ENEMIES) players?.add(Player(enemyTeam!!))
     }
 
-    fun initRound() {
-        if (roundInGame == 1 || roundInGame == (ROUNDS / 2) + 1) {
-            for (player in players!!) {
-                setDefaultSecondaryWeapon(player)
-                enemyEconomy += economy?.beginning!!
+    fun initFirstRound() {
+        for (player in players!!) {
+
+            if (roundInGame != 1) {
+                player.resetPlayer()
             }
+
+            setDefaultSecondaryWeapon(player)
+            enemyEconomy = economy?.beginning!!
+        }
+    }
+
+    fun validEnemyEconomy() {
+        if (enemyEconomy >= economy?.max?.times(ENEMIES)!!) {
+            enemyEconomy = economy?.max?.times(ENEMIES)!!
+        } else if (enemyEconomy < 0) enemyEconomy = 0
+    }
+
+    fun addWeaponByVoice(weapon: Weapon) {
+        if (!checkEmptyListOfWeapons(weapon)) {
+            checkIfHasWeapon(weapon)
         }
     }
 
     fun findWeaponByNumeration(
         numeration: EquipmentNumeration,
-        team: EquipmentTeamEnum = EquipmentTeamEnum.BOTH
+        team: EquipmentTeamEnum? = null
     ): Weapon? {
         appHelperDB!!.open()
         return appHelperDB!!.fetchWeaponByNumeration(numeration, team)
     }
 
-    fun calculateVictoryToEnemyEconomy(type: TypeFinalRoundEnum){
-        val reward : Int = economy?.type!![type] ?: error("")
-        val teamReward : Int =  reward * ENEMIES
+    fun calculateVictoryToEnemyEconomy(type: TypeFinalRoundEnum) {
+        val reward: Int = economy?.type!![type] ?: error("")
+        val teamReward: Int = reward * ENEMIES
 
         enemyEconomy += teamReward
 
-        if(consecutiveLostRounds > 0){
+        if (consecutiveLostRounds > 0) {
             consecutiveLostRounds--
         }
     }
 
-    fun calculateDefeatToEnemyEconomy(type: TypeFinalRoundEnum){
+    fun calculateDefeatToEnemyEconomy(type: TypeFinalRoundEnum) {
         val defeatBonus = economy?.defeatBonus?.get(consecutiveLostRounds)
-        var teamReward : Int =  defeatBonus!! * ENEMIES
+        var teamReward: Int = defeatBonus!! * ENEMIES
 
         // Losing as CT need not options //
-        if (type == TypeFinalRoundEnum.TEAM_BOMB){
+        if (type == TypeFinalRoundEnum.TEAM_BOMB) {
             teamReward += economy?.explosionBonus!! * ENEMIES
         }
 
         enemyEconomy += teamReward
 
-        if (consecutiveLostRounds < MAX_CONSECUTIVE_LOST) {
+        if (consecutiveLostRounds < MAX_CONSECUTIVE_LOST - 1) {
             consecutiveLostRounds++
         }
     }
@@ -111,30 +126,71 @@ class Game(context: Context) {
         for (player in players!!) {
             player.mainWeapons?.let { calculateEconomyFromWeapons(it) }
             player.secondaryWeapons?.let { calculateEconomyFromWeapons(it) }
+            calculateEconomyFromUtility(player)
 
             if (player.alive) {
-                player.prepareMainWeapons()
-                player.prepareSecondaryWeapon()
-                player.prepareUtility()
+                player.prepareMainWeaponsForNextRound()
+                player.prepareSecondaryWeaponForNextRound()
+                player.prepareUtilityForNextRound()
             } else {
-                player.mainWeapons?.clear()
-                player.secondaryWeapons?.clear()
-                player.resetUtility()
+                player.resetPlayer()
                 setDefaultSecondaryWeapon(player)
             }
         }
     }
 
-    private fun calculateEconomyFromUtility(player: Player){
-        if (player.vest != null){
+    fun isThereNextRound(): Boolean {
+        return roundInGame != ROUNDS
+    }
+
+    private fun checkIfHasWeapon(weapon: Weapon): Boolean {
+        var result = false
+        for (player in players!!) {
+            if (player.alreadyHasWeapon(weapon)) {
+                continue
+            } else {
+                if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL) {
+                    player.registerSecondaryWeapon(weapon as SecondaryWeapon)
+                } else {
+                    player.registerMainWeapon(weapon as MainWeapon)
+                }
+                result = true
+                break
+            }
+        }
+        return result
+    }
+
+    private fun checkEmptyListOfWeapons(weapon: Weapon): Boolean {
+        var result = false
+        for (player in players!!) {
+            if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL) {
+                if (player.secondaryWeapons!!.isEmpty()) {
+                    player.registerSecondaryWeapon(weapon as SecondaryWeapon)
+                    result = true
+                    break
+                }
+            } else {
+                if (player.mainWeapons!!.isEmpty()) {
+                    player.registerMainWeapon(weapon as MainWeapon)
+                    result = true
+                    break
+                }
+            }
+        }
+        return result
+    }
+
+    private fun calculateEconomyFromUtility(player: Player) {
+        if (player.vest != null && player.vest!!.origin == OriginEquipmentEnum.PURCHASED) {
             enemyEconomy -= player.vest!!.cost
         }
 
-        if (player.helmet != null){
+        if (player.helmet != null && player.helmet!!.origin == OriginEquipmentEnum.PURCHASED) {
             enemyEconomy -= player.helmet!!.cost
         }
 
-        if (player.defuseKit != null){
+        if (player.defuseKit != null && player.defuseKit!!.origin == OriginEquipmentEnum.PURCHASED) {
             enemyEconomy -= player.defuseKit!!.cost
         }
     }

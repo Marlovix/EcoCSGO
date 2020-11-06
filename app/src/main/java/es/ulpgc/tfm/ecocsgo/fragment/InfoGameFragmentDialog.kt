@@ -10,17 +10,13 @@ import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
 import es.ulpgc.tfm.ecocsgo.GameActivity
 import es.ulpgc.tfm.ecocsgo.R
 import es.ulpgc.tfm.ecocsgo.model.Game
-import es.ulpgc.tfm.ecocsgo.viewmodel.GameActivityViewModel
 
 class InfoGameFragmentDialog(
     private var interaction: OnFormInfoGameFragmentInteraction?
 ) : DialogFragment() {
-
-    private val gameViewModel: GameActivityViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -45,7 +41,7 @@ class InfoGameFragmentDialog(
         var value = bundle?.getInt(GameActivity.ARG_VALUE_INFO_GAME_DIALOG)
 
         val toolbar: Toolbar = rootView.findViewById(R.id.toolbar)
-        val editTextValue: EditText = rootView.findViewById(R.id.editText_value)
+        val editTextValue: EditText = rootView.findViewById(R.id.editText_secondary_casualties)
         val imageButtonRemove: ImageButton = rootView.findViewById(R.id.imageButton_remove)
         val imageButtonAdd: ImageButton = rootView.findViewById(R.id.imageButton_add)
 

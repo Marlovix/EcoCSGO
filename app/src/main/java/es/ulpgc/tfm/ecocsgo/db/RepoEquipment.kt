@@ -11,7 +11,7 @@ import es.ulpgc.tfm.ecocsgo.model.*
 
 class RepoEquipment(val context: Context) {
 
-    private var customerHelper: AppHelperDB? = null
+    private var repoHelper: AppHelperDB? = null
     private var helper: AppDatabase? = null
 
     private var weaponsLoaded: Boolean = false
@@ -21,8 +21,8 @@ class RepoEquipment(val context: Context) {
 
     fun loadData() {
         helper = AppDatabase(context)
-        customerHelper = AppHelperDB(helper)
-        customerHelper!!.open()
+        repoHelper = AppHelperDB(helper)
+        repoHelper!!.open()
 
         loadWeapons()
         loadGrenades()
@@ -94,21 +94,21 @@ class RepoEquipment(val context: Context) {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (pistolCode: String in context.resources.getStringArray(R.array.pistol_data))
-                        customerHelper!!.createWeapon(
+                        repoHelper!!.createWeapon(
                             loadEquipment(
                                 snapshot.child("secondary"), pistolCode
                             ) as SecondaryWeapon
                         )
                     for (heavyCode: String in context.resources.getStringArray(R.array.heavy_data))
-                        customerHelper!!.createWeapon(
+                        repoHelper!!.createWeapon(
                             loadEquipment(snapshot.child("heavy"), heavyCode) as MainWeapon
                         )
                     for (smgCode: String in context.resources.getStringArray(R.array.smg_data))
-                        customerHelper!!.createWeapon(
+                        repoHelper!!.createWeapon(
                             loadEquipment(snapshot.child("smg"), smgCode) as MainWeapon
                         )
                     for (rifleCode: String in context.resources.getStringArray(R.array.rifle_data))
-                        customerHelper!!.createWeapon(
+                        repoHelper!!.createWeapon(
                             loadEquipment(snapshot.child("rifle"), rifleCode) as MainWeapon
                         )
 
@@ -127,7 +127,7 @@ class RepoEquipment(val context: Context) {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (grenadeCode: String in context.resources.getStringArray(R.array.grenade_data))
-                        customerHelper!!.createGrenade(
+                        repoHelper!!.createGrenade(
                             loadEquipment(
                                 snapshot,
                                 grenadeCode
@@ -154,15 +154,15 @@ class RepoEquipment(val context: Context) {
                     val zeusCode = context.resources.getString(R.string.zeus_data)
                     val vestCode = context.resources.getString(R.string.vest_data)
 
-                    customerHelper!!.createUtility(
+                    repoHelper!!.createUtility(
                         loadEquipment(
                             snapshot,
                             defuseKitCode
                         ) as DefuseKit
                     )
-                    customerHelper!!.createUtility(loadEquipment(snapshot, helmetCode) as Helmet)
-                    customerHelper!!.createUtility(loadEquipment(snapshot, zeusCode) as Zeus)
-                    customerHelper!!.createUtility(loadEquipment(snapshot, vestCode) as Vest)
+                    repoHelper!!.createUtility(loadEquipment(snapshot, helmetCode) as Helmet)
+                    repoHelper!!.createUtility(loadEquipment(snapshot, zeusCode) as Zeus)
+                    repoHelper!!.createUtility(loadEquipment(snapshot, vestCode) as Vest)
 
                     utilitiesLoaded = true
                     checkDataLoaded()
@@ -208,7 +208,7 @@ class RepoEquipment(val context: Context) {
                         val typeVictory =
                             TypeFinalRoundEnum.valueOf(quantity.key!!)
 
-                        when(typeVictory){
+                        when (typeVictory) {
                             TypeFinalRoundEnum.TEAM -> {
                                 val completeQuantity =
                                     quantity.getValue(Int::class.java)!! + explosionBonus
@@ -224,7 +224,7 @@ class RepoEquipment(val context: Context) {
                         }
                     }
 
-                    customerHelper!!.createEconomy(
+                    repoHelper!!.createEconomy(
                         EconomyGame(
                             beginning, defeatBonus, defuseBonus,
                             explosionBonus, grenadeKill, killPartnerPenalty, knifeKill, leavingGame,
@@ -309,7 +309,7 @@ class RepoEquipment(val context: Context) {
 
     private fun checkDataLoaded() {
         if (weaponsLoaded && grenadesLoaded && utilitiesLoaded && economyLoaded) {
-            customerHelper!!.close()
+            repoHelper!!.close()
             val mainActivity = context as MainActivity
             mainActivity.finishRepoLoading()
         }

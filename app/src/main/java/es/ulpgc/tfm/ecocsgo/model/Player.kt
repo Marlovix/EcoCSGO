@@ -62,7 +62,7 @@ data class Player(
         weapon.inGame = true
     }
 
-    fun prepareMainWeapons() {
+    fun prepareMainWeaponsForNextRound() {
         val weaponInGame = getMainWeaponInGame()
         mainWeapons?.clear()
         weaponInGame?.casualty = 0
@@ -70,7 +70,7 @@ data class Player(
         weaponInGame?.let { registerMainWeapon(it) }
     }
 
-    fun prepareSecondaryWeapon() {
+    fun prepareSecondaryWeaponForNextRound() {
         val weaponInGame = getSecondaryWeaponInGame()
         secondaryWeapons?.clear()
         weaponInGame?.casualty = 0
@@ -78,16 +78,45 @@ data class Player(
         weaponInGame?.let { registerSecondaryWeapon(it) }
     }
 
-    fun prepareUtility() {
-        if(vest != null){
+    fun prepareUtilityForNextRound() {
+        if (vest != null) {
             vest!!.origin = OriginEquipmentEnum.NO_PURCHASED
         }
-        if(helmet != null){
+        if (helmet != null) {
             helmet!!.origin = OriginEquipmentEnum.NO_PURCHASED
         }
-        if(defuseKit != null){
+        if (defuseKit != null) {
             defuseKit!!.origin = OriginEquipmentEnum.NO_PURCHASED
         }
+    }
+
+    fun alreadyHasWeapon(weapon: Weapon): Boolean {
+        var hasWeapon = false
+
+        if (weapon.numeration.category == EquipmentCategoryEnum.PISTOL) {
+            for (secondaryWeapon in secondaryWeapons!!) {
+                if (weapon.name == secondaryWeapon.name) {
+                    hasWeapon = true
+                    break
+                }
+            }
+        } else {
+            for (mainWeapon in mainWeapons!!) {
+                if (weapon.name == mainWeapon.name) {
+                    hasWeapon = true
+                    break
+                }
+            }
+        }
+
+        return hasWeapon
+    }
+
+    fun resetPlayer() {
+        mainWeapons?.clear()
+        secondaryWeapons?.clear()
+        resetUtility()
+        alive = true
     }
 
     fun resetUtility() {
